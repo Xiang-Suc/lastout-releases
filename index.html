@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lastout — paste your terminal into any AI</title>
+<meta name="description" content="Lastout copies the last command's output — cleaned up, condensed and with secrets redacted — so you can paste it into ChatGPT or Claude without selecting text.">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0e12;
+    --ink-2: #14161d;
+    --ink-3: #1c1f29;
+    --line: #2a2e3b;
+    --paper: #ece7dc;
+    --muted: #9a9789;
+    --dim: #5f6170;
+    --mint: #74d9bf;
+    --mint-ink: #0c2a23;
+    --red: #ef7b6e;
+    --amber: #e6b65c;
+    --serif: "Instrument Serif", Georgia, serif;
+    --sans: "Hanken Grotesk", -apple-system, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--ink); color: var(--paper); }
+  body {
+    font: 17px/1.6 var(--sans);
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(116, 217, 191, 0.07), transparent 60%),
+      radial-gradient(900px 500px at -10% 30%, rgba(88, 76, 180, 0.08), transparent 60%),
+      var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* film grain */
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; opacity: 0.05; z-index: 50;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+
+  /* nav */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 26px 0; }
+  .brand { display: flex; gap: 12px; align-items: center; font: 600 18px var(--sans); letter-spacing: -0.01em; text-decoration: none; }
+  .brand img { width: 30px; height: 30px; }
+  nav .links { display: flex; gap: 28px; font-size: 15px; color: var(--muted); }
+  nav .links a { text-decoration: none; }
+  nav .links a:hover { color: var(--paper); }
+
+  /* hero */
+  .hero { padding: 64px 0 40px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: end; }
+  .kicker { font: 500 13px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--mint); margin-bottom: 22px; }
+  h1 { font: 400 clamp(52px, 7.4vw, 96px)/0.96 var(--serif); letter-spacing: -0.02em; }
+  h1 em { color: var(--mint); }
+  .lede { margin-top: 26px; max-width: 34ch; font-size: 19px; color: #cfcabe; }
+  .cta { margin-top: 34px; display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px;
+    font: 600 15px var(--sans); text-decoration: none; transition: transform .15s ease, background .2s ease;
+  }
+  .btn.primary { background: var(--mint); color: var(--mint-ink); }
+  .btn.primary:hover { transform: translateY(-1px); background: #8de6cf; }
+  .btn.ghost { border: 1px solid var(--line); color: var(--paper); }
+  .btn.ghost:hover { border-color: var(--dim); }
+  .keys { font: 500 13px var(--mono); color: var(--muted); }
+  kbd {
+    font: 600 12px var(--mono); padding: 3px 7px; border-radius: 6px; border: 1px solid var(--line);
+    border-bottom-width: 2px; background: var(--ink-2); color: var(--paper);
+  }
+
+  /* the demo */
+  .stage { position: relative; height: 470px; }
+  .term, .card {
+    position: absolute; border-radius: 14px; overflow: hidden;
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,0.7), 0 0 0 1px var(--line);
+  }
+  .term { inset: 0 60px 70px 0; background: #0a0b0f; }
+  .bar { height: 34px; display: flex; align-items: center; gap: 7px; padding: 0 14px; background: var(--ink-2); border-bottom: 1px solid var(--line); }
+  .bar i { width: 11px; height: 11px; border-radius: 50%; background: #3a3d4a; }
+  .bar span { margin-left: 10px; font: 500 12px var(--mono); color: var(--dim); }
+  .term pre { padding: 16px 18px; font: 12.5px/1.65 var(--mono); color: #b9b6aa; white-space: pre; overflow: hidden; }
+  .p { color: var(--mint); }
+  .g { color: #6fbf7a; }
+  .y { color: var(--amber); }
+  .r { color: var(--red); }
+  .d { color: var(--dim); }
+  .leak { color: var(--paper); background: rgba(239,123,110,0.18); }
+  .spin { display: inline-block; width: 1ch; }
+  .spin::after { content: "⠋"; animation: spin 0.8s steps(8) infinite; }
+  @keyframes spin {
+    0% { content: "⠋"; } 12% { content: "⠙"; } 25% { content: "⠹"; } 37% { content: "⠸"; }
+    50% { content: "⠼"; } 62% { content: "⠴"; } 75% { content: "⠦"; } 87% { content: "⠧"; }
+  }
+
+  .card {
+    right: 0; bottom: 0; width: 76%; background: var(--paper); color: #1d1c19;
+    animation: card 9s cubic-bezier(.2,.7,.2,1) infinite;
+  }
+  .card header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #d6d0c2; font: 600 12px var(--mono); }
+  .card header b { color: #a1483c; }
+  .card pre { padding: 12px 16px 16px; font: 11.5px/1.6 var(--mono); white-space: pre-wrap; }
+  .card .om { color: #8a8576; }
+  .card .red { background: #1d1c19; color: var(--paper); padding: 0 4px; border-radius: 3px; }
+  .card .err { background: #f6d7d2; }
+  @keyframes card {
+    0%, 30% { opacity: 0; transform: translate(30px, 40px) scale(.94); }
+    40%, 88% { opacity: 1; transform: none; }
+    100% { opacity: 0; transform: translate(0, -10px); }
+  }
+  .press {
+    position: absolute; left: 18px; top: 46px; z-index: 2; display: flex; gap: 6px; align-items: center;
+    padding: 6px 10px; border-radius: 999px; background: rgba(13,14,18,0.85); border: 1px solid var(--line);
+    font: 500 12px var(--mono); color: var(--muted); animation: press 9s ease infinite;
+  }
+  @keyframes press {
+    0%, 24% { opacity: 0; } 28% { opacity: 1; } 34% { opacity: 1; transform: scale(.96); } 38%, 100% { opacity: 0; }
+  }
+
+  /* sections */
+  section { padding: 96px 0; border-top: 1px solid var(--line); }
+  .label { font: 500 13px var(--mono); color: var(--mint); letter-spacing: 0.08em; text-transform: uppercase; }
+  h2 { margin-top: 14px; font: 400 clamp(36px, 4.6vw, 58px)/1.02 var(--serif); letter-spacing: -0.015em; max-width: 18ch; }
+  h2 em { color: var(--mint); }
+  .grid3 { margin-top: 56px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+  .cell { background: var(--ink); padding: 34px 30px 38px; }
+  .cell .n { font: 400 54px/1 var(--serif); color: var(--dim); }
+  .cell h3 { margin-top: 22px; font: 600 20px var(--sans); letter-spacing: -0.01em; }
+  .cell p { margin-top: 10px; color: var(--muted); font-size: 16px; }
+  .cell code, p code { font: 500 0.88em var(--mono); color: var(--paper); background: var(--ink-3); padding: 1px 6px; border-radius: 5px; white-space: nowrap; }
+
+  .split { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 64px; align-items: center; }
+  .split p.big { margin-top: 22px; color: #cfcabe; font-size: 19px; max-width: 38ch; }
+  .chat { background: var(--ink-2); border: 1px solid var(--line); border-radius: 16px; padding: 24px; font-size: 15px; }
+  .msg { padding: 14px 16px; border-radius: 12px; max-width: 88%; }
+  .msg + .msg { margin-top: 12px; }
+  .you { background: var(--ink-3); margin-left: auto; }
+  .ai { border: 1px solid var(--line); }
+  .tool { margin: 10px 0 0; font: 12px/1.6 var(--mono); color: var(--muted); }
+  .tool b { color: var(--mint); font-weight: 500; }
+
+  .privacy { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; margin-top: 52px; }
+  .privacy div { border-top: 2px solid var(--mint); padding-top: 18px; }
+  .privacy h4 { font: 600 16px var(--sans); }
+  .privacy p { margin-top: 8px; color: var(--muted); font-size: 15px; }
+
+  .join { text-align: center; padding: 120px 0 110px; }
+  .join h2 { margin: 14px auto 0; }
+  .join p { margin: 22px auto 0; max-width: 46ch; color: #cfcabe; }
+  .join .cta { justify-content: center; }
+  footer { padding: 34px 0 50px; border-top: 1px solid var(--line); color: var(--dim); font-size: 14px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  /* entrance */
+  .rise { opacity: 0; transform: translateY(14px); animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards; }
+  .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; } .rise.d3 { animation-delay: .3s; } .rise.d4 { animation-delay: .45s; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .rise, .card, .press { animation: none; opacity: 1; transform: none; }
+    .press { display: none; }
+  }
+
+  @media (max-width: 920px) {
+    .hero, .split { grid-template-columns: 1fr; }
+    .stage { height: 440px; }
+    .grid3 { grid-template-columns: 1fr; }
+    .privacy { grid-template-columns: 1fr 1fr; }
+    nav .links { display: none; }
+  }
+  @media (max-width: 520px) {
+    .wrap { padding: 0 18px; }
+    /* Stack before/after so the noisy output (and its leaked key) stays visible. */
+    .stage { height: auto; }
+    .term, .card { position: relative; inset: auto; }
+    .term pre { font-size: 11px; }
+    /* Static on phones: no blank space while the card is "not yet copied". */
+    .card { width: 92%; margin: -36px 0 0 auto; animation: none; }
+    .press { display: none; }
+    .privacy { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="brand" href="#"><img src="icon.png" alt="">Lastout</a>
+    <div class="links">
+      <a href="#how">How it works</a>
+      <a href="#agents">Coding agents</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#join">Beta</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <div class="kicker rise">For macOS · Ghostty · iTerm2 · Terminal · kitty · WezTerm · VS Code · Zed · tmux</div>
+      <h1 class="rise d1">The last thing your terminal said, <em>ready to paste.</em></h1>
+      <p class="lede rise d2">Press a key and the previous command's output is on your clipboard — progress bars gone, errors kept, secrets redacted — ready for ChatGPT, Claude, or a teammate.</p>
+      <div class="cta rise d3">
+        <a class="btn primary" href="#join">Join the beta</a>
+        <span class="keys">or type <kbd>lo</kbd> &nbsp;·&nbsp; anywhere <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>C</kbd></span>
+      </div>
+    </div>
+
+    <div class="stage rise d4" aria-label="A noisy build output becomes a clean, redacted snippet">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i><span>~/code/app — zsh</span></div>
+<pre><span class="p">❯</span> pnpm build
+<span class="d">Progress: resolved 1342, reused 1338, downloaded 4</span>
+<span class="g">✓</span> 812 modules transformed.
+<span class="y">warn</span>  Browserslist: caniuse-lite is outdated
+<span class="d">[████████████░░░░░░░░] 62% </span><span class="spin"></span>
+<span class="d">vite v6.2.0 building for production...</span>
+API_KEY=<span class="leak">sk-proj-9f2Xq…7Lw</span> loaded from .env
+<span class="r">✗ Build failed in 4.31s</span>
+<span class="r">error</span> TS2322: Type 'string' is not assignable
+  to type 'number'.  src/cart/total.ts:42:7
+<span class="d">  … 3,180 more lines …</span>
+<span class="p">❯</span> <span class="d">█</span></pre>
+      </div>
+      <div class="press"><kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>C</kbd> copied</div>
+      <div class="card">
+        <header><span>`pnpm build` · <b>exit 1</b> · 41.2s · ~/code/app</span><span>Markdown</span></header>
+<pre>✓ 812 modules transformed.
+warn  Browserslist: caniuse-lite is outdated
+API_KEY=<span class="red">[REDACTED:api-key]</span> loaded from .env
+<span class="om">… [3,060 lines omitted] …</span>
+<span class="err">✗ Build failed in 4.31s
+error TS2322: Type 'string' is not assignable
+  to type 'number'.  src/cart/total.ts:42:7</span>
+
+<span class="om">Showing 240 of 3,200 lines (head, errors and tail).</span></pre>
+      </div>
+    </div>
+  </header>
+</div>
+
+<section id="how">
+  <div class="wrap">
+    <div class="label">How it works</div>
+    <h2>Your terminal already knows. <em>Lastout remembers.</em></h2>
+    <div class="grid3">
+      <div class="cell">
+        <div class="n">01</div>
+        <h3>Exactly what you saw</h3>
+        <p>Each command's output is replayed like your terminal drew it: progress bars collapse to their last frame, colors and cursor tricks disappear, wide characters and emoji stay intact.</p>
+      </div>
+      <div class="cell">
+        <div class="n">02</div>
+        <h3>Long output, made short</h3>
+        <p>3,000 lines become the head, every error with its context, and the tail — within a budget an AI can read. <code>--mode full</code> when you want everything.</p>
+      </div>
+      <div class="cell">
+        <div class="n">03</div>
+        <h3>Secrets never leave</h3>
+        <p>API keys, tokens, passwords, private keys and connection strings are redacted before anything is copied. The output of <code>op</code>, <code>vault</code> and friends is never even stored.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="more">
+  <div class="wrap">
+    <div class="label">Where other tools give up</div>
+    <h2>Still running, far away, <em>or full-screen.</em></h2>
+    <div class="grid3">
+      <div class="cell">
+        <div class="n">04</div>
+        <h3>Still running? Copy it anyway</h3>
+        <p>The dev server that just threw an error doesn't have to stop. <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>C</kbd> or <code>lo --running</code> copies its output so far, cleaned up like any other.</p>
+      </div>
+      <div class="cell">
+        <div class="n">05</div>
+        <h3>Over ssh, too</h3>
+        <p><code>lssh server</code> records every command on the remote host one by one — with nothing installed there but three small shell scripts.</p>
+      </div>
+      <div class="cell">
+        <div class="n">06</div>
+        <h3>Even full-screen programs</h3>
+        <p><code>man</code>, <code>less</code>, <code>htop</code>, <code>vim</code>: Lastout copies the last screen they showed instead of nothing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="agents">
+  <div class="wrap split">
+    <div>
+      <div class="label">For coding agents</div>
+      <h2>“Wait for my build, <em>then fix it.”</em></h2>
+      <p class="big">Claude Code, Codex and other agents can read your terminals through a built-in MCP server — wait for a command running in another window, search past output, read just the errors. Read-only, always redacted.</p>
+    </div>
+    <div class="chat">
+      <div class="msg you">I'm running the tests in my other terminal. Wait for them and fix whatever fails.</div>
+      <div class="msg ai">On it.
+        <p class="tool"><b>wait_for_command</b> · pytest -x · exit 1 · 2m 14s</p>
+        <p class="tool"><b>get_command_output</b> mode=errors · 38 of 2,904 lines</p>
+        <div style="margin-top:10px">`test_checkout_total` fails because <code>total()</code> returns a string. Fixing <code>cart/total.py</code> line 42…</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="privacy">
+  <div class="wrap">
+    <div class="label">Privacy</div>
+    <h2>Nothing goes anywhere <em>you don't paste it.</em></h2>
+    <div class="privacy">
+      <div><h4>Local only</h4><p>No analytics, no account. Recordings live in a private folder on your Mac; the only connection the app makes is its own update check.</p></div>
+      <div><h4>Redacted by default</h4><p>Every copy and every agent read is scrubbed first. Agents can't turn it off.</p></div>
+      <div><h4>Pause or forget</h4><p><code>lo pause --for 30m</code> stops recording; commands starting with a space are never stored, not even their text. Printed a password? <code>lo forget</code> erases that command for good.</p></div>
+      <div><h4>Gone on its own</h4><p>200 commands per terminal, 30 days, 500 MB — then it cleans up after itself.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="join" class="join">
+  <div class="wrap">
+    <div class="label">Private beta</div>
+    <h2>Stop selecting text <em>with a mouse.</em></h2>
+    <p>Lastout is in a small private beta for macOS. Tell us what terminal and shell you use, and we'll send you a build.</p>
+    <div class="cta">
+      <!-- TODO before publishing: replace with the real beta sign-up address or form. -->
+      <a class="btn primary" href="mailto:beta@example.com?subject=Lastout%20beta">Request an invite</a>
+      <a class="btn ghost" href="#how">See how it works</a>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer>
+    <span>Lastout · made for people who live in the terminal</span>
+    <span>macOS 14+ · zsh · bash · fish</span>
+  </footer>
+</div>
+</body>
+</html>
