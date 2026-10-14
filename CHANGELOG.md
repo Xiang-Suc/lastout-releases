@@ -3,10 +3,35 @@
 User-facing changes. Compatibility with other tools, and how each part
 of it is tested, is in [docs/compatibility.md](docs/compatibility.md).
 
-## Unreleased
+## 0.2.0 - 2026-10-13
+
+### Action needed
+
+- Terminals opened before the update keep the old recorder until you open
+  a new tab or window: commands run in them show no git branch. Open a
+  new tab after updating.
+- Screenshots and screen recordings no longer show Lastout's overlays (see
+  Added). To record Lastout itself, turn off *Hide from screen recordings
+  and shares* in Settings → Appearance first.
 
 ### Changed
 
+- Settings is a sidebar of pages (General, Dynamic Island, Shortcuts,
+  Recording, Agents, Pass, About) in a resizable window, instead of one
+  form that grew with every setting. Every row has an icon and its
+  explanation; General opens with live numbers (terminals recorded,
+  commands today, data stored) and whether setup checks pass;
+  Recording can pause and resume recording, show the data in Finder
+  and erase it; Agents says what an agent can read.
+- The license is a pass: a terminal window as a card, `lo --pass`
+  printing the holder, status (as an exit code), validity, seats and
+  serial, the Mac's fingerprint drawn as ssh-keygen draws a key
+  (randomart), a Powerline status line; the output types itself in.
+  Copy it as an image, save it as PNG, change its color.
+- Settings has a toolbar-backed window with room under the window
+  buttons, an identity block (recording status) at the top of the
+  sidebar and the version at its foot, large sidebar rows, a header
+  with each page's purpose, and one readable column of content.
 - The git branch shown next to a command is recorded when the command
   starts, by the recorder in the terminal, instead of being read from
   the directory each time it is displayed. It is now the branch the
@@ -15,6 +40,54 @@ of it is tested, is in [docs/compatibility.md](docs/compatibility.md).
 
 ### Added
 
+- *Export Diagnostics…* (Settings → About): a zip to attach to a bug
+  report, saved where you choose and sent nowhere. It has the versions,
+  Lastout's settings, the screens, the `lo doctor` checks, how many
+  terminals are recorded, Lastout's log from the last day and its crash
+  reports from the last 30 days, with the home folder shown as `~` and
+  the user and computer names replaced; no command line, output or
+  license key. `Lastout --export-diagnostics PATH.zip` writes the same
+  without the dialog. Launch, the presentation chosen, failed copies and
+  shortcuts taken by another app are now logged at a level macOS keeps,
+  so the log has something to say.
+- Recording and full screen (Settings → Appearance), both on: the
+  overlays (island, bubble, side dock, copy confirmations, picker) are
+  left out of screenshots, screen recordings and screen shares while you
+  still see them, and stay off other apps' full-screen spaces. Turn the
+  first off to record a demo of Lastout.
+- A side dock, the fourth way to show Lastout (Settings → Appearance):
+  a slim tab grown out of the left or right edge of the screen, with the
+  notch's inverse curve where it meets the edge. Its prompt's cursor is
+  the status (cyan and blinking while something runs, green or red after),
+  with a dot for each open terminal. Resting on it shows the latest three
+  commands; a click or the pick shortcut opens the terminal cards; a copy
+  is confirmed in it. Its grip, at the foot, is for moving it: the mouse
+  there lights the grip and opens nothing. Dragged, it lifts off the edge
+  and follows the mouse, then settles on the nearer side and remembers
+  where. *Thin line when idle* shrinks it to a line of light in the
+  status color. Every phase is one shape growing and shrinking, not
+  layers fading into each other.
+- A floating bubble, the third way to show Lastout (Settings →
+  Appearance, the default on Macs without a notch): a small pill above
+  every app, dragged anywhere, snapping to the screen's edges and
+  remembering where it was. Hover or click it and the terminal cards
+  open from it toward the side with room; copies are confirmed beside
+  it. Like the island, it replaces the menu bar icon (its menu is in
+  the bubble). Choosing it before showed nothing new: the old "floating
+  panel" only opened the centered panel from the shortcut, as the menu
+  bar mode does.
+- Notch style (Settings → Appearance): Clean, the default, keeps
+  both wings beside the notch narrow and fixed (icon and count on the
+  left, a status dot on the right), so they don't cover other apps'
+  menu bar icons; Detailed names the running command and covers the
+  icons next to the notch. macOS doesn't let an app see where those
+  icons are, so the island can't size itself around them.
+- "Copy from the exact window in front" (Settings, off by default): with
+  several Terminal.app or iTerm2 windows open, the copy shortcut asks
+  the terminal over Apple Events which window is in front (macOS asks
+  once to allow it) and copies from that one, instead of the most
+  recently active. Other terminals have no such interface and keep the
+  heuristic.
 - "Also record these apps" in Settings: a terminal Lastout doesn't know
   is picked from the running apps and recorded from its next new tab
   (macOS launches every process with the app's bundle identifier in its
@@ -62,6 +135,13 @@ of it is tested, is in [docs/compatibility.md](docs/compatibility.md).
 - `docs/privacy.md`: what is recorded, where it is kept, what can leave
   the machine (and that redaction cannot be turned off for agents), how
   to delete it.
+
+### Fixed
+
+- The floating bubble could not be dragged once it had opened: opening
+  moved its icon and status to the middle of the strip, away from the
+  mouse, and only that middle part could be dragged. They now stay at
+  the corner the bubble opens from, and the whole strip drags it.
 
 ## 0.1.0 - 2026-10-11
 

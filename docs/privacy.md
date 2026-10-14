@@ -85,6 +85,13 @@ only when you, or a tool you run, ask for it:
   the license server to be checked, once; nothing about your recordings
   goes with it. Which server, and its privacy policy, will be named here
   when one is configured; until then the app refuses every key.
+- **Diagnostics** (Settings → About → *Export Diagnostics…*) writes a zip
+  where you choose, for you to attach to a bug report; the app sends it
+  nowhere. In it: versions, Lastout's settings, the screens' sizes, the
+  `lo doctor` checks, how many terminals are recorded, Lastout's own log
+  from the last day and its crash reports from the last 30 days. Your
+  home folder shows as `~`, your user name and computer name are
+  replaced, and no command line, output or license key is in it.
 
 ### Redaction
 
@@ -127,6 +134,13 @@ without them (the menu and shortcuts don't need them). "Open at login" is off un
 you turn it on in Settings. It needs no accessibility, screen recording
 or input monitoring permission. Its only network connection is the
 update check described above.
+
+While you record or share your screen, its overlays (the island, the
+bubble, the side dock, the copy confirmations, the picker) are left out
+of what is captured: you still see them, screenshots, recordings and the
+people watching your screen don't. They also stay off other apps'
+full-screen spaces. Both are on by default and can be turned off in
+Settings → Appearance (to record a demo of Lastout, say).
 
 ## Third parties
 

@@ -128,6 +128,7 @@
   h2 { margin-top: 14px; font: 400 clamp(36px, 4.6vw, 58px)/1.02 var(--serif); letter-spacing: -0.015em; max-width: 18ch; }
   h2 em { color: var(--mint); }
   .grid3 { margin-top: 56px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+  .grid4 { margin-top: 56px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
   .cell { background: var(--ink); padding: 34px 30px 38px; }
   .cell .n { font: 400 54px/1 var(--serif); color: var(--dim); }
   .cell h3 { margin-top: 22px; font: 600 20px var(--sans); letter-spacing: -0.01em; }
@@ -168,11 +169,13 @@
     .hero, .split { grid-template-columns: 1fr; }
     .stage { height: 440px; }
     .grid3 { grid-template-columns: 1fr; }
+    .grid4 { grid-template-columns: repeat(2, 1fr); }
     .privacy { grid-template-columns: 1fr 1fr; }
     nav .links { display: none; }
   }
   @media (max-width: 520px) {
     .wrap { padding: 0 18px; }
+    .grid4 { grid-template-columns: 1fr; }
     /* Stack before/after so the noisy output (and its leaked key) stays visible. */
     .stage { height: auto; }
     .term, .card { position: relative; inset: auto; }
@@ -288,6 +291,35 @@ error TS2322: Type 'string' is not assignable
   </div>
 </section>
 
+<section id="mac">
+  <div class="wrap">
+    <div class="label">On your Mac</div>
+    <h2>Four ways to keep it <em>one glance away.</em></h2>
+    <div class="grid4">
+      <div class="cell">
+        <div class="n">07</div>
+        <h3>Beside the notch</h3>
+        <p>A Dynamic Island–style strip shows what runs and how the last command went. Hover it and it grows into every terminal.</p>
+      </div>
+      <div class="cell">
+        <div class="n">08</div>
+        <h3>A bubble anywhere</h3>
+        <p>A small pill floats above every app. Drag it wherever it stays out of your way; it opens toward the side with room.</p>
+      </div>
+      <div class="cell">
+        <div class="n">09</div>
+        <h3>A tab on the edge</h3>
+        <p>A slim tab grows out of the side of the screen. Rest on it for the latest commands; grab its grip to move it.</p>
+      </div>
+      <div class="cell">
+        <div class="n">10</div>
+        <h3>Or just the menu bar</h3>
+        <p>Nothing on screen at all: the menu bar icon, and <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>L</kbd> opens the terminals in the middle.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="agents">
   <div class="wrap split">
     <div>
@@ -325,8 +357,7 @@ error TS2322: Type 'string' is not assignable
     <h2>Stop selecting text <em>with a mouse.</em></h2>
     <p>Lastout is in a small private beta for macOS. Tell us what terminal and shell you use, and we'll send you a build.</p>
     <div class="cta">
-      <!-- TODO before publishing: replace with the real beta sign-up address or form. -->
-      <a class="btn primary" href="mailto:beta@example.com?subject=Lastout%20beta">Request an invite</a>
+      <a class="btn primary" href="mailto:xianghao98520@gmail.com?subject=Lastout%20beta">Request an invite</a>
       <a class="btn ghost" href="#how">See how it works</a>
     </div>
   </div>
