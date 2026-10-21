@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lastout — paste your terminal into any AI</title>
 <meta name="description" content="Lastout copies the last command's output — cleaned up, condensed and with secrets redacted — so you can paste it into ChatGPT or Claude without selecting text.">
+<meta name="color-scheme" content="dark">
 <link rel="icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,10 +47,10 @@
   .wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
 
   /* nav */
-  nav { display: flex; align-items: center; justify-content: space-between; padding: 26px 0; }
+  nav { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px 28px; padding: 26px 0; }
   .brand { display: flex; gap: 12px; align-items: center; font: 600 18px var(--sans); letter-spacing: -0.01em; text-decoration: none; }
   .brand img { width: 30px; height: 30px; }
-  nav .links { display: flex; gap: 28px; font-size: 15px; color: var(--muted); }
+  nav .links { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 15px; color: var(--muted); }
   nav .links a { text-decoration: none; }
   nav .links a:hover { color: var(--paper); }
 
@@ -150,11 +151,28 @@
   .privacy h4 { font: 600 16px var(--sans); }
   .privacy p { margin-top: 8px; color: var(--muted); font-size: 15px; }
 
-  .join { text-align: center; padding: 120px 0 110px; }
-  .join h2 { margin: 14px auto 0; }
-  .join p { margin: 22px auto 0; max-width: 46ch; color: #cfcabe; }
-  .join .cta { justify-content: center; }
-  footer { padding: 34px 0 50px; border-top: 1px solid var(--line); color: var(--dim); font-size: 14px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  /* pricing */
+  .plans { margin-top: 56px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 28px; align-items: start; }
+  .plan { border: 1px solid var(--line); border-radius: 18px; background: var(--ink-2); padding: 36px 36px 34px; position: relative; overflow: hidden; }
+  .plan.paid { border-color: rgba(116, 217, 191, 0.45); box-shadow: 0 30px 80px -40px rgba(116, 217, 191, 0.35); }
+  .plan .name { font: 600 15px var(--sans); color: var(--muted); }
+  .plan .price { margin-top: 14px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .plan .price b { font: 400 64px/1 var(--serif); letter-spacing: -0.02em; }
+  .plan .price span { color: var(--muted); font-size: 15px; }
+  .plan ul { list-style: none; margin-top: 26px; display: grid; gap: 12px; color: #cfcabe; font-size: 16px; }
+  .plan li { padding-left: 28px; position: relative; }
+  .plan li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--mint); font: 600 15px var(--mono); }
+  .plan .cta { margin-top: 30px; }
+  .plan .fine { margin-top: 22px; color: var(--muted); font-size: 14px; line-height: 1.55; }
+  .plan .fine + .fine { margin-top: 8px; }
+  .plan .fine a { color: var(--muted); }
+  .buy-note { margin-top: 14px; font-size: 14px; color: var(--amber); }
+  .buy-note:empty { display: none; }
+  .tag { font: 500 12px var(--mono); color: var(--mint); letter-spacing: 0.06em; text-transform: uppercase; }
+  footer { padding: 34px 0 50px; border-top: 1px solid var(--line); color: var(--dim); font-size: 14px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px 28px; }
+  footer .links { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+  footer a { text-decoration: none; }
+  footer a:hover { color: var(--paper); }
 
   /* entrance */
   .rise { opacity: 0; transform: translateY(14px); animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards; }
@@ -166,15 +184,16 @@
   }
 
   @media (max-width: 920px) {
-    .hero, .split { grid-template-columns: 1fr; }
+    .hero, .split, .plans { grid-template-columns: 1fr; }
     .stage { height: 440px; }
     .grid3 { grid-template-columns: 1fr; }
     .grid4 { grid-template-columns: repeat(2, 1fr); }
     .privacy { grid-template-columns: 1fr 1fr; }
-    nav .links { display: none; }
   }
   @media (max-width: 520px) {
     .wrap { padding: 0 18px; }
+    nav { padding: 20px 0; }
+    nav .links { font-size: 14px; gap: 6px 16px; }
     .grid4 { grid-template-columns: 1fr; }
     /* Stack before/after so the noisy output (and its leaked key) stays visible. */
     .stage { height: auto; }
@@ -184,6 +203,8 @@
     .card { width: 92%; margin: -36px 0 0 auto; animation: none; }
     .press { display: none; }
     .privacy { grid-template-columns: 1fr; }
+    .plan { padding: 28px 22px; }
+    .plan .price b { font-size: 54px; }
   }
 </style>
 </head>
@@ -193,9 +214,12 @@
     <a class="brand" href="#"><img src="icon.png" alt="">Lastout</a>
     <div class="links">
       <a href="#how">How it works</a>
-      <a href="#agents">Coding agents</a>
-      <a href="#privacy">Privacy</a>
-      <a href="#join">Beta</a>
+      <a href="#agents">Agents</a>
+      <a href="#pricing">Pricing</a>
+      <a href="terms.html">Terms</a>
+      <a href="refund.html">Refund Policy</a>
+      <a href="https://github.com/Xiang-Suc/lastout-releases/blob/main/docs/privacy.md">Privacy</a>
+      <a href="eula.html">EULA</a>
     </div>
   </nav>
 
@@ -205,7 +229,8 @@
       <h1 class="rise d1">The last thing your terminal said, <em>ready to paste.</em></h1>
       <p class="lede rise d2">Press a key and the previous command's output is on your clipboard — progress bars gone, errors kept, secrets redacted — ready for ChatGPT, Claude, or a teammate.</p>
       <div class="cta rise d3">
-        <a class="btn primary" href="#join">Join the beta</a>
+        <a class="btn primary" data-download href="https://github.com/Xiang-Suc/lastout-releases/releases/latest">Download for macOS</a>
+        <a class="btn ghost" href="#pricing">$29, free for 14 days</a>
         <span class="keys">or type <kbd>lo</kbd> &nbsp;·&nbsp; anywhere <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>C</kbd></span>
       </div>
     </div>
@@ -348,26 +373,162 @@ error TS2322: Type 'string' is not assignable
       <div><h4>Pause or forget</h4><p><code>lo pause --for 30m</code> stops recording; commands starting with a space are never stored, not even their text. Printed a password? <code>lo forget</code> erases that command for good.</p></div>
       <div><h4>Gone on its own</h4><p>200 commands per terminal, 30 days, 500 MB — then it cleans up after itself.</p></div>
     </div>
+    <p class="fine" style="margin-top:28px;color:var(--muted);font-size:15px">Every claim above is checked against the code in the <a href="https://github.com/Xiang-Suc/lastout-releases/blob/main/docs/privacy.md" style="color:var(--paper)">privacy policy</a>, which also says what activating a license sends.</p>
   </div>
 </section>
 
-<section id="join" class="join">
+<section id="pricing">
   <div class="wrap">
-    <div class="label">Private beta</div>
-    <h2>Stop selecting text <em>with a mouse.</em></h2>
-    <p>Lastout is in a small private beta for macOS. Tell us what terminal and shell you use, and we'll send you a build.</p>
-    <div class="cta">
-      <a class="btn primary" href="mailto:xianghao98520@gmail.com?subject=Lastout%20beta">Request an invite</a>
-      <a class="btn ghost" href="#how">See how it works</a>
+    <div class="label">Pricing</div>
+    <h2>One price. <em>No subscription.</em></h2>
+    <div class="plans">
+      <div class="plan paid">
+        <div class="name">Lastout for Mac</div>
+        <div class="price"><b>$29</b><span>one-time · USD</span></div>
+        <ul>
+          <li>The menu bar app: the shortcut, the island, the bubble, the side dock and notifications</li>
+          <li>One person, up to <b>2 Macs</b></li>
+          <li>Every update for <b>one year</b>; the app keeps working after that</li>
+          <li>Try it free for <b>14 days</b> first, no card needed</li>
+          <li>14-day money-back guarantee</li>
+        </ul>
+        <div class="cta">
+          <a class="btn primary" data-buy href="#pricing">Buy Lastout — $29</a>
+          <a class="btn ghost" data-download href="https://github.com/Xiang-Suc/lastout-releases/releases/latest">Download the trial</a>
+        </div>
+        <p class="buy-note" data-buy-note aria-live="polite"></p>
+        <p class="fine">Another year of updates, when you want it, is $15. Not buying it changes nothing: the version you have keeps running.</p>
+        <p class="fine">Prices in USD; sales tax or VAT may be added at checkout depending on your country. Orders are processed by Paddle.com Market Ltd, our merchant of record, under the <a href="terms.html">Terms of Sale</a>, the <a href="refund.html">Refund Policy</a> and the <a href="eula.html">EULA</a>.</p>
+      </div>
+      <div class="plan">
+        <div class="name">Command line</div>
+        <div class="price"><b>Free</b><span>forever · macOS and Linux</span></div>
+        <ul>
+          <li><code>lo</code> copies the last command's output, cleaned up and redacted</li>
+          <li><code>lssh</code> for remote hosts, <code>lo mcp</code> for coding agents</li>
+          <li>Any number of machines, no license key</li>
+          <li>Installed with the app, or on its own with one command</li>
+        </ul>
+        <div class="cta">
+          <a class="btn ghost" href="https://github.com/Xiang-Suc/lastout-releases#install">Install <code style="background:none;padding:0">lo</code></a>
+        </div>
+        <p class="fine">Requires macOS 14 or later for the app. Questions before you buy: <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>.</p>
+      </div>
     </div>
   </div>
 </section>
 
 <div class="wrap">
   <footer>
-    <span>Lastout · made for people who live in the terminal</span>
-    <span>macOS 14+ · zsh · bash · fish</span>
+    <span>Lastout · Rocha Tech LLC · macOS 14+ · zsh · bash · fish</span>
+    <span class="links">
+      <a href="terms.html">Terms of Sale</a>
+      <a href="refund.html">Refund Policy</a>
+      <a href="https://github.com/Xiang-Suc/lastout-releases/blob/main/docs/privacy.md">Privacy</a>
+      <a href="eula.html">EULA</a>
+      <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>
+    </span>
   </footer>
 </div>
+
+<script src="config.js"></script>
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js" defer></script>
+<script>
+(function () {
+  "use strict";
+  var cfg = window.LASTOUT_STORE || {};
+  var env = cfg.environment || "sandbox";
+  var paddle = (cfg.paddle || {})[env] || {};
+  var support = cfg.support || "support@lastout.dev";
+
+  document.querySelectorAll("[data-support]").forEach(function (a) {
+    a.href = "mailto:" + support;
+    a.textContent = support;
+  });
+
+  // Download: the latest release page always works; once the GitHub API
+  // answers, point straight at the Lastout-<version>.zip inside it. (The
+  // appcast's download redirect carries no CORS headers, the API does.)
+  var releases = cfg.releases || "https://github.com/Xiang-Suc/lastout-releases";
+  var api = "https://api.github.com/repos/" + releases.replace(/^https:\/\/github\.com\//, "") + "/releases/latest";
+  fetch(api, { headers: { Accept: "application/vnd.github+json" } })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error("GitHub API " + r.status)); })
+    .then(function (release) {
+      var zip = (release.assets || []).find(function (a) { return /^Lastout-.+\.zip$/.test(a.name); });
+      if (!zip) throw new Error("no Lastout-*.zip in " + release.tag_name);
+      document.querySelectorAll("[data-download]").forEach(function (a) {
+        a.href = zip.browser_download_url;
+        a.title = "Lastout " + release.tag_name + " for macOS";
+      });
+    })
+    .catch(function (e) { console.info("Lastout site: download links stay on the releases page (" + e.message + ")"); });
+
+  // Buy: Paddle overlay checkout, from config.js.
+  var buttons = document.querySelectorAll("[data-buy]");
+  var note = document.querySelector("[data-buy-note]");
+  function say(text) { if (note) note.textContent = text; }
+  function thanksUrl(txn) {
+    var url = new URL("thanks.html", location.href);
+    if (txn) url.searchParams.set("txn", txn);
+    return url.href;
+  }
+
+  var missing = [];
+  if (!cfg.paddle || !cfg.paddle[env]) missing.push("paddle." + env);
+  if (!paddle.clientToken) missing.push("paddle." + env + ".clientToken");
+  if (!paddle.priceId) missing.push("paddle." + env + ".priceId");
+  if (missing.length) {
+    console.warn("Lastout store: checkout is off. config.js (environment \"" + env + "\") is missing " + missing.join(", ") + ".");
+    buttons.forEach(function (b) {
+      b.addEventListener("click", function (e) {
+        e.preventDefault();
+        say("Checkout isn't open yet. Write to " + support + " and we'll sort you out.");
+      });
+    });
+    return;
+  }
+
+  var ready = false;
+  function initPaddle() {
+    if (ready) return true;
+    if (!window.Paddle) return false;
+    try {
+      if (env === "sandbox") window.Paddle.Environment.set("sandbox");
+      window.Paddle.Initialize({
+        token: paddle.clientToken,
+        eventCallback: function (event) {
+          if (event && event.name === "checkout.completed") {
+            var txn = event.data && event.data.transaction_id;
+            location.href = thanksUrl(txn);
+          }
+        }
+      });
+      ready = true;
+    } catch (e) {
+      console.error("Lastout store: Paddle.Initialize failed", e);
+    }
+    return ready;
+  }
+
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (!initPaddle()) {
+        console.warn("Lastout store: Paddle.js is not loaded (offline, or blocked?)");
+        say("The checkout didn't load. Reload the page, or write to " + support + ".");
+        return;
+      }
+      say("");
+      try {
+        window.Paddle.Checkout.open({ items: [{ priceId: paddle.priceId, quantity: 1 }] });
+      } catch (err) {
+        console.error("Lastout store: Paddle.Checkout.open failed", err);
+        say("The checkout couldn't open. Write to " + support + ".");
+      }
+    });
+  });
+  window.addEventListener("load", initPaddle);
+})();
+</script>
 </body>
 </html>

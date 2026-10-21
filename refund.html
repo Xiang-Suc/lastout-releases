@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Refund Policy — Lastout</title>
+<meta name="description" content="Fourteen days, no questions asked.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="page.css">
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="brand" href="index.html"><img src="icon.png" alt="">Lastout</a>
+    <div class="links">
+      <a href="index.html#pricing">Pricing</a>
+      <a href="terms.html">Terms</a>
+      <a href="refund.html" aria-current="page">Refund Policy</a>
+      <a href="https://github.com/Xiang-Suc/lastout-releases/blob/main/docs/privacy.md">Privacy</a>
+      <a href="eula.html">EULA</a>
+    </div>
+  </nav>
+
+  <main class="narrow">
+    <div class="label">Legal</div>
+    <h1>Refund <em>Policy.</em></h1>
+    <!-- 上线前：填日期。正文从 docs/legal/refund-policy.md 和 refund-policy.zh-CN.md 转换而来；改了原文要重新生成这一页。 -->
+    <p class="meta">Last updated: 2026-10-20 · English is the binding version; 中文为译本，两者不一致时以英文版为准。</p>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">English</button>
+      <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+    </div>
+
+    <article lang="en" data-doc="en">
+<p>If Lastout isn't right for you, you can get a full refund within 14 days of your purchase, no questions asked. The 14-day free trial lets you try it first, but the refund applies whether or not you used the trial.</p>
+<h2>How to ask for one</h2>
+<p>Write to <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a> with your order number, or reply to your receipt email from Paddle.com Market Ltd (Paddle). Orders are processed by Paddle.com Market Ltd (Paddle), our merchant of record, which issues the refund to your original payment method. Refunds usually reach you within a few business days, depending on your bank.</p>
+<h2>After a refund</h2>
+<p>The refunded license key is deactivated. The App returns to its unlicensed state; the command-line tools keep working, and your recordings stay on your Mac.</p>
+<h2>Your legal rights</h2>
+<p>This policy doesn't limit any right to a refund or withdrawal that the law where you live gives you.</p>
+    </article>
+    <article lang="zh-CN" data-doc="zh" hidden>
+<p>如果 Lastout 不适合你，购买后 14 天内可以无理由全额退款。你可以先用 14 天免费试用，但无论是否用过试用，退款都适用。</p>
+<h2>怎么申请</h2>
+<p>写信到 <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a> 并附上订单号，或直接回复 Paddle.com Market Ltd（Paddle）发给你的收据邮件。订单由我们的代收商户 Paddle.com Market Ltd（Paddle）处理，退款会原路退回你的付款方式。到账时间视银行而定，通常几个工作日。</p>
+<h2>退款之后</h2>
+<p>被退款的授权码会被停用，App 回到未授权状态。命令行工具照常可用，你的记录也仍然保存在你的 Mac 上。</p>
+<h2>你的法定权利</h2>
+<p>本政策不限制你所在地法律赋予你的任何退款或撤回权利。</p>
+    </article>
+  </main>
+
+  <footer>
+    <span>Lastout · Rocha Tech LLC</span>
+    <span class="links">
+      <a href="terms.html">Terms of Sale</a>
+      <a href="refund.html">Refund Policy</a>
+      <a href="https://github.com/Xiang-Suc/lastout-releases/blob/main/docs/privacy.md">Privacy</a>
+      <a href="eula.html">EULA</a>
+      <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>
+    </span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var buttons = document.querySelectorAll("[data-lang]");
+  var docs = document.querySelectorAll("[data-doc]");
+  function pick(lang) {
+    docs.forEach(function (d) { d.hidden = d.getAttribute("data-doc") !== lang; });
+    buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang)); });
+    document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+  }
+  buttons.forEach(function (b) { b.addEventListener("click", function () { pick(b.getAttribute("data-lang")); }); });
+  var wanted = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
+  if (wanted === "zh") pick("zh");
+})();
+</script>
+</body>
+</html>
