@@ -13,8 +13,8 @@ window.LASTOUT_STORE = {
     // "Lastout for Mac" → the one-time price's id (pri_…).
     // 上线前填（沙盒彩排用；留空则 Buy 按钮不弹结账，只在控制台说缺什么）。
     sandbox: {
-      clientToken: "",
-      priceId: "",
+      clientToken: "test_c65cc32df1acd5e914038cafc56",
+      priceId: "pri_01m5e3vcab25cmb8gh09jkkh30",
     },
     // The same two values from the live dashboard (vendors.paddle.com):
     // the client-side token starts with live_…, the price id with pri_….
