@@ -1,4 +1,4 @@
-/* Shared styles for the secondary pages (terms, refund, eula, thanks).
+/* Shared styles for the secondary pages (terms, refund, privacy, eula, thanks).
    Same tokens, fonts and nav as index.html, which keeps its own inline
    stylesheet because of the demo animation. */
 :root {
@@ -55,6 +55,13 @@ article ul, article ol { margin-top: 16px; padding-left: 1.3em; color: #cfcabe; 
 article li { margin-top: 8px; }
 article strong { color: var(--paper); font-weight: 600; }
 article a { color: var(--mint); text-decoration-color: rgba(116, 217, 191, 0.4); }
+article h3 { margin-top: 32px; font: 600 19px/1.3 var(--sans); color: var(--paper); }
+article h3 + p { margin-top: 10px; }
+article code { white-space: normal; overflow-wrap: anywhere; }
+article .table { margin-top: 18px; overflow-x: auto; }
+article table { width: 100%; border-collapse: collapse; font-size: 15px; color: #cfcabe; }
+article th, article td { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+article th { color: var(--paper); font-weight: 600; }
 code, kbd { font: 500 0.88em var(--mono); color: var(--paper); background: var(--ink-3); padding: 1px 6px; border-radius: 5px; white-space: nowrap; }
 
 /* language switch */
