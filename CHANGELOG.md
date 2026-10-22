@@ -3,6 +3,286 @@
 User-facing changes. Compatibility with other tools, and how each part
 of it is tested, is in [docs/compatibility.md](docs/compatibility.md).
 
+## 0.3.0 - 2026-10-21
+
+### Action needed
+
+- Run `lo setup` (or let the app's prompt update) and open a new tab, or
+  `exec zsh` in an open one: the rc blocks changed. Every terminal opened
+  after that binds ctrl-G to saved commands (see Added) unless you chose
+  otherwise when `lo setup` asked. ctrl-G replaces zsh's send-break at the
+  prompt (in a ctrl-R search and in completion's menu selection ctrl-G
+  still cancels), bash's abort, and a ctrl-G binding of your own made
+  earlier in the rc file. To keep ctrl-G as it was, answer `none`, or run
+  `lo setup --saved-key none` any time; `--saved-key ctrl-<letter>` picks
+  another key.
+- Every terminal is recorded now, not only the ones Lastout knows (see
+  Changed). A terminal you want left out: `export LASTOUT_DISABLE=1` in
+  that shell's rc file above Lastout's block (zsh: `~/.zshenv`).
+
+### Added
+
+- Lastout can be bought and activated. *Buy Lastout…* (in the menu and in
+  Settings → Pass) opens lastout.dev: one license is $29, for one person
+  on up to 2 Macs, with every update for a year; the 14-day trial is
+  unchanged and the terminal's `lo` stays free. *Activate Lastout…* checks
+  the key once with Lastout's license server (license.lastout.dev; what
+  the request carries is in docs/privacy.md) and keeps it in your
+  keychain, so a reset of the app's preferences doesn't ask for it again.
+  *Deactivate on this Mac* frees that seat for another Mac. A refunded key
+  is refused. This build is not a dated beta: it does not expire.
+- The terminal built into Claude Desktop's Code tab (cmd-J) is recognized:
+  it sets `TERM_PROGRAM=claude-desktop`, so `lo doctor` and `lo sessions`
+  call it `claude-desktop` rather than `unknown`.
+- `lo setup` asks once which key opens saved commands: Enter keeps ctrl-G,
+  a letter picks ctrl-<letter> (the terminal's own letters are refused),
+  `none` turns it off. `lo setup --saved-key ctrl-o|none|default` answers
+  without asking (scripts, the app). The choice is the first line of the
+  hooks block, kept by later runs of `lo setup`, removed with it; an rc
+  file that already sets `LASTOUT_SAVED_KEY` is not asked. `lo setup
+  --dry-run` and `--print` say how to choose.
+- A terminal that was open before `lo setup` is recorded after `exec zsh`
+  (`exec bash`, `exec fish`, `exec nu`) in it: `lo setup`, `lo doctor` and the app's
+  setup window now say so, instead of only "open a new tab".
+- Shell setup from an older version: `lo` itself says so on stderr, once
+  a day, with what to run (the hooks block exports `LASTOUT_RC_VERSION`,
+  so the check costs nothing); not with `--json` or from a program. `lo
+  doctor` says so every time, as before.
+- nushell (0.91 or newer) is recorded like zsh, bash and fish: `lo setup`
+  (with `--shell nushell`, or from `$SHELL`) edits the file
+  `$nu.config-path` names and `lo doctor` checks it; `lo completions
+  nushell` prints tab completion, which the hooks load at the first
+  prompt; ctrl-G puts a saved command on the command line, unless
+  config.nu already binds the key. Tested on the latest release; see
+  [docs/compatibility.md](docs/compatibility.md) for what differs.
+- Saved commands. `lo save "what it is for"` keeps the command you just
+  ran, with where it ran, in `~/.config/lastout/saved.toml`, a plain file
+  you can edit and sync. At any prompt ctrl-G finds one by its note and
+  puts it on the command line, never running it; `lo saved` copies one
+  and lists, edits and removes them. The key can be changed or turned off
+  with `LASTOUT_SAVED_KEY`; `lo doctor` shows it. Retention and `lo
+  forget` don't touch saved commands.
+- Settings → Guide: how Lastout is used, every key it answers to (the
+  panel's keys and clicks, ⌃G at the prompt, the settings window), the
+  `lo` commands worth knowing and saved commands, in the app's language.
+  About links to the same guide on the web:
+  [docs/usage.md](docs/usage.md) ([中文](docs/usage.zh-CN.md)).
+
+### Changed
+
+- Every terminal is recorded, not only the ones Lastout knows. A terminal
+  it didn't recognize used to be skipped until you set `LASTOUT_FORCE=1`
+  or chose the app under "Also record these apps"; it is now recorded like
+  any other and shows as `unknown` in `lo sessions` and `lo doctor`. To
+  leave a terminal out, `export LASTOUT_DISABLE=1` in that shell's rc file
+  above Lastout's block (zsh: `~/.zshenv`). Still not wrapped: Warp (outside
+  tmux), JetBrains IDE and Emacs terminals, a shell whose stdin is not a
+  terminal, and `TERM=dumb`; `LASTOUT_FORCE=1` and "Also record these apps"
+  now only override the last one. `lo doctor` in a recorded unknown
+  terminal says so and how to opt out.
+- Settings has a look of its own, in Lastout's colors: ink panels with a
+  mint accent in dark mode, paper in light mode, page names in a serif
+  and section names in small monospaced capitals. The sidebar shows each
+  page's shortcut: ⌘1–⌘8 (or the arrow keys) move between pages.
+- The pass (Settings → Pass) is a titanium card the size of a bank card:
+  the serial pressed into brushed metal, a gold chip etched with your
+  Mac's fingerprint, and a hologram whose colors turn as the card tilts
+  toward the mouse. *Copy image* and *Save as PNG…* give the whole card;
+  in 0.2.0 they left out everything but `lo --pass`.
+- *Hide over full-screen apps* (Settings → Appearance) is now *Hide over
+  full-screen videos, slides and games*, still on: the island, the bubble
+  and the side dock step aside while a video app, Keynote, PowerPoint or
+  a game (by the category the app gives itself) fills their display,
+  and are back when it leaves. Full-screen browsers, editors and
+  terminals keep them, a video full screen in a browser too. On macOS 27
+  the setting did nothing: they showed over every full screen. Opened
+  with the pick shortcut they show over a full screen too, until they
+  close, and while they are out of the way a copy is confirmed at the
+  bottom of the screen.
+
+### Fixed
+
+- Lastout kept a CPU core about 10% busy all day while any terminal ran a
+  command (a dev server, an agent): the island's and the side dock's
+  running dot, the dock's cursor and sliver, and Settings' status light
+  pulsed by having SwiftUI redraw their whole window every frame, and
+  Settings' light went on after its window was closed. They pulse on Core
+  Animation now, which the system runs; the app does nothing between
+  changes. With "Reduce motion" on, they no longer pulse at all.
+- `lo save --cmd -2`, `lo saved --edit ID --note -2` and `--cmd -2` were
+  rejected ("unexpected argument '2'"): `-2` was read as "two commands
+  back" even as the value of an option. An option's value is kept now; a
+  `-N` on its own still means `--back N`.
+- Lastout.app moved or deleted while it was running (from Downloads to
+  Applications, say): copying said "The lo command-line tool was not
+  found.", and Settings → Export Diagnostics quietly ran another `lo`
+  (`~/.cargo/bin`, Homebrew), which may be another version. It now says
+  the app was moved or deleted and to open it again, and the app only
+  ever runs the `lo` inside it.
+- Set up from one place and then moved (from Downloads to Applications,
+  say) or deleted, Lastout stopped recording new terminals without a
+  word: the shell's startup file still ran it from the old place. The app
+  now opens *Set Up Lastout* to point the shell at the copy that runs
+  (*Not Now* waits for the next version).
+- A coding agent given Lastout's MCP server (Claude Code, Codex, Cursor
+  and the others in Settings → Agents) runs `lo` from where the app was
+  when its config was copied: once the app was moved or deleted, the
+  agent's Lastout tools quietly stopped working. `lo doctor` now reads
+  those agents' config files (it only reads them) and says which one
+  runs a `lo` that is gone, or a temporary copy macOS made, and how to
+  fix it; Settings → Agents shows the same under *Copy Config*. `lo mcp
+  --print-config` and *Copy Config* refuse to name a temporary copy (an
+  app opened straight from Downloads), whose path changes at every
+  launch.
+- When `lo` couldn't be read (the app moved or deleted while running,
+  say), the menu bar icon, the island and the side dock kept showing what
+  they showed last, a running count or a green dot, as if it were
+  current. They turn grey now, and the menu's first line and the icon's
+  tooltip say "Not up to date" and why.
+- A search in the picker that failed said no command matched, and
+  *Check Again* in *Set Up Lastout* showed an empty list when `lo doctor`
+  couldn't run: both say what went wrong now.
+- Choosing another language in Settings quits Lastout to reopen it; with
+  the app moved or deleted while it ran, it quit and nothing reopened. It
+  stays open now and says the language applies when Lastout is opened
+  again.
+- Settings → General said "Recording, all checks pass" with its light
+  pulsing, and the sidebar "Recording 3 terminals", while the numbers
+  under it couldn't be read. The status line now says they aren't up to
+  date and why, the light stops, and the sidebar says *Needs attention*.
+- Settings → Pass: a license with no end date showed a speck of an ∞
+  under *Valid*; it is now as large as the letters beside it. A trial or
+  a beta that had ended showed ∞ there too: it now shows the day it
+  ended, and a trial's day is the one where you are (it was the UTC day,
+  which could be a day off). The trial's last day read "1 days left". The
+  row under the card kept its green seal once the trial or the beta had
+  ended: it shows an hourglass during the trial and a warning after it. A
+  long name or email is cut short, so the date and the status always show
+  in full. Once a key is activated the page no longer offers *Buy
+  Lastout*, as *Activate Lastout* already didn't.
+- The trial countdown in the menu, in Settings and in *Activate Lastout*
+  was counted when the app started and again only when you copied from
+  it, so it could be days old. Each counts again as it opens.
+- In Chinese, the *Activate Lastout* and *Set Up Lastout* window titles,
+  the tooltip of the picker's output mode button and the tooltip of a
+  running command in the menu were still in English.
+- ⌘V, ⌘C, ⌘X, ⌘A and ⌘Z did nothing in the app's text fields (the
+  license key in *Activate Lastout…*, the fields in Settings), while they
+  worked everywhere else: a menu bar app has no Edit menu, and those keys
+  are its. The app now keeps one, unseen.
+- Settings → Pass said "This Mac · 1 of 1 seats" whatever the key allows.
+  It now shows the seats taken out of the seats the key allows, as the
+  license server answered at activation (activate again to see it on a
+  key activated by an earlier build), or no count at all.
+- The side dock and the island could vanish from the current Space, and
+  stay gone, after switching users with fast user switching or after
+  another app's full screen came and went: the window server had dropped
+  them from every Space but one. They now rejoin every Space when shown
+  and, after each Space switch, whenever they are found missing from it.
+- The app's setup check said "lastout-shell is not on PATH" when the
+  rc file had been set up by a `lo` outside the app (Homebrew's,
+  install.sh's, cargo's), whose blocks find `lastout-shell` on PATH:
+  the app sees launchd's PATH, not the shell's, so recording could work
+  while the check failed, and its fix (add the app's Helpers to PATH in
+  the shell's startup file) could never clear it. Run by the app,
+  `lo doctor` now says the rc file runs `lastout-shell` from the shell's
+  PATH, not the app's (check `rc_bin`, a warning), and the app offers
+  to update the blocks to name its own copy, which updates with it: Fix
+  Setup… shows the change, Update writes it. In a terminal, where PATH
+  is the shell's, a missing `lastout-shell` still fails, with the same
+  fix (`lo setup --bin` the app's Helpers) when it is the app's `lo`.
+- After installing the app from its zip (dragged to Applications) and
+  its setup, typing `lo` said command not found: nothing put the app's
+  Helpers, where `lo` is, on PATH. In recorded terminals the hooks now
+  add them to the end of that shell's PATH when no other `lo` is on it
+  (for the session only, nothing is written), so `lo save`, `lo doctor`
+  and the rest work there, programs started from the shell find `lo`
+  too, and its tab completion is registered. A `lo` already on PATH
+  (Homebrew's, cargo's, install.sh's) is left alone. `lo setup` run by
+  the app's `lo` without `--bin` (`lo setup --saved-key`, say) keeps
+  naming the app's Helpers instead of relying on PATH. In a terminal
+  that isn't recorded, run it by its full path:
+  `/Applications/Lastout.app/Contents/Helpers/lo doctor` (or under
+  `~/Applications` when the app is there).
+- `su -`, `sudo -i` or `env -i zsh` in a recorded terminal, when that
+  user had run `lo setup` too, started a second recording inside the
+  first, on the same terminal: both recorded the same commands, each
+  into its user's record. The proxy now claims the terminal it made (a
+  file named after the tty and the proxy's pid in `/tmp/lastout-tty`,
+  readable by every user and holding nothing else), and a shell started
+  on a claimed terminal stays unwrapped while that proxy runs, whatever
+  its environment says; what runs in it is, as before, the output of the
+  command that started it. New tmux, screen and zellij panes are still
+  recorded on their own. `lo doctor` in such a shell names the process
+  that records the terminal and says it was started as another user.
+  Someone else on the machine can put a claim there too: it keeps that
+  one terminal unrecorded while the pid it names is a running
+  `lastout-shell`, nothing more (see docs/compatibility.md).
+- On Linux, a new terminal could hang before its first prompt, for good,
+  once another terminal's recorder had stopped answering (a stopped or
+  frozen process) and enough terminals had opened since. Each new terminal
+  checks the other terminals' sockets to tidy up after crashed ones; that
+  check now never waits, and the terminal's output starts before it.
+- bash with functrace on (`set -T` in your `.bashrc`, or bash-preexec's
+  subshell support) recorded Lastout's own prompt functions as private
+  commands instead of what you typed. With bash-preexec and functrace, the
+  command after the saved-commands key was lost too. Next to starship on
+  bash 4.4 or newer it also recorded every command twice and broke
+  starship's command timer.
+- bash: a command that history leaves out for any reason other than a
+  leading space was stored as private, without its output: one matching a
+  `HISTIGNORE` pattern (oh-my-bash ignores `ls`, `clear`, `exit`, ... by
+  default; `&` for the previous line), a repeat of the previous command
+  with `ignoredups` or `erasedups`, and every command with history off
+  (`set +o history`, `HISTSIZE=0`). They are recorded like any other
+  command now, with their output and exit code, under what you typed (an
+  alias is put back; bash only shows the hook its expansion). A leading
+  space with `ignorespace` or `ignoreboth`, or a `HISTIGNORE` pattern like
+  `[ ]*`, still keeps a command private. The limits that remain are in
+  docs/compatibility.md.
+- bash 5.3 (Homebrew's) with bash-preexec 0.6 or newer, which there hooks
+  `PS0` instead of the DEBUG trap: the hook read the wrong command inside
+  bash-preexec's functions, so a command left out of history was recorded
+  as private under bash-preexec's own text. Lastout keeps its own trap
+  next to bash-preexec there.
+- bash 5.3 inside iTerm2 with its automatic shell integration (which
+  appends its prompt function to `PROMPT_COMMAND` after Lastout's and
+  then loads its own bash-preexec): every command was recorded as
+  `__iterm2_prompt_command`. The hook folds what a tool appends after its
+  own prompt code next to a bash-preexec that hooks `PS0` the same way it
+  does without bash-preexec, and with functrace (`set -T`) it no longer
+  takes the inside of such a function for the command on the first
+  prompt. The same for any prompt hook appended that way; tested in
+  `bash_matrix.py`.
+- bash with starship loaded after Lastout's hook: pressing Enter on an
+  empty line recorded `starship_precmd` as a command.
+- bash: a command line that starts with a subshell, `(cd build && make)`,
+  was not recorded at all (bash runs it without firing the DEBUG trap in
+  the shell itself). It is recorded with its output on bash 4.4 or newer
+  (from `PS0`: in the shell on 5.3+, from a command substitution before)
+  and, with functrace (`set -T`), on any bash, from the trap inside the
+  subshell; the shell's own start marker for the line then repeats the
+  early one and the proxy keeps the first. On bash 3.2 without functrace
+  it is recorded with its exit code but without its output, which has
+  gone by when the shell notices. Next to a bash-preexec that drives the
+  DEBUG trap (before bash 5.3) the same from bash 4.4; on 3.2 not at all,
+  where bash-preexec itself misses the line.
+- `lo doctor` run in a terminal that had only just opened could fail with
+  "the recording database is still being created → upgrade lo", while
+  that terminal was still creating the database on first run. It now
+  waits for it as `lo` does, and if it is still not ready says so, with
+  no upgrade to make.
+- Clicks in the empty part of the island's or the side dock's window (as
+  large as the opened panel: 600 by 670 points under the notch, or beside
+  the dock) were swallowed, and took the keyboard with them: buttons,
+  fields and the close, minimize and zoom buttons of a window under that
+  area did nothing, and typing only beeped until a click landed outside
+  it. Hiding over a full-screen video had set the window to take clicks
+  in its transparent part too. Clicks there fall through again, and the
+  island, the bubble and the side dock take the keyboard only when opened
+  with the pick shortcut or a click into them: opening Lastout no longer
+  moves the keyboard focus away from the app in front.
+
 ## 0.2.0 - 2026-10-13
 
 ### Action needed

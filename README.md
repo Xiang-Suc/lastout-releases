@@ -6,6 +6,7 @@ the install script, the release archives and the app's update feed; the
 source code lives in a private repository.
 
 Site and documentation: [lastout](https://xiang-suc.github.io/lastout-releases/) ·
+[Using Lastout](docs/usage.md) ([中文](docs/usage.zh-CN.md)) ·
 [Privacy](docs/privacy.md) ([中文](docs/privacy.zh-CN.md)) · [Changelog](CHANGELOG.md)
 
 ## Install
