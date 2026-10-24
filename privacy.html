@@ -29,7 +29,7 @@
     <div class="label">Legal</div>
     <h1>Privacy <em>policy.</em></h1>
     <!-- 由 scripts/privacy_page.py 从 docs/privacy.md 和 privacy.zh-CN.md 生成；别手改，改原文后重新运行。 -->
-    <p class="meta">Last updated: 2026-10-21 · English is the binding version; 中文为译本，两者不一致时以英文版为准。</p>
+    <p class="meta">Last updated: 2026-10-23 · English is the binding version; 中文为译本，两者不一致时以英文版为准。</p>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-lang="en" aria-pressed="true">English</button>
       <button type="button" data-lang="zh" aria-pressed="false">中文</button>
@@ -85,7 +85,7 @@
 <li><strong>Printing</strong> (<code>lo --print</code>, <code>lo --json</code>) writes it to the terminal, after redaction.</li>
 <li><strong>Agents</strong> (<code>lo mcp</code>, the MCP server for Claude Code, Codex and others): read-only tools that return rendered output with redaction always on. There is no argument an agent can pass to turn it off, and nothing the server can write or delete.</li>
 <li><strong>Notifications</strong> show the command line and its exit status on your screen, through macOS's notification center, nowhere else.</li>
-<li><strong>Activation</strong> (a paid version): when you enter a license key, the app sends one request to Lastout's license server (the address is in the app's Info.plist as <code>LastoutLicenseServer</code>; it is a Cloudflare Worker run by Lastout, source in <code>service/</code>): the key, a SHA-256 hash of this Mac's hardware UUID (so a key can count the Macs it is used on; the UUID itself never leaves the Mac), and the app's version. The server answers with the name and email from the purchase, which the app keeps in your keychain. That is the only time it connects, except <em>Deactivate on this Mac</em>, which sends the key and the same hash once more to free the seat. Nothing about your recordings goes with either request, and the app never phones home afterwards. A build with no server configured refuses every key and sends nothing.</li>
+<li><strong>Activation</strong> (a paid version): when you enter a license key, the app sends one request to Lastout's license server (the address is in the app's Info.plist as <code>LastoutLicenseServer</code>; it is a Cloudflare Worker run by Lastout, source in <code>service/</code>): the key, a SHA-256 hash of this Mac's hardware UUID (so a key can count the Macs it is used on; the UUID itself never leaves the Mac), and the app's version. The server answers with the name and email from the purchase and the day the purchase's year of updates ends, which the app keeps in your keychain. That is the only time it connects, except <em>Deactivate on this Mac</em>, which sends the key and the same hash once more to free the seat. Nothing about your recordings goes with either request, and the app never phones home afterwards. A build with no server configured refuses every key and sends nothing.</li>
 <li><strong>Diagnostics</strong> (Settings → About → <em>Export Diagnostics…</em>) writes a zip where you choose, for you to attach to a bug report; the app sends it nowhere. In it: versions, Lastout's settings, the screens' sizes, the <code>lo doctor</code> checks, how many terminals are recorded, Lastout's own log from the last day and its crash reports from the last 30 days. Your home folder shows as <code>~</code>, your user name and computer name are replaced, and no command line, output or license key is in it.</li>
 </ul>
 <h3 id="redaction">Redaction</h3>
@@ -184,7 +184,7 @@
 <li><strong>打印</strong>（<code>lo --print</code>、<code>lo --json</code>）把它写到终端，先遮盖密钥。</li>
 <li><strong>Agent</strong>（<code>lo mcp</code>，给 Claude Code、Codex 等用的 MCP 服务器）：只读的工具，返回整理后的输出，遮盖始终开启。Agent 没有任何参数能关掉它，服务器也不能写或删任何东西。</li>
 <li><strong>通知</strong>在你的屏幕上显示命令行和退出状态，通过 macOS 通知中心，仅此而已。</li>
-<li><strong>激活</strong>（付费版）：输入许可证密钥时，App 向 Lastout 的许可证服务器（地址写在 App 的 Info.plist 里的 <code>LastoutLicenseServer</code>；由 Lastout 运营的 Cloudflare Worker，源码在仓库的 <code>service/</code>）发送一次请求，内容是：密钥、这台 Mac 硬件 UUID 的 SHA-256 哈希（用来统计一个密钥用在几台 Mac 上；UUID 本身不会离开这台 Mac）、App 版本号。服务器返回购买时的姓名和邮箱，App 存进你的钥匙串。此后 App 不再联网，唯一的例外是「在这台 Mac 上停用」：它再发送一次密钥和同一个哈希以释放座位。两次请求都不包含任何关于你记录的内容，App 之后也不会「回家报到」。没有配置服务器的构建拒绝一切密钥，也不发送任何东西。</li>
+<li><strong>激活</strong>（付费版）：输入许可证密钥时，App 向 Lastout 的许可证服务器（地址写在 App 的 Info.plist 里的 <code>LastoutLicenseServer</code>；由 Lastout 运营的 Cloudflare Worker，源码在仓库的 <code>service/</code>）发送一次请求，内容是：密钥、这台 Mac 硬件 UUID 的 SHA-256 哈希（用来统计一个密钥用在几台 Mac 上；UUID 本身不会离开这台 Mac）、App 版本号。服务器返回购买时的姓名和邮箱，以及这次购买所含一年更新的截止日，App 存进你的钥匙串。此后 App 不再联网，唯一的例外是「在这台 Mac 上停用」：它再发送一次密钥和同一个哈希以释放座位。两次请求都不包含任何关于你记录的内容，App 之后也不会「回家报到」。没有配置服务器的构建拒绝一切密钥，也不发送任何东西。</li>
 <li><strong>诊断信息</strong>（设置 → 关于 →「导出…」）把一个 zip 存到你选的位置，供你报告问题时附上；App 不会把它发到任何地方。里面有：版本、Lastout 的设置、屏幕尺寸、<code>lo doctor</code> 的检查结果、正在记录的终端数量、Lastout 自己最近一天的日志，以及最近 30 天的崩溃报告。主目录显示为 <code>~</code>，用户名和电脑名会被替换，不含任何命令行、输出或许可证密钥。</li>
 </ul>
 <h3 id="zh-遮盖">遮盖</h3>
