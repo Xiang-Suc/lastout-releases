@@ -12,7 +12,7 @@ only what buying and activating a license needs, described under
 *Buying a license*; for that data we are responsible (the data
 controller). Questions and requests: support@lastout.dev.
 
-Last updated: 2026-10-21.
+Last updated: 2026-10-23.
 
 ## What is recorded
 
@@ -104,8 +104,8 @@ only when you, or a tool you run, ask for it:
   run by Lastout, source in `service/`): the key, a SHA-256 hash of this
   Mac's hardware UUID (so a key can count the Macs it is used on; the
   UUID itself never leaves the Mac), and the app's version. The server
-  answers with the name and email from the purchase, which the app keeps
-  in your keychain. That is the only time it connects, except *Deactivate
+  answers with the name and email from the purchase and the day the
+  purchase's year of updates ends, which the app keeps in your keychain. That is the only time it connects, except *Deactivate
   on this Mac*, which sends the key and the same hash once more to free
   the seat. Nothing about your recordings goes with either request, and
   the app never phones home afterwards. A build with no server configured

@@ -3,6 +3,85 @@
 User-facing changes. Compatibility with other tools, and how each part
 of it is tested, is in [docs/compatibility.md](docs/compatibility.md).
 
+## 0.3.1 - 2026-10-24
+
+### Action needed
+
+- Coming from 0.2.0: 0.3.0 was never published on its own, so its
+  section below applies too, Action needed included: run `lo setup` (or
+  let the app's prompt update) and open a new tab.
+
+### Added
+
+- Settings → Appearance → Theme: follow the system, or keep Lastout light
+  or dark whatever the system does. Settings, the terminals panel and the
+  notices follow; the island beside the notch stays dark. The light
+  palette's small labels, accent and warning colours are darker than
+  before, so they read on the paper surfaces.
+
+### Changed
+
+- The EULA says what activating sends, as the privacy policy and the
+  activation window already did: the key, a hash of the Mac's hardware
+  identifier and the app's version, once; the earlier text said "a name
+  for the Mac", which was never sent. The refund policy says that after
+  a refund the App must be deleted from the Macs it was activated on,
+  instead of describing that it isn't switched off remotely. The terms
+  of sale say how to buy for a team. All three are dated 2026-10-23.
+- Activating also stores, in the keychain with the key, the day the
+  purchase's year of updates ends, as the license server now answers it
+  (`updates_until`). Nothing is enforced yet: every update still installs.
+  It is kept so that a later version can honour the EULA's update period
+  without the app ever asking the server again.
+- Settings → About links the License Agreement and the privacy policy on
+  lastout.dev.
+
+### Fixed
+
+- The copy shortcut, with a terminal in front, picked the window where a
+  command had been running longest, not the one you were working in: a
+  `claude` or a dev server left running in another window for a day
+  outranked every window that had just finished something, so a split
+  opened later (or the pane you just typed in) could never be copied from
+  without opening the picker. Windows are ordered by their latest activity
+  now, a command's start or end; the long-running one keeps its own card.
+  (Terminal.app and iTerm2 with "Copy from the exact window in front" on were not
+  affected.)
+- Settings → Shortcuts no longer takes a shortcut made of ⌘ alone (⌘C,
+  ⌘⇧C, ⌘Q): recorded as a global shortcut it took that key from every
+  app at once, Copy included, until the Shortcuts page was found again. A
+  shortcut needs ⌃ or ⌥; one saved that way by an earlier version is
+  dropped for the default.
+- Set Up is disabled while macOS runs Lastout from a temporary copy (an
+  app opened straight from the zip in Downloads): the setup would have
+  written that copy's path into the shell's startup file, and new
+  terminals would then have recorded nothing, with no error. The window
+  says to move the app to Applications first, as before.
+- The refund policy says what a refund does: the key is revoked and can't
+  activate a Mac again; a Mac where it was already activated isn't
+  switched off remotely (the app doesn't contact us again). The earlier
+  text said the app "returns to its unlicensed state", which it doesn't.
+- Closing a terminal no longer waits forever when recording is stuck:
+  with another process holding the database lock (a backup tool, `lo
+  forget` on a big database) and the shell printing heavily, the
+  recorder's queue filled and the proxy waited for it without a bound, so
+  the tab never closed. It now waits about a second to hand over and a
+  few more for the recorder to finish, then leaves; the session is
+  closed later.
+- Buying: only a full refund or chargeback that took effect revokes a
+  license key. A partial refund, a refund still waiting for approval and
+  a chargeback warning left the key revoked for good (nothing but a hand
+  edit undid it); a chargeback the bank reverses, or a refund rejected
+  after approval, now gives the key back.
+- The site no longer offers "another year of updates for $15": there is
+  nothing to buy yet. A license still includes a year of updates, and
+  the app keeps working after that.
+- The release build bakes the license server and the purchase page into
+  the app and the upload refuses a build without them; the first 0.3.0
+  draft had neither, so every license key would have been refused and
+  there was no Buy button. The upload scripts also stop at a release that
+  is already published instead of replacing its files one by one.
+
 ## 0.3.0 - 2026-10-21
 
 ### Action needed
