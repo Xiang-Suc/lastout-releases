@@ -29,7 +29,7 @@
     <div class="label">Legal</div>
     <h1>Privacy <em>policy.</em></h1>
     <!-- 由 scripts/privacy_page.py 从 docs/privacy.md 和 privacy.zh-CN.md 生成；别手改，改原文后重新运行。 -->
-    <p class="meta">Last updated: 2026-10-23 · English is the binding version; 中文为译本，两者不一致时以英文版为准。</p>
+    <p class="meta">Last updated: 2026-10-26 · English is the binding version; 中文为译本，两者不一致时以英文版为准。</p>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-lang="en" aria-pressed="true">English</button>
       <button type="button" data-lang="zh" aria-pressed="false">中文</button>
@@ -89,7 +89,7 @@
 <li><strong>Diagnostics</strong> (Settings → About → <em>Export Diagnostics…</em>) writes a zip where you choose, for you to attach to a bug report; the app sends it nowhere. In it: versions, Lastout's settings, the screens' sizes, the <code>lo doctor</code> checks, how many terminals are recorded, Lastout's own log from the last day and its crash reports from the last 30 days. Your home folder shows as <code>~</code>, your user name and computer name are replaced, and no command line, output or license key is in it.</li>
 </ul>
 <h3 id="redaction">Redaction</h3>
-<p>Applied to every copy, print and agent read, never to what is stored (so <code>lo forget</code> exists for a secret that was printed). Each match becomes a labelled marker such as <code>[REDACTED:github-token]</code>, so an LLM still knows what was there. Rules: known token formats (GitHub, GitLab, AWS access keys, Google, Stripe, Slack tokens and webhooks, SendGrid, Twilio, Shopify, npm, PyPI, DigitalOcean, Hugging Face, JWTs, generic API keys), private key blocks, passwords in URLs, <code>Authorization</code> headers and bearer tokens, <code>--password</code>-style flags, <code>SECRET=value</code> assignments. Your own formats go in <code>redact.patterns</code> (regexes) in the config file. <code>lo --no-redact</code> skips it for a copy you make yourself; nothing else can.</p>
+<p>Applied to every copy, print and agent read, never to what is stored (so <code>lo forget</code> exists for a secret that was printed). Each match becomes a labelled marker such as <code>[REDACTED:github-token]</code>, so an LLM still knows what was there. Rules: known token formats (GitHub, GitLab, AWS access keys, Google, Stripe, Slack tokens and webhooks, SendGrid, Twilio, Shopify, npm, PyPI, DigitalOcean, Hugging Face, JWTs, generic API keys), private key blocks, passwords in URLs, authenticator setup keys (<code>otpauth://</code> links, a labelled <code>Setup key:</code>, and base32 keys printed in groups of four), <code>Authorization</code> headers and bearer tokens, <code>--password</code>-style flags, <code>SECRET=value</code> assignments. Your own formats go in <code>redact.patterns</code> (regexes) in the config file. <code>lo --no-redact</code> skips it for a copy you make yourself; nothing else can.</p>
 <h2 id="remote-hosts">Remote hosts</h2>
 <p><code>lo remote-install host</code> puts three small shell scripts and one marked block per rc file on the remote host, no binaries. With <code>lssh host</code>, each remote command's output travels through your own ssh connection to the recorder on your machine and is stored only there. The remote host keeps nothing.</p>
 <h2 id="deleting">Deleting</h2>
@@ -111,13 +111,15 @@
 <li>whether the key was revoked, and why (a refund or a chargeback).</li>
 </ul>
 <p>That is used to email you the key, to show it once more on the page you land on after checkout (for 24 hours), to count the Macs a key is used on, and to stop a refunded key from activating. Apart from replies when you write to us, the email with your key is the only one we send: there is no newsletter or marketing list. As the seller on Paddle we can also see your order in Paddle's dashboard: what was bought, when, for how much, your country and email.</p>
+<p>You can also buy directly from us, for example after contacting us through a marketplace or a messaging app. Then no checkout is involved: you pay us with the method we agreed on, under that payment provider's own privacy policy, and we enter the license ourselves. For it the license server keeps your name, the email or other contact you gave us (a messaging-app ID, say), where you found us, the amount, currency and date of the payment, any refund we made, and notes we write about the order, along with the key and the Mac hashes as above. That is used to send you the key, answer you and handle a refund; the key email above is never sent for it.</p>
+<p>We read and change license records in an admin dashboard (<code>admin.lastout.dev</code>) that only we can sign in to, with a password and a one-time code; it runs on Cloudflare next to the license server and keeps a log of what was changed in it.</p>
 <p>The license record is kept as long as the license exists, since a key can't be checked without it. It is stored with Cloudflare, and your email passes through Resend to deliver the key; both, like Paddle, may process it outside your country, including in the United States. Only we can read the database; the app and the website reach the server over HTTPS.</p>
 <h2 id="the-website">The website</h2>
 <p>lastout.dev is a set of static pages served by GitHub Pages. It sets no cookies of its own and has no analytics, tracking pixels or ads. Its fonts load from Google Fonts. The product page loads Paddle's checkout script (Paddle.js) so that <em>Buy</em> can open Paddle's checkout over the page; that checkout is Paddle's, and Paddle's privacy and cookie policies apply to it. After you pay, the thanks page asks the license server for your key, with the transaction ID from its address.</p>
 <h2 id="third-parties">Third parties</h2>
 <ul>
 <li><strong>Paddle</strong> sells the license and processes the payment (above).</li>
-<li><strong>Cloudflare</strong> runs the license server and its database.</li>
+<li><strong>Cloudflare</strong> runs the license server, its database and the admin dashboard.</li>
 <li><strong>Resend</strong> delivers the email with your key.</li>
 <li><strong>GitHub</strong> hosts the releases the update check reads, and the lastout.dev website.</li>
 <li><strong>Google Fonts</strong> serves the website's fonts.</li>
@@ -188,7 +190,7 @@
 <li><strong>诊断信息</strong>（设置 → 关于 →「导出…」）把一个 zip 存到你选的位置，供你报告问题时附上；App 不会把它发到任何地方。里面有：版本、Lastout 的设置、屏幕尺寸、<code>lo doctor</code> 的检查结果、正在记录的终端数量、Lastout 自己最近一天的日志，以及最近 30 天的崩溃报告。主目录显示为 <code>~</code>，用户名和电脑名会被替换，不含任何命令行、输出或许可证密钥。</li>
 </ul>
 <h3 id="zh-遮盖">遮盖</h3>
-<p>对每次复制、打印和 Agent 读取生效，从不改动存储的内容（所以才有 <code>lo forget</code> 处理打印过的密码）。每处匹配变成带标签的标记，例如 <code>[REDACTED:github-token]</code>，LLM 仍能知道那里原来是什么。规则：已知的 token 格式（GitHub、GitLab、AWS access key、Google、Stripe、Slack token 和 webhook、SendGrid、Twilio、Shopify、npm、PyPI、DigitalOcean、Hugging Face、JWT、通用 API key）、私钥块、URL 里的密码、<code>Authorization</code> 头和 bearer token、<code>--password</code> 这类参数、<code>SECRET=value</code> 赋值。你自己的格式写在配置的 <code>redact.patterns</code>（正则）。<code>lo --no-redact</code> 只对你自己做的复制跳过遮盖，别的途径都不行。</p>
+<p>对每次复制、打印和 Agent 读取生效，从不改动存储的内容（所以才有 <code>lo forget</code> 处理打印过的密码）。每处匹配变成带标签的标记，例如 <code>[REDACTED:github-token]</code>，LLM 仍能知道那里原来是什么。规则：已知的 token 格式（GitHub、GitLab、AWS access key、Google、Stripe、Slack token 和 webhook、SendGrid、Twilio、Shopify、npm、PyPI、DigitalOcean、Hugging Face、JWT、通用 API key）、私钥块、URL 里的密码、两步验证的设置密钥（<code>otpauth://</code> 链接、带 <code>Setup key:</code> 这类标签的密钥、四个一组打印的 base32 密钥）、<code>Authorization</code> 头和 bearer token、<code>--password</code> 这类参数、<code>SECRET=value</code> 赋值。你自己的格式写在配置的 <code>redact.patterns</code>（正则）。<code>lo --no-redact</code> 只对你自己做的复制跳过遮盖，别的途径都不行。</p>
 <h2 id="zh-远程主机">远程主机</h2>
 <p><code>lo remote-install host</code> 在远程主机上放三个很小的 shell 脚本和每个 rc 文件一段标记代码，不装二进制。用 <code>lssh host</code> 时，远程每条命令的输出经由你自己的 ssh 连接传到你机器上的录制进程，只存在你这里。远程主机什么都不保留。</p>
 <h2 id="zh-删除">删除</h2>
@@ -210,13 +212,15 @@
 <li>授权码是否被作废，以及原因（退款或拒付）。</li>
 </ul>
 <p>这些用来：把授权码发到你的邮箱；在结账后跳转的页面上再显示一次（24 小时内）；统计一个授权码用在几台 Mac 上；让退款后的授权码无法再激活。除了回复你的来信，带授权码的那封邮件是我们唯一会发的邮件：没有订阅通讯，也没有营销名单。作为 Paddle 上的卖家，我们还能在 Paddle 后台看到你的订单：买了什么、什么时候、多少钱、你的国家和邮箱。</p>
+<p>你也可以直接向我们购买，比如通过交易平台或聊天软件联系我们之后。这时不经过结账页：你用双方确认的方式付款给我们（适用那家支付服务自己的隐私政策），授权由我们自己录入。授权服务器为它保存：你的姓名、你给我们的邮箱或其他联系方式（比如聊天软件的 ID）、你从哪里找到我们、付款的金额、币种和日期、我们做过的退款、我们为这笔订单写的备注，以及和上面一样的授权码和 Mac 哈希。这些用来把授权码发给你、回复你、处理退款；上面说的那封授权码邮件不会为它发送。</p>
+<p>我们在一个只有我们能登录的管理后台（<code>admin.lastout.dev</code>，登录要密码和一次性验证码）里查看和修改授权记录。它和授权服务器一样运行在 Cloudflare 上，并记录在后台做过的每次改动。</p>
 <p>授权记录在授权存续期间一直保留，因为没有它就无法校验授权码。它存放在 Cloudflare；发授权码邮件时，你的邮箱经过 Resend。它们和 Paddle 一样，可能在你所在国家以外（包括美国）处理这些数据。数据库只有我们能读；App 和网站通过 HTTPS 连接授权服务器。</p>
 <h2 id="zh-网站">网站</h2>
 <p>lastout.dev 是一组由 GitHub Pages 托管的静态页面。网站自己不设 cookie，没有统计、追踪像素或广告。字体从 Google Fonts 加载。产品页会加载 Paddle 的结账脚本（Paddle.js），这样「Buy」才能在页面上打开 Paddle 的结账窗口；那个结账窗口属于 Paddle，适用 Paddle 的隐私政策和 cookie 政策。付款后，感谢页用地址里的交易号向授权服务器取你的授权码。</p>
 <h2 id="zh-第三方">第三方</h2>
 <ul>
 <li><strong>Paddle</strong>：销售授权、处理付款（见上）。</li>
-<li><strong>Cloudflare</strong>：运行授权服务器和它的数据库。</li>
+<li><strong>Cloudflare</strong>：运行授权服务器、它的数据库和管理后台。</li>
 <li><strong>Resend</strong>：发送带授权码的邮件。</li>
 <li><strong>GitHub</strong>：托管更新检查读取的发布，以及 lastout.dev 网站。</li>
 <li><strong>Google Fonts</strong>：提供网站的字体。</li>

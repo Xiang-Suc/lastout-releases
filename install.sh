@@ -1,5 +1,7 @@
 #!/bin/sh
 # Installs the Lastout CLI (lo, lastout-shell) from a GitHub release.
+# macOS only for now: Linux builds aren't published (a local archive
+# through LASTOUT_TARBALL still installs, for tests and offline use).
 #
 #   curl -fsSL https://raw.githubusercontent.com/Xiang-Suc/lastout-releases/main/install.sh | sh
 #
@@ -47,6 +49,7 @@ case "$(uname -s)" in
   Darwin) target=universal-apple-darwin ;;
   Linux)
     [ -z "$app" ] || die "--app installs the macOS app; on Linux run without it for the command line"
+    [ -n "${LASTOUT_TARBALL:-}" ] || die "Lastout is macOS-only for now: Linux builds aren't published yet"
     case "$(uname -m)" in
       # Static (musl): runs on any distro, whatever its glibc.
       x86_64 | amd64) target=x86_64-unknown-linux-musl ;;

@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lastout — paste your terminal into any AI</title>
 <meta name="description" content="Lastout copies the last command's output — cleaned up, condensed and with secrets redacted — so you can paste it into ChatGPT or Claude without selecting text.">
+<link rel="canonical" href="https://lastout.dev/">
+<!-- Link previews (X, Slack, iMessage, WeChat, Jike). og.jpg is rendered from promo/src/premium/Og.tsx. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lastout">
+<meta property="og:url" content="https://lastout.dev/">
+<meta property="og:title" content="Lastout — paste your terminal into any AI">
+<meta property="og:description" content="Press ⌃⌥⌘C in any app: the last command's output lands on your clipboard, cleaned up for an LLM, secrets redacted. macOS, $29 once, free for 14 days.">
+<meta property="og:image" content="https://lastout.dev/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Lastout: the last thing your terminal said, ready to paste. ⌃⌥⌘C.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lastout — paste your terminal into any AI">
+<meta name="twitter:description" content="Press ⌃⌥⌘C in any app: the last command's output lands on your clipboard, cleaned up for an LLM, secrets redacted. macOS, $29 once, free for 14 days.">
+<meta name="twitter:image" content="https://lastout.dev/og.jpg">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,12 +66,20 @@
   nav { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px 28px; padding: 26px 0; }
   .brand { display: flex; gap: 12px; align-items: center; font: 600 18px var(--sans); letter-spacing: -0.01em; text-decoration: none; }
   .brand img { width: 30px; height: 30px; }
-  nav .links { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 15px; color: var(--muted); }
+  nav .links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; font-size: 15px; color: var(--muted); }
   nav .links a { text-decoration: none; }
   nav .links a:hover { color: var(--paper); }
 
+  /* language switch (the rules in page.css, less its margin) */
+  .lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; font: 600 13px var(--sans); }
+  .lang button { appearance: none; border: 0; background: none; color: var(--muted); padding: 8px 16px; cursor: pointer; font: inherit; }
+  .lang button[aria-pressed="true"] { background: var(--ink-3); color: var(--paper); }
+  [hidden] { display: none !important; }
+
   /* hero */
   .hero { padding: 64px 0 40px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: end; }
+  /* The demo's long lines clip, as in a terminal, instead of widening the page on phones. */
+  .hero > * { min-width: 0; }
   .kicker { font: 500 13px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--mint); margin-bottom: 22px; }
   h1 { font: 400 clamp(52px, 7.4vw, 96px)/0.96 var(--serif); letter-spacing: -0.02em; }
   h1 em { color: var(--mint); }
@@ -70,6 +94,7 @@
   .btn.ghost { border: 1px solid var(--line); color: var(--paper); }
   .btn.ghost:hover { border-color: var(--dim); }
   .keys { font: 500 13px var(--mono); color: var(--muted); }
+  .hero .note { margin-top: 16px; color: var(--muted); font-size: 14px; }
   kbd {
     font: 600 12px var(--mono); padding: 3px 7px; border-radius: 6px; border: 1px solid var(--line);
     border-bottom-width: 2px; background: var(--ink-2); color: var(--paper);
@@ -134,7 +159,7 @@
   .cell .n { font: 400 54px/1 var(--serif); color: var(--dim); }
   .cell h3 { margin-top: 22px; font: 600 20px var(--sans); letter-spacing: -0.01em; }
   .cell p { margin-top: 10px; color: var(--muted); font-size: 16px; }
-  .cell code, p code { font: 500 0.88em var(--mono); color: var(--paper); background: var(--ink-3); padding: 1px 6px; border-radius: 5px; white-space: nowrap; }
+  .cell code, p code, .plan li code { font: 500 0.88em var(--mono); color: var(--paper); background: var(--ink-3); padding: 1px 6px; border-radius: 5px; white-space: nowrap; }
 
   .split { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 64px; align-items: center; }
   .split p.big { margin-top: 22px; color: #cfcabe; font-size: 19px; max-width: 38ch; }
@@ -150,10 +175,14 @@
   .privacy div { border-top: 2px solid var(--mint); padding-top: 18px; }
   .privacy h4 { font: 600 16px var(--sans); }
   .privacy p { margin-top: 8px; color: var(--muted); font-size: 15px; }
+  #privacy .fine { margin-top: 28px; color: var(--muted); font-size: 15px; }
+  #privacy .fine a { color: var(--paper); }
 
-  /* pricing */
-  .plans { margin-top: 56px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 28px; align-items: start; }
-  .plan { border: 1px solid var(--line); border-radius: 18px; background: var(--ink-2); padding: 36px 36px 34px; position: relative; overflow: hidden; }
+  /* pricing: one card, centred under a centred heading */
+  #pricing .label, #pricing h2 { text-align: center; margin-left: auto; margin-right: auto; }
+  #pricing h2 { max-width: none; }
+  .plans { margin-top: 56px; display: flex; justify-content: center; }
+  .plan { width: 100%; max-width: 660px; border: 1px solid var(--line); border-radius: 18px; background: var(--ink-2); padding: 36px 36px 34px; position: relative; overflow: hidden; }
   .plan.paid { border-color: rgba(116, 217, 191, 0.45); box-shadow: 0 30px 80px -40px rgba(116, 217, 191, 0.35); }
   .plan .name { font: 600 15px var(--sans); color: var(--muted); }
   .plan .price { margin-top: 14px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
@@ -174,6 +203,14 @@
   footer a { text-decoration: none; }
   footer a:hover { color: var(--paper); }
 
+  /* Chinese: CJK glyphs fill the em box, so headings are set smaller, with more leading and no
+     negative tracking, and each phrase of a heading stays on one line instead of breaking mid-word. */
+  :lang(zh) h1 { font-size: clamp(34px, 4.6vw, 60px); line-height: 1.2; letter-spacing: 0; }
+  :lang(zh) h2 { font-size: clamp(30px, 3.6vw, 46px); line-height: 1.25; letter-spacing: 0; max-width: none; }
+  :lang(zh) h1 > *, :lang(zh) h2 > * { display: inline-block; }
+  :lang(zh) .lede, :lang(zh) .split p.big { max-width: 24em; }
+  :lang(zh) .kicker, :lang(zh) .label { letter-spacing: 0.04em; }
+
   /* entrance */
   .rise { opacity: 0; transform: translateY(14px); animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards; }
   .rise.d1 { animation-delay: .08s; } .rise.d2 { animation-delay: .18s; } .rise.d3 { animation-delay: .3s; } .rise.d4 { animation-delay: .45s; }
@@ -184,7 +221,7 @@
   }
 
   @media (max-width: 920px) {
-    .hero, .split, .plans { grid-template-columns: 1fr; }
+    .hero, .split { grid-template-columns: 1fr; }
     .stage { height: 440px; }
     .grid3 { grid-template-columns: 1fr; }
     .grid4 { grid-template-columns: repeat(2, 1fr); }
@@ -213,26 +250,31 @@
   <nav>
     <a class="brand" href="#"><img src="icon.png" alt="">Lastout</a>
     <div class="links">
-      <a href="#how">How it works</a>
-      <a href="#agents">Agents</a>
-      <a href="#pricing">Pricing</a>
-      <a href="terms.html">Terms</a>
-      <a href="refund.html">Refund Policy</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="eula.html">EULA</a>
+      <a href="#how"><span data-doc="en">How it works</span><span data-doc="zh" hidden>工作原理</span></a>
+      <a href="#agents"><span data-doc="en">Agents</span><span data-doc="zh" hidden>编程 Agent</span></a>
+      <a href="#pricing"><span data-doc="en">Pricing</span><span data-doc="zh" hidden>价格</span></a>
+      <a href="terms.html" data-lang-link><span data-doc="en">Terms</span><span data-doc="zh" hidden>条款</span></a>
+      <a href="refund.html" data-lang-link><span data-doc="en">Refund Policy</span><span data-doc="zh" hidden>退款政策</span></a>
+      <a href="privacy.html" data-lang-link><span data-doc="en">Privacy</span><span data-doc="zh" hidden>隐私</span></a>
+      <a href="eula.html" data-lang-link><span data-doc="en">EULA</span><span data-doc="zh" hidden>许可协议</span></a>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">English</button>
+        <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+      </div>
     </div>
   </nav>
 
-  <header class="hero">
+  <header class="hero" data-doc="en">
     <div>
       <div class="kicker rise">For macOS · Ghostty · iTerm2 · Terminal · kitty · WezTerm · VS Code · Zed · tmux</div>
       <h1 class="rise d1">The last thing your terminal said, <em>ready to paste.</em></h1>
-      <p class="lede rise d2">Press a key and the previous command's output is on your clipboard — progress bars gone, errors kept, secrets redacted — ready for ChatGPT, Claude, or a teammate.</p>
+      <p class="lede rise d2">Press a key in any app and the previous command's output is on your clipboard — progress bars gone, errors kept, recognized secrets masked — ready for ChatGPT, Claude, or a teammate. Even while the command is still running.</p>
       <div class="cta rise d3">
         <a class="btn primary" data-download href="https://github.com/Xiang-Suc/lastout-releases/releases/latest">Download for macOS</a>
         <a class="btn ghost" href="#pricing">$29, free for 14 days</a>
         <span class="keys">or type <kbd>lo</kbd> &nbsp;·&nbsp; anywhere <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>C</kbd></span>
       </div>
+      <p class="note rise d3">macOS 14+, no card. After installing: click <b>Set Up</b>, open a <b>new</b> terminal tab, run <code>lo doctor</code>. Tabs already open aren't recorded.</p>
     </div>
 
     <div class="stage rise d4" aria-label="A noisy build output becomes a clean, redacted snippet">
@@ -266,10 +308,55 @@ error TS2322: Type 'string' is not assignable
       </div>
     </div>
   </header>
+
+  <header class="hero" lang="zh-CN" data-doc="zh" hidden>
+    <div>
+      <div class="kicker rise">适用于 macOS · Ghostty · iTerm2 · Terminal · kitty · WezTerm · VS Code · Zed · tmux</div>
+      <h1 class="rise d1"><span>上一条命令的输出，</span><em>按一下就能贴。</em></h1>
+      <p class="lede rise d2">在任何 App 里按一下快捷键，上一条命令的输出就进了剪贴板：进度条去掉，错误留下，识别出的密钥先遮盖，直接贴给 ChatGPT、Claude 或同事。命令还没跑完也能复制。</p>
+      <div class="cta rise d3">
+        <a class="btn primary" data-download href="https://github.com/Xiang-Suc/lastout-releases/releases/latest">下载 macOS 版</a>
+        <a class="btn ghost" href="#pricing">$29，先免费试用 14 天</a>
+        <span class="keys">或在终端输入 <kbd>lo</kbd> &nbsp;·&nbsp; 任何地方按 <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>C</kbd></span>
+      </div>
+      <p class="note rise d3">需要 macOS 14 及以上，试用不用绑卡。装好后：点<b>接入</b>，打开一个<b>新的</b>终端标签页，运行 <code>lo doctor</code>。之前已经打开的标签页不会被录制。</p>
+    </div>
+
+    <div class="stage rise d4" aria-label="一段杂乱的构建输出，变成干净、遮盖了密钥的片段">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i><span>~/code/app — zsh</span></div>
+<pre><span class="p">❯</span> pnpm build
+<span class="d">Progress: resolved 1342, reused 1338, downloaded 4</span>
+<span class="g">✓</span> 812 modules transformed.
+<span class="y">warn</span>  Browserslist: caniuse-lite is outdated
+<span class="d">[████████████░░░░░░░░] 62% </span><span class="spin"></span>
+<span class="d">vite v6.2.0 building for production...</span>
+API_KEY=<span class="leak">sk-proj-9f2Xq…7Lw</span> loaded from .env
+<span class="r">✗ Build failed in 4.31s</span>
+<span class="r">error</span> TS2322: Type 'string' is not assignable
+  to type 'number'.  src/cart/total.ts:42:7
+<span class="d">  … 3,180 more lines …</span>
+<span class="p">❯</span> <span class="d">█</span></pre>
+      </div>
+      <div class="press"><kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>C</kbd> 已复制</div>
+      <div class="card">
+        <header><span>`pnpm build` · <b>exit 1</b> · 41.2s · ~/code/app</span><span>Markdown</span></header>
+<pre>✓ 812 modules transformed.
+warn  Browserslist: caniuse-lite is outdated
+API_KEY=<span class="red">[REDACTED:api-key]</span> loaded from .env
+<span class="om">… [3,060 lines omitted] …</span>
+<span class="err">✗ Build failed in 4.31s
+error TS2322: Type 'string' is not assignable
+  to type 'number'.  src/cart/total.ts:42:7</span>
+
+<span class="om">Showing 240 of 3,200 lines (head, errors and tail).</span></pre>
+      </div>
+    </div>
+  </header>
 </div>
 
 <section id="how">
-  <div class="wrap">
+  <div class="wrap" data-doc="en">
     <div class="label">How it works</div>
     <h2>Your terminal already knows. <em>Lastout remembers.</em></h2>
     <div class="grid3">
@@ -281,19 +368,40 @@ error TS2322: Type 'string' is not assignable
       <div class="cell">
         <div class="n">02</div>
         <h3>Long output, made short</h3>
-        <p>3,000 lines become the head, every error with its context, and the tail — within a budget an AI can read. <code>--mode full</code> when you want everything.</p>
+        <p>3,000 lines become the head, every detected error with its context, and the tail — within a budget an AI can read. <code>--mode full</code> when you want everything that was recorded.</p>
       </div>
       <div class="cell">
         <div class="n">03</div>
-        <h3>Secrets never leave</h3>
-        <p>API keys, tokens, passwords, private keys and connection strings are redacted before anything is copied. The output of <code>op</code>, <code>vault</code> and friends is never even stored.</p>
+        <h3>Secrets masked first</h3>
+        <p>Recognized API keys, tokens, passwords, private keys and connection strings are redacted before anything is copied — matched on the text as your terminal showed it, so a key split by colour codes is still caught. The output of <code>op</code>, <code>vault</code> and friends is never even stored. Recordings on disk are kept as-is; the masking happens when output is read.</p>
+      </div>
+    </div>
+  </div>
+  <div class="wrap" lang="zh-CN" data-doc="zh" hidden>
+    <div class="label">工作原理</div>
+    <h2><span>终端都看见了，</span><em>Lastout 都记着。</em></h2>
+    <div class="grid3">
+      <div class="cell">
+        <div class="n">01</div>
+        <h3>和你看到的一模一样</h3>
+        <p>每条命令的输出，都按终端当时画出来的样子还原：进度条只留最后一帧，颜色和光标控制序列都去掉，宽字符和 emoji 原样保留。</p>
+      </div>
+      <div class="cell">
+        <div class="n">02</div>
+        <h3>再长的输出，也能变短</h3>
+        <p>3,000 行变成开头、每个检测到的错误连同上下文，再加上结尾，控制在 AI 读得下的长度里。想要录下的全部内容，就用 <code>--mode full</code>。</p>
+      </div>
+      <div class="cell">
+        <div class="n">03</div>
+        <h3>先遮盖密钥</h3>
+        <p>识别出的 API 密钥、token、密码、私钥和连接字符串，在复制之前就会被遮盖。匹配的是终端显示出来的文字，所以被颜色代码拆开的密钥也逃不掉。<code>op</code>、<code>vault</code> 这类工具的输出根本不存。磁盘上的记录保持原样，遮盖发生在读取输出的时候。</p>
       </div>
     </div>
   </div>
 </section>
 
 <section id="more">
-  <div class="wrap">
+  <div class="wrap" data-doc="en">
     <div class="label">Where other tools give up</div>
     <h2>Still running, far away, <em>or full-screen.</em></h2>
     <div class="grid3">
@@ -314,10 +422,31 @@ error TS2322: Type 'string' is not assignable
       </div>
     </div>
   </div>
+  <div class="wrap" lang="zh-CN" data-doc="zh" hidden>
+    <div class="label">别的工具做不到的</div>
+    <h2><span>还在跑、在远程，</span><em>或者是全屏程序。</em></h2>
+    <div class="grid3">
+      <div class="cell">
+        <div class="n">04</div>
+        <h3>还在跑？照样复制</h3>
+        <p>刚报错的开发服务器不用停。<kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>C</kbd> 或 <code>lo --running</code> 会复制它到目前为止的输出，和别的输出一样整理好。</p>
+      </div>
+      <div class="cell">
+        <div class="n">05</div>
+        <h3>ssh 上也行</h3>
+        <p><code>lssh server</code> 把远程主机上的每条命令逐条记录下来，那台机器上只需要放三个小 shell 脚本，别的什么都不用装。</p>
+      </div>
+      <div class="cell">
+        <div class="n">06</div>
+        <h3>全屏程序也行</h3>
+        <p><code>man</code>、<code>less</code>、<code>htop</code>、<code>vim</code>：Lastout 复制它们最后显示的那一屏，而不是一片空白。</p>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section id="mac">
-  <div class="wrap">
+  <div class="wrap" data-doc="en">
     <div class="label">On your Mac</div>
     <h2>Four ways to keep it <em>one glance away.</em></h2>
     <div class="grid4">
@@ -343,10 +472,36 @@ error TS2322: Type 'string' is not assignable
       </div>
     </div>
   </div>
+  <div class="wrap" lang="zh-CN" data-doc="zh" hidden>
+    <div class="label">在你的 Mac 上</div>
+    <h2><span>四种摆法，</span><em>抬眼就能看到。</em></h2>
+    <div class="grid4">
+      <div class="cell">
+        <div class="n">07</div>
+        <h3>刘海旁边</h3>
+        <p>灵动岛样式的一条细条，显示正在跑什么、上一条命令结果如何。鼠标移上去，它就展开，列出每个终端。</p>
+      </div>
+      <div class="cell">
+        <div class="n">08</div>
+        <h3>随处摆放的气泡</h3>
+        <p>一个小气泡浮在所有 App 之上。拖到不碍事的地方；它会朝有空间的一侧展开。</p>
+      </div>
+      <div class="cell">
+        <div class="n">09</div>
+        <h3>屏幕边缘的标签</h3>
+        <p>屏幕侧边伸出一个细长的标签。鼠标停在上面就能看到最新的命令；抓住把手可以挪位置。</p>
+      </div>
+      <div class="cell">
+        <div class="n">10</div>
+        <h3>或者只用菜单栏</h3>
+        <p>屏幕上什么都不放：只有菜单栏图标，按 <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>L</kbd> 在屏幕中央打开终端面板。</p>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section id="agents">
-  <div class="wrap split">
+  <div class="wrap split" data-doc="en">
     <div>
       <div class="label">For coding agents</div>
       <h2>“Wait for my build, <em>then fix it.”</em></h2>
@@ -361,10 +516,25 @@ error TS2322: Type 'string' is not assignable
       </div>
     </div>
   </div>
+  <div class="wrap split" lang="zh-CN" data-doc="zh" hidden>
+    <div>
+      <div class="label">给编程 Agent</div>
+      <h2><span>「等构建跑完，</span><em>再把它修好。」</em></h2>
+      <p class="big">Claude Code、Codex 和其他 Agent 可以通过内置的 MCP 服务器读取你的终端：等另一个窗口里正在跑的命令结束，搜索过去的输出，只读其中的错误。只读，而且始终遮盖密钥。</p>
+    </div>
+    <div class="chat">
+      <div class="msg you">测试在我另一个终端里跑着。等它跑完，把失败的都修好。</div>
+      <div class="msg ai">好的。
+        <p class="tool"><b>wait_for_command</b> · pytest -x · exit 1 · 2m 14s</p>
+        <p class="tool"><b>get_command_output</b> mode=errors · 38 of 2,904 lines</p>
+        <div style="margin-top:10px">`test_checkout_total` 失败，是因为 <code>total()</code> 返回了字符串。正在修改 <code>cart/total.py</code> 第 42 行…</div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section id="privacy">
-  <div class="wrap">
+  <div class="wrap" data-doc="en">
     <div class="label">Privacy</div>
     <h2>Nothing goes anywhere <em>you don't paste it.</em></h2>
     <div class="privacy">
@@ -373,12 +543,23 @@ error TS2322: Type 'string' is not assignable
       <div><h4>Pause or forget</h4><p><code>lo pause --for 30m</code> stops recording; commands starting with a space are never stored, not even their text. Printed a password? <code>lo forget</code> erases that command for good.</p></div>
       <div><h4>Gone on its own</h4><p>200 commands per terminal, 30 days, 500 MB — then it cleans up after itself.</p></div>
     </div>
-    <p class="fine" style="margin-top:28px;color:var(--muted);font-size:15px">Every claim above is checked against the code in the <a href="privacy.html" style="color:var(--paper)">privacy policy</a>, which also says what activating a license sends.</p>
+    <p class="fine">Every claim above is checked against the code in the <a href="privacy.html">privacy policy</a>, which also says what activating a license sends.</p>
+  </div>
+  <div class="wrap" lang="zh-CN" data-doc="zh" hidden>
+    <div class="label">隐私</div>
+    <h2><span>你不粘贴，</span><em>它哪儿也不去。</em></h2>
+    <div class="privacy">
+      <div><h4>只在本机</h4><p>没有统计，不用注册账号。记录存在你 Mac 上的一个私有文件夹里；App 只在检查更新时联网，再就是激活授权时联网一次。</p></div>
+      <div><h4>默认遮盖</h4><p>每一次复制、每一次 Agent 读取，都先清理一遍。Agent 关不掉它。</p></div>
+      <div><h4>暂停或忘掉</h4><p><code>lo pause --for 30m</code> 暂停录制；以空格开头的命令完全不存，连命令文本都不存。不小心打印了密码？<code>lo forget</code> 把那条命令彻底删掉。</p></div>
+      <div><h4>自己清理</h4><p>每个终端 200 条命令、30 天、500 MB，超出后自动清理。</p></div>
+    </div>
+    <p class="fine">上面每一条，<a href="privacy.html?lang=zh">隐私政策</a>里都对照代码核实过；激活授权时会发送什么，那里也写清楚了。</p>
   </div>
 </section>
 
 <section id="pricing">
-  <div class="wrap">
+  <div class="wrap" data-doc="en">
     <div class="label">Pricing</div>
     <h2>One price. <em>No subscription.</em></h2>
     <div class="plans">
@@ -386,9 +567,11 @@ error TS2322: Type 'string' is not assignable
         <div class="name">Lastout for Mac</div>
         <div class="price"><b>$29</b><span>one-time · USD</span></div>
         <ul>
-          <li>The menu bar app: the shortcut, the island, the bubble, the side dock and notifications</li>
+          <li>The Mac app: <b>⌃⌥⌘C</b> from any app, the <b>⌃⌥⌘L</b> picker across your terminals, a Copy button when a long command finishes, and the island, bubble, side dock or menu bar</li>
+          <li>The whole <code>lo</code> command line: <code>lo</code> copies the last command's output, cleaned up and redacted, and <code>--running</code> copies one that's still going</li>
+          <li><code>lssh</code> for remote hosts, <code>lo save</code> for commands worth keeping, <code>lo mcp</code> for coding agents</li>
           <li>One person, up to <b>2 Macs</b></li>
-          <li>Every update for <b>one year</b>; the app keeps working after that</li>
+          <li>Every update for <b>one year</b>; Lastout keeps working after that</li>
           <li>Try it free for <b>14 days</b> first, no card needed</li>
           <li>14-day money-back guarantee</li>
         </ul>
@@ -398,20 +581,33 @@ error TS2322: Type 'string' is not assignable
         </div>
         <p class="buy-note" data-buy-note aria-live="polite"></p>
         <p class="fine">Prices in USD; sales tax or VAT may be added at checkout depending on your country. Orders are processed by Paddle.com Market Ltd, our merchant of record, under the <a href="terms.html">Terms of Sale</a>, the <a href="refund.html">Refund Policy</a> and the <a href="eula.html">EULA</a>.</p>
+        <p class="fine">Requires macOS 14 or later. Questions before you buy: <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>.</p>
       </div>
-      <div class="plan">
-        <div class="name">Command line</div>
-        <div class="price"><b>Free</b><span>forever · macOS and Linux</span></div>
+    </div>
+  </div>
+  <div class="wrap" lang="zh-CN" data-doc="zh" hidden>
+    <div class="label">价格</div>
+    <h2><span>一次付清，</span><em>没有订阅。</em></h2>
+    <div class="plans">
+      <div class="plan paid">
+        <div class="name">Lastout for Mac</div>
+        <div class="price"><b>$29</b><span>一次性付款 · 美元</span></div>
         <ul>
-          <li><code>lo</code> copies the last command's output, cleaned up and redacted</li>
-          <li><code>lssh</code> for remote hosts, <code>lo mcp</code> for coding agents</li>
-          <li>Any number of machines, no license key</li>
-          <li>Installed with the app, or on its own with one command</li>
+          <li>Mac App：在任何 App 里按 <b>⌃⌥⌘C</b> 复制，按 <b>⌃⌥⌘L</b> 从所有终端里挑命令，长命令跑完时通知上有「复制」按钮，还有灵动岛、气泡、侧边停靠或菜单栏几种摆法</li>
+          <li>完整的 <code>lo</code> 命令行：<code>lo</code> 复制上一条命令整理好、遮盖过密钥的输出，<code>--running</code> 复制还没跑完的命令</li>
+          <li><code>lssh</code> 用于远程主机，<code>lo save</code> 收藏值得留下的命令，<code>lo mcp</code> 接入编程 Agent</li>
+          <li>一人使用，最多 <b>2 台 Mac</b></li>
+          <li><b>一年</b>内的所有更新；一年后 Lastout 照常可用</li>
+          <li>先免费试用 <b>14 天</b>，不用绑卡</li>
+          <li>14 天内无理由退款</li>
         </ul>
         <div class="cta">
-          <a class="btn ghost" href="https://github.com/Xiang-Suc/lastout-releases#install">Install <code style="background:none;padding:0">lo</code></a>
+          <a class="btn primary" data-buy href="#pricing">购买 Lastout — $29</a>
+          <a class="btn ghost" data-download href="https://github.com/Xiang-Suc/lastout-releases/releases/latest">下载试用版</a>
         </div>
-        <p class="fine">Requires macOS 14 or later for the app. Questions before you buy: <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>.</p>
+        <p class="buy-note" data-buy-note aria-live="polite"></p>
+        <p class="fine">价格以美元计；视你所在的国家或地区，结账时可能另加销售税或增值税。订单由我们的代收商户 Paddle.com Market Ltd 处理，适用<a href="terms.html?lang=zh">销售条款</a>、<a href="refund.html?lang=zh">退款政策</a>和<a href="eula.html?lang=zh">最终用户许可协议（EULA）</a>。</p>
+        <p class="fine">需要 macOS 14 或更高版本。购买前有疑问：<a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>。</p>
       </div>
     </div>
   </div>
@@ -421,15 +617,56 @@ error TS2322: Type 'string' is not assignable
   <footer>
     <span>Lastout · Rocha Tech LLC · macOS 14+ · zsh · bash · fish</span>
     <span class="links">
-      <a href="terms.html">Terms of Sale</a>
-      <a href="refund.html">Refund Policy</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="eula.html">EULA</a>
+      <a href="terms.html" data-lang-link><span data-doc="en">Terms of Sale</span><span data-doc="zh" hidden>销售条款</span></a>
+      <a href="refund.html" data-lang-link><span data-doc="en">Refund Policy</span><span data-doc="zh" hidden>退款政策</span></a>
+      <a href="privacy.html" data-lang-link><span data-doc="en">Privacy</span><span data-doc="zh" hidden>隐私政策</span></a>
+      <a href="eula.html" data-lang-link><span data-doc="en">EULA</span><span data-doc="zh" hidden>许可协议</span></a>
       <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>
     </span>
   </footer>
 </div>
 
+<script>
+// Language: a choice saved on this site, then ?lang= (or #zh), then the
+// browser's, else English. thanks.html follows the same rule. It runs
+// before config.js so a Chinese visitor doesn't see the English page first.
+(function () {
+  "use strict";
+  var LANG_KEY = "lastoutLang";
+  var TITLES = { en: "Lastout — paste your terminal into any AI", zh: "Lastout — 把终端输出直接贴给 AI" };
+
+  function savedLang() {
+    try { return window.localStorage.getItem(LANG_KEY); } catch (e) { return null; }
+  }
+  function firstLang() {
+    var saved = savedLang();
+    if (TITLES.hasOwnProperty(saved)) return saved;
+    var asked = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
+    if (TITLES.hasOwnProperty(asked)) return asked;
+    return /^zh\b/i.test(navigator.language || "") ? "zh" : "en";
+  }
+  function pick(lang) {
+    document.querySelectorAll("[data-doc]").forEach(function (d) { d.hidden = d.getAttribute("data-doc") !== lang; });
+    document.querySelectorAll("[data-lang]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang)); });
+    // Links to the legal pages open them in the same language.
+    document.querySelectorAll("[data-lang-link]").forEach(function (a) {
+      var href = a.getAttribute("href").replace(/\?lang=zh(?=#|$)/, "");
+      a.setAttribute("href", lang === "zh" ? href.replace(/(#.*)?$/, "?lang=zh$1") : href);
+    });
+    document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+    document.title = TITLES[lang];
+  }
+  document.querySelectorAll("[data-lang]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var lang = b.getAttribute("data-lang");
+      pick(lang);
+      // Blocked storage (some private windows): the choice lasts for this page.
+      try { window.localStorage.setItem(LANG_KEY, lang); } catch (e) { /* see above */ }
+    });
+  });
+  pick(firstLang());
+})();
+</script>
 <script src="config.js"></script>
 <script src="https://cdn.paddle.com/paddle/v2/paddle.js" defer></script>
 <script>
@@ -439,6 +676,13 @@ error TS2322: Type 'string' is not assignable
   var env = cfg.environment || "sandbox";
   var paddle = (cfg.paddle || {})[env] || {};
   var support = cfg.support || "support@lastout.dev";
+
+  // What the page is showing now, and the language of the copy `el` is in.
+  function pageLang() { return document.documentElement.lang === "zh-CN" ? "zh" : "en"; }
+  function langOf(el) {
+    var doc = el.closest("[data-doc]");
+    return doc ? doc.getAttribute("data-doc") : pageLang();
+  }
 
   document.querySelectorAll("[data-support]").forEach(function (a) {
     a.href = "mailto:" + support;
@@ -457,18 +701,34 @@ error TS2322: Type 'string' is not assignable
       if (!zip) throw new Error("no Lastout-*.zip in " + release.tag_name);
       document.querySelectorAll("[data-download]").forEach(function (a) {
         a.href = zip.browser_download_url;
-        a.title = "Lastout " + release.tag_name + " for macOS";
+        a.title = langOf(a) === "zh" ? "Lastout " + release.tag_name + "（macOS 版）" : "Lastout " + release.tag_name + " for macOS";
       });
     })
     .catch(function (e) { console.info("Lastout site: download links stay on the releases page (" + e.message + ")"); });
 
-  // Buy: Paddle overlay checkout, from config.js.
+  // Buy: Paddle overlay checkout, from config.js. There is a Buy button and
+  // a note under it in each language; a note speaks the language it is in.
+  var NOTES = {
+    en: {
+      closed: "Checkout isn't open yet. Write to " + support + " and we'll sort you out.",
+      unloaded: "The checkout didn't load. Reload the page, or write to " + support + ".",
+      failed: "The checkout couldn't open. Write to " + support + "."
+    },
+    zh: {
+      closed: "结账还没开放。请写信到 " + support + "，我们来帮你处理。",
+      unloaded: "结账页面没有加载出来。请刷新页面，或写信到 " + support + "。",
+      failed: "结账页面打不开。请写信到 " + support + "。"
+    }
+  };
   var buttons = document.querySelectorAll("[data-buy]");
-  var note = document.querySelector("[data-buy-note]");
-  function say(text) { if (note) note.textContent = text; }
+  var notes = document.querySelectorAll("[data-buy-note]");
+  function say(which) {
+    notes.forEach(function (n) { n.textContent = which ? NOTES[langOf(n)][which] : ""; });
+  }
   function thanksUrl(txn) {
     var url = new URL("thanks.html", location.href);
     if (txn) url.searchParams.set("txn", txn);
+    if (pageLang() === "zh") url.searchParams.set("lang", "zh");
     return url.href;
   }
 
@@ -481,7 +741,7 @@ error TS2322: Type 'string' is not assignable
     buttons.forEach(function (b) {
       b.addEventListener("click", function (e) {
         e.preventDefault();
-        say("Checkout isn't open yet. Write to " + support + " and we'll sort you out.");
+        say("closed");
       });
     });
     return;
@@ -514,15 +774,18 @@ error TS2322: Type 'string' is not assignable
       e.preventDefault();
       if (!initPaddle()) {
         console.warn("Lastout store: Paddle.js is not loaded (offline, or blocked?)");
-        say("The checkout didn't load. Reload the page, or write to " + support + ".");
+        say("unloaded");
         return;
       }
       say("");
+      // The checkout follows the page into Chinese; otherwise Paddle goes by the browser.
+      var checkout = { items: [{ priceId: paddle.priceId, quantity: 1 }] };
+      if (pageLang() === "zh") checkout.settings = { locale: "zh-Hans" };
       try {
-        window.Paddle.Checkout.open({ items: [{ priceId: paddle.priceId, quantity: 1 }] });
+        window.Paddle.Checkout.open(checkout);
       } catch (err) {
         console.error("Lastout store: Paddle.Checkout.open failed", err);
-        say("The checkout couldn't open. Write to " + support + ".");
+        say("failed");
       }
     });
   });

@@ -3,6 +3,147 @@
 User-facing changes. Compatibility with other tools, and how each part
 of it is tested, is in [docs/compatibility.md](docs/compatibility.md).
 
+## 0.3.4 - 2026-10-27
+
+### Action needed
+
+- Coming from 0.2.0: none of 0.3.0, 0.3.1, 0.3.2 and 0.3.3 was published
+  on its own, so their sections below apply too, Action needed included:
+  run `lo setup` (or let the app's prompt update) and open a new tab.
+
+### Changed
+
+- Lastout is one product at one price: one license, $29 once, covers the
+  app and the `lo` command line (`lssh`, `lo save` and `lo mcp`
+  included), and the 14-day trial covers both. The EULA, the terms of
+  sale and the refund policy say so (dated 2026-10-27); the Pass page,
+  the activation window, the trial-ended notice and the key email no
+  longer call `lo` free. `lo` itself checks nothing yet.
+- Linux builds aren't published for now: `install.sh` on Linux says so
+  instead of downloading.
+
+### Fixed
+
+- Copying, printing or an agent reading output that shows an
+  authenticator setup key no longer passes the key on. Only the `secret=`
+  inside an `otpauth://` link was masked; a `Setup key: XXXX XXXX …` line
+  next to it, or a key printed in groups of four without a label, went
+  through as is. Both, and the whole link, are now
+  `[REDACTED:otp-secret]` / `[REDACTED:otpauth-uri]`.
+- The side dock idling as a thin line opens in one motion when the mouse
+  reaches it. It used to grow into the tab first and turn around into the
+  latest commands mid-way, which looked like a stall; reached near its
+  lower end, it stopped at the tab and didn't open at all.
+
+## 0.3.3 - 2026-10-26
+
+### Action needed
+
+- Coming from 0.2.0: none of 0.3.0, 0.3.1 and 0.3.2 was published on its
+  own, so their sections below apply too, Action needed included: run `lo
+  setup` (or let the app's prompt update) and open a new tab.
+
+### Fixed
+
+- Opened from a terminal Lastout already records (`open -a Lastout`), the
+  app took that terminal's session along and its checks spoke for that
+  terminal: the setup window ended on "hooks run but this command was not
+  recorded", and Settings said the shell's hooks predate the saved-commands
+  key, while recording worked. The app no longer hands a terminal's own
+  variables to `lo`.
+- Settings → Pass → Buy Lastout and the links on Settings → About opened
+  only from the small arrow at the right end of the row. The whole row
+  opens them now.
+
+## 0.3.2 - 2026-10-26
+
+### Action needed
+
+- Coming from 0.2.0: neither 0.3.0 nor 0.3.1 was published on its own,
+  so both sections below apply, Action needed included: run `lo setup`
+  (or let the app's prompt update) and open a new tab.
+
+### Changed
+
+- Buying: the key email, the page after checkout and the refund policy
+  say what the charge looks like on a card statement: `PADDLE.NET* ROCHA
+  TECH` (`PAYPAL *PADDLE.NET` with PayPal). The refund policy is dated
+  2026-10-25.
+- Buying: license keys from the store's test runs don't activate on the
+  live store, and a live key isn't accepted by a test deploy.
+
+### Fixed
+
+- A pasted multi-line command showed nothing where its name belongs: every
+  title in the app (picker rows, the Island, the edge dock, the menu bar
+  menu, notifications) drew its first line only, blank when the paste
+  started with a blank line, and `lo --list`, `lo sessions`, `lo search`,
+  the line printed after copying and `lo --running`'s "is private" notice
+  printed the whole script where one line belongs. They now show the first
+  non-blank line and `+N lines`.
+- Pausing recording while a command ran (`lo pause`, then `lo resume`
+  before it finished) kept everything the command printed: only its start
+  and its end were checked. A command that was paused at any moment keeps
+  no output now, in the database, the live view and `lo --running`.
+- Some commands that print secrets were recorded with their output,
+  because the built-in private list matched only an exact prefix:
+  `kubectl get secrets`, `kubectl --namespace prod get secret`, `kubectl
+  get secret/db`, `aws --profile prod sts get-session-token`. Options and
+  their values are skipped, plurals and `kind/name` match, and `kubectl
+  describe secret` is private too.
+- A quoted value with an escaped quote inside (`{"password":"ab\"rest"}`)
+  was redacted only up to the escaped quote, leaving the rest in place.
+- `LASTOUT_DEBUG_LOG`, which `lo doctor` suggests for bug reports, wrote
+  every command and its whole output unredacted, private and paused ones
+  included, into a file other users on the Mac could read. Private and
+  paused commands are logged as `cmd=<private>` with their sizes only,
+  the rest goes through the redaction that copies get, and the file is
+  created readable by you alone.
+- The diagnostics report kept the values `lo doctor`'s config check
+  quotes (an allow entry, a setting), under a line saying it holds no
+  command lines; they show as "…" now. A `[redact]` pattern that doesn't
+  compile is named by its number in warnings instead of quoted: a
+  pattern often spells out the token it hides.
+- Settings kept showing the old recording state after `lo pause` or `lo
+  resume` in a terminal, or after a timed pause ran out.
+- A terminal whose only command is a long-running one (a build, a dev
+  server) lost its card once sixty newer commands ran elsewhere.
+- Copying from a terminal running a full-screen program (vim, less) gave
+  nothing to paste. The copy shortcut, the picker and the menu bar's
+  running entries now fall back to that terminal's last finished command,
+  and the picker's number keys and Enter on a running command keep the
+  Full/Errors choice.
+- The copy shortcut's lookup of the window in front was meant to give up
+  after 1.5 s but lasted as long as the AppleScript query; it answers in
+  time now, and a press while the Automation prompt is up no longer
+  starts a second stuck query.
+- Output that moved the cursor down by a huge count (`ESC [ n B`) could
+  turn a few hundred bytes into hundreds of thousands of lines. As in a
+  terminal, the cursor now stops at the bottom of the screen.
+- `lo mcp` answered one request at a time, so `wait_for_command` (up to
+  30 minutes) held up every other tool call and the client's
+  cancellation. Calls run side by side now, and a cancellation ends the
+  wait.
+- A crash between writing a command's output and linking it to the
+  command left a file that retention and `lo forget --all` never deleted.
+  Both remove such files once they are 10 minutes old.
+- `lo config --add-terminal` replaced only the first line of a
+  `terminals` list written over several lines, leaving the config invalid
+  and the settings after it ignored. The list is replaced whole, and a
+  change that would leave the file invalid is refused.
+- `lo setup --uninstall` on an rc file whose Lastout block had lost its
+  end marker removed everything to the end of the file. Such a block is
+  left alone now, with a warning naming its line.
+- Buying: refunds and chargebacks revoke the right key whatever order
+  Paddle delivers them in, and a refund made in Paddle's dashboard that
+  gives back the whole price revokes the key (it arrived labelled
+  partial and didn't). A key revoked while a Mac was activating gets no
+  seat. A key email that fails to send is sent again every 15 minutes
+  until it goes out.
+- Buying: the page after checkout no longer waits forever on a lookup
+  that hangs, and says whether the key email went out, is on its way, or
+  can't be sent (no address came with the order).
+
 ## 0.3.1 - 2026-10-24
 
 ### Action needed

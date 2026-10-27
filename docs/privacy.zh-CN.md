@@ -6,7 +6,7 @@ Lastout 记录什么、存在哪、什么会离开你的电脑、怎么删除。
 
 Lastout 由 Rocha Tech LLC（在美国新泽西州注册的公司，下称「我们」）开发。你记录的内容不会到我们这里；到我们这里的，只有购买和激活授权需要的那些，见下面「购买授权」一节，这部分数据由我们负责（即数据控制者）。问题和请求请写信到 support@lastout.dev。
 
-最后更新：2026-10-23。
+最后更新：2026-10-26。
 
 ## 记录什么
 
@@ -53,7 +53,7 @@ Lastout 由 Rocha Tech LLC（在美国新泽西州注册的公司，下称「我
 
 ### 遮盖
 
-对每次复制、打印和 Agent 读取生效，从不改动存储的内容（所以才有 `lo forget` 处理打印过的密码）。每处匹配变成带标签的标记，例如 `[REDACTED:github-token]`，LLM 仍能知道那里原来是什么。规则：已知的 token 格式（GitHub、GitLab、AWS access key、Google、Stripe、Slack token 和 webhook、SendGrid、Twilio、Shopify、npm、PyPI、DigitalOcean、Hugging Face、JWT、通用 API key）、私钥块、URL 里的密码、`Authorization` 头和 bearer token、`--password` 这类参数、`SECRET=value` 赋值。你自己的格式写在配置的 `redact.patterns`（正则）。`lo --no-redact` 只对你自己做的复制跳过遮盖，别的途径都不行。
+对每次复制、打印和 Agent 读取生效，从不改动存储的内容（所以才有 `lo forget` 处理打印过的密码）。每处匹配变成带标签的标记，例如 `[REDACTED:github-token]`，LLM 仍能知道那里原来是什么。规则：已知的 token 格式（GitHub、GitLab、AWS access key、Google、Stripe、Slack token 和 webhook、SendGrid、Twilio、Shopify、npm、PyPI、DigitalOcean、Hugging Face、JWT、通用 API key）、私钥块、URL 里的密码、两步验证的设置密钥（`otpauth://` 链接、带 `Setup key:` 这类标签的密钥、四个一组打印的 base32 密钥）、`Authorization` 头和 bearer token、`--password` 这类参数、`SECRET=value` 赋值。你自己的格式写在配置的 `redact.patterns`（正则）。`lo --no-redact` 只对你自己做的复制跳过遮盖，别的途径都不行。
 
 ## 远程主机
 
@@ -84,6 +84,10 @@ Lastout 的授权由 Paddle.com Market Ltd（下称「Paddle」）作为代收�
 
 这些用来：把授权码发到你的邮箱；在结账后跳转的页面上再显示一次（24 小时内）；统计一个授权码用在几台 Mac 上；让退款后的授权码无法再激活。除了回复你的来信，带授权码的那封邮件是我们唯一会发的邮件：没有订阅通讯，也没有营销名单。作为 Paddle 上的卖家，我们还能在 Paddle 后台看到你的订单：买了什么、什么时候、多少钱、你的国家和邮箱。
 
+你也可以直接向我们购买，比如通过交易平台或聊天软件联系我们之后。这时不经过结账页：你用双方确认的方式付款给我们（适用那家支付服务自己的隐私政策），授权由我们自己录入。授权服务器为它保存：你的姓名、你给我们的邮箱或其他联系方式（比如聊天软件的 ID）、你从哪里找到我们、付款的金额、币种和日期、我们做过的退款、我们为这笔订单写的备注，以及和上面一样的授权码和 Mac 哈希。这些用来把授权码发给你、回复你、处理退款；上面说的那封授权码邮件不会为它发送。
+
+我们在一个只有我们能登录的管理后台（`admin.lastout.dev`，登录要密码和一次性验证码）里查看和修改授权记录。它和授权服务器一样运行在 Cloudflare 上，并记录在后台做过的每次改动。
+
 授权记录在授权存续期间一直保留，因为没有它就无法校验授权码。它存放在 Cloudflare；发授权码邮件时，你的邮箱经过 Resend。它们和 Paddle 一样，可能在你所在国家以外（包括美国）处理这些数据。数据库只有我们能读；App 和网站通过 HTTPS 连接授权服务器。
 
 ## 网站
@@ -93,7 +97,7 @@ lastout.dev 是一组由 GitHub Pages 托管的静态页面。网站自己不设
 ## 第三方
 
 - **Paddle**：销售授权、处理付款（见上）。
-- **Cloudflare**：运行授权服务器和它的数据库。
+- **Cloudflare**：运行授权服务器、它的数据库和管理后台。
 - **Resend**：发送带授权码的邮件。
 - **GitHub**：托管更新检查读取的发布，以及 lastout.dev 网站。
 - **Google Fonts**：提供网站的字体。

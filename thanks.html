@@ -15,19 +15,29 @@
 <body>
 <div class="wrap">
   <nav>
-    <a class="brand" href="index.html"><img src="icon.png" alt="">Lastout</a>
+    <a class="brand" href="index.html" data-lang-link><img src="icon.png" alt="">Lastout</a>
     <div class="links">
-      <a href="index.html#pricing">Pricing</a>
-      <a href="terms.html">Terms</a>
-      <a href="refund.html">Refund Policy</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="eula.html">EULA</a>
+      <a href="index.html#pricing" data-lang-link><span data-doc="en">Pricing</span><span data-doc="zh" hidden>价格</span></a>
+      <a href="terms.html" data-lang-link><span data-doc="en">Terms</span><span data-doc="zh" hidden>条款</span></a>
+      <a href="refund.html" data-lang-link><span data-doc="en">Refund Policy</span><span data-doc="zh" hidden>退款政策</span></a>
+      <a href="privacy.html" data-lang-link><span data-doc="en">Privacy</span><span data-doc="zh" hidden>隐私</span></a>
+      <a href="eula.html" data-lang-link><span data-doc="en">EULA</span><span data-doc="zh" hidden>许可协议</span></a>
     </div>
   </nav>
 
   <main class="narrow">
-    <div class="label">Thank you</div>
-    <h1>Your Lastout <em>license key.</em></h1>
+    <div data-doc="en">
+      <div class="label">Thank you</div>
+      <h1>Your Lastout <em>license key.</em></h1>
+    </div>
+    <div lang="zh-CN" data-doc="zh" hidden>
+      <div class="label">感谢购买</div>
+      <h1>你的 Lastout <em style="white-space: nowrap">授权码。</em></h1>
+    </div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">English</button>
+      <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+    </div>
 
     <div class="status" id="status" aria-live="polite">
       <span class="spin" id="spin"></span>
@@ -38,26 +48,35 @@
       <output id="key"></output>
       <button class="btn primary" id="copy" type="button">Copy</button>
     </div>
-    <p class="meta" id="mailed" hidden>A copy is on its way to <b id="email">your email</b>, so you can close this page.</p>
+    <p class="meta" id="mailed" hidden></p>
 
-    <div class="steps">
+    <div class="steps" data-doc="en">
       <h2>Activate it</h2>
       <ol>
         <li>Open Lastout. Don't have it yet? <a data-download href="https://github.com/Xiang-Suc/lastout-releases/releases/latest">Download for macOS</a>, unzip, move it to Applications.</li>
         <li>Click the menu bar icon → <b>Settings</b> → <b>Pass</b> → <b>Activate Lastout…</b></li>
         <li>Paste the key. The same key works on up to 2 Macs; <i>Deactivate on this Mac</i> frees a seat.</li>
       </ol>
-      <p>Your receipt comes from Paddle.com Market Ltd, our merchant of record. Anything about the order, or no email after a few minutes: <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a> with your order number.</p>
+      <p>Your receipt comes from Paddle.com Market Ltd, our merchant of record, and the charge reads <code>PADDLE.NET* ROCHA TECH</code> on card statements (<code>PAYPAL *PADDLE.NET</code> with PayPal). Anything about the order, or no email after a few minutes: <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a> with your order number.</p>
+    </div>
+    <div class="steps" lang="zh-CN" data-doc="zh" hidden>
+      <h2>激活</h2>
+      <ol>
+        <li>打开 Lastout。还没装？<a data-download href="https://github.com/Xiang-Suc/lastout-releases/releases/latest">下载 macOS 版</a>，解压后拖进「应用程序」文件夹。</li>
+        <li>点菜单栏图标 → <b>设置…</b> → <b>通行证</b> → <b>激活 Lastout…</b></li>
+        <li>粘贴授权码。同一个授权码最多可以用在 2 台 Mac 上；点<i>在这台 Mac 上停用</i>可以腾出一个名额。</li>
+      </ol>
+      <p>收据由我们的代收商户 Paddle.com Market Ltd 发出；银行卡账单上这笔扣款显示为 <code>PADDLE.NET* ROCHA TECH</code>（PayPal 付款显示为 <code>PAYPAL *PADDLE.NET</code>）。订单有任何问题，或几分钟后还没收到邮件：请写信到 <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>，并附上订单号。</p>
     </div>
   </main>
 
   <footer>
     <span>Lastout · Rocha Tech LLC</span>
     <span class="links">
-      <a href="terms.html">Terms of Sale</a>
-      <a href="refund.html">Refund Policy</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="eula.html">EULA</a>
+      <a href="terms.html" data-lang-link><span data-doc="en">Terms of Sale</span><span data-doc="zh" hidden>销售条款</span></a>
+      <a href="refund.html" data-lang-link><span data-doc="en">Refund Policy</span><span data-doc="zh" hidden>退款政策</span></a>
+      <a href="privacy.html" data-lang-link><span data-doc="en">Privacy</span><span data-doc="zh" hidden>隐私政策</span></a>
+      <a href="eula.html" data-lang-link><span data-doc="en">EULA</span><span data-doc="zh" hidden>许可协议</span></a>
       <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>
     </span>
   </footer>
@@ -72,6 +91,46 @@
   var server = (cfg.licenseServer || "https://license.lastout.dev").replace(/\/+$/, "");
   var RETRY_MS = 3000;     // the webhook can land a few seconds after the redirect
   var GIVE_UP_MS = 30000;  // then the email has it
+  var REQUEST_MS = 8000;   // one lookup that hangs is abandoned (and retried)
+
+  // Everything this script writes, in both languages. Functions take what
+  // goes into the sentence; the mailed* ones return parts for replaceChildren.
+  var STRINGS = {
+    en: {
+      title: "Thank you — Lastout",
+      looking: "Looking up your order…",
+      noTxn: "This page shows your key right after checkout. Opened it some other way? Your key is in the email from your purchase.",
+      badTxn: function () { return "That doesn't look like an order id. Your key is in the email from your purchase; otherwise write to " + support + "."; },
+      found: function (txn) { return "Here it is. Order " + txn + "."; },
+      noEmail: "No email address came with this order, so no copy will be emailed: copy the key now and keep it.",
+      mailed: function (who) { return ["A copy was emailed to ", who, ", so you can close this page."]; },
+      mailing: function (who) { return ["A copy is being emailed to ", who, ". Copy the key now in case the email is slow."]; },
+      gaveUp: function (txn) { return "Your key is taking longer than usual to show here. It is emailed to the address you entered at checkout once the payment goes through, usually within a few minutes. Nothing after that? Write to " + support + " with order " + txn + "."; },
+      revoked: function () { return "This order was refunded, so its key is no longer active. Changed your mind? Write to " + support + "."; },
+      expired: function (txn) { return "This page only shows a key for a day after the purchase. Your key is in the email from your purchase; otherwise write to " + support + " with order " + txn + "."; },
+      waiting: function (s) { return "Waiting for your key… (" + s + "s)"; },
+      copy: "Copy",
+      copied: "Copied",
+      selectAndCopy: "Select and copy"
+    },
+    zh: {
+      title: "感谢购买 — Lastout",
+      looking: "正在查找你的订单…",
+      noTxn: "这个页面只在结账后立刻显示授权码。从别处打开的？授权码在购买后收到的邮件里。",
+      badTxn: function () { return "这看起来不是订单号。授权码在购买后收到的邮件里；找不到的话，请写信到 " + support + "。"; },
+      found: function (txn) { return "授权码在这里。订单号 " + txn + "。"; },
+      noEmail: "这笔订单没有附带邮箱地址，所以不会发邮件副本：请现在就复制授权码，妥善保存。",
+      mailed: function (who) { return ["副本已发送到 ", who, "，可以关闭这个页面了。"]; },
+      mailing: function (who) { return ["副本正在发送到 ", who, "。邮件可能会慢一些，请先复制授权码。"]; },
+      gaveUp: function (txn) { return "授权码比平时来得慢。付款完成后，它会发到你结账时填写的邮箱，通常几分钟内送达。之后还没收到？请写信到 " + support + "，并附上订单号 " + txn + "。"; },
+      revoked: function () { return "这笔订单已退款，它的授权码已失效。改主意了？请写信到 " + support + "。"; },
+      expired: function (txn) { return "这个页面只在购买后一天内显示授权码。授权码在购买后收到的邮件里；找不到的话，请写信到 " + support + "，并附上订单号 " + txn + "。"; },
+      waiting: function (s) { return "正在等待授权码…（" + s + " 秒）"; },
+      copy: "复制",
+      copied: "已复制",
+      selectAndCopy: "请手动选中并复制"
+    }
+  };
 
   document.querySelectorAll("[data-support]").forEach(function (a) {
     a.href = "mailto:" + support;
@@ -84,14 +143,60 @@
   var keybox = document.getElementById("keybox");
   var keyOut = document.getElementById("key");
   var mailed = document.getElementById("mailed");
-  var emailEl = document.getElementById("email");
   var copy = document.getElementById("copy");
 
-  function show(kind, message) {
+  // Language: a choice saved on this site, then ?lang= (or #zh), then the
+  // browser's, else English. The same rule as index.html.
+  var LANG_KEY = "lastoutLang";
+  var t = STRINGS.en;
+  var said = null;        // what the status line says, as a function of t
+  var mailedData = null;  // the order the email line is about, once found
+
+  function savedLang() {
+    try { return window.localStorage.getItem(LANG_KEY); } catch (e) { return null; }
+  }
+  function firstLang() {
+    var saved = savedLang();
+    if (STRINGS.hasOwnProperty(saved)) return saved;
+    var asked = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
+    if (STRINGS.hasOwnProperty(asked)) return asked;
+    var language = (window.navigator && window.navigator.language) || "";
+    return /^zh\b/i.test(language) ? "zh" : "en";
+  }
+  function pick(lang) {
+    t = STRINGS[lang];
+    document.querySelectorAll("[data-doc]").forEach(function (d) { d.hidden = d.getAttribute("data-doc") !== lang; });
+    document.querySelectorAll("[data-lang]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang)); });
+    // Links to the other pages open them in the same language.
+    document.querySelectorAll("[data-lang-link]").forEach(function (a) {
+      var href = a.getAttribute("href").replace(/\?lang=zh(?=#|$)/, "");
+      a.setAttribute("href", lang === "zh" ? href.replace(/(#.*)?$/, "?lang=zh$1") : href);
+    });
+    document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+    document.title = t.title;
+    copy.textContent = t.copy;
+    if (said) text.textContent = said(t);
+    if (mailedData) mailedLine(mailedData);
+  }
+  document.querySelectorAll("[data-lang]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var lang = b.getAttribute("data-lang");
+      pick(lang);
+      // Blocked storage (some private windows): the choice lasts for this page.
+      try { window.localStorage.setItem(LANG_KEY, lang); } catch (e) { /* see above */ }
+    });
+  });
+
+  // `say` is a string from t, or a function of t, so a language switch can
+  // write the same message again.
+  function show(kind, say) {
+    said = typeof say === "function" ? say : function () { return say; };
     status.className = "status" + (kind ? " " + kind : "");
     spin.hidden = kind !== "";
-    text.textContent = message;
+    text.textContent = said(t);
   }
+
+  pick(firstLang());
 
   // Paddle redirects to …/thanks.html?txn={transaction_id}; _ptxn is what
   // Paddle appends itself when a success URL is set without a placeholder.
@@ -99,68 +204,108 @@
   var txn = params.get("txn") || params.get("_ptxn") || "";
 
   if (!txn) {
-    show("warn", "This page shows your key right after checkout. Opened it some other way? Your key is in the email from your purchase.");
+    show("warn", function (t) { return t.noTxn; });
     return;
   }
   if (!/^txn_[0-9a-z_-]{1,48}$/i.test(txn)) {
-    show("bad", "That doesn't look like an order id. Your key is in the email from your purchase; otherwise write to " + support + ".");
+    show("bad", function (t) { return t.badTxn(); });
     return;
   }
 
   var started = Date.now();
   var attempt = 0;
+  // A final answer is on the page (the key, a refund, too late), or the
+  // waiting gave up: no more lookups, no more "waiting" text.
+  var settled = false;
+  var gaveUpShown = false;
 
   function found(data) {
+    settled = true;
     keyOut.textContent = data.key;
     keybox.hidden = false;
-    if (data.email) emailEl.textContent = data.email;
+    mailedLine(data);
+    show("ok", function (t) { return t.found(txn); });
+  }
+
+  // Says what happened to the email copy, as the server knows it: sent,
+  // still being sent (it retries), or impossible (no address on file).
+  function mailedLine(data) {
+    mailedData = data;
+    if (!data.email) {
+      mailed.replaceChildren(t.noEmail);
+    } else {
+      var who = document.createElement("b");
+      who.textContent = data.email;
+      mailed.replaceChildren.apply(mailed, data.mailed ? t.mailed(who) : t.mailing(who));
+    }
     mailed.hidden = false;
-    show("ok", "Here it is. Order " + txn + ".");
+  }
+
+  function final(kind, say) {
+    settled = true;
+    show(kind, say);
   }
 
   function gaveUp(reason) {
+    if (settled || gaveUpShown) return;
+    gaveUpShown = true;
     console.warn("Lastout thanks: no key after " + attempt + " tries (" + reason + ")");
-    show("warn", "Your key is taking longer than usual. It's on its way to the email you entered at checkout, usually within a few minutes. Nothing after that? Write to " + support + " with order " + txn + ".");
+    show("warn", function (t) { return t.gaveUp(txn); });
   }
 
   function poll() {
+    if (settled || gaveUpShown) return;
     attempt += 1;
-    fetch(server + "/thanks-lookup?txn=" + encodeURIComponent(txn), { headers: { Accept: "application/json" } })
+    // A lookup that hangs (a stalled connection) is abandoned after
+    // REQUEST_MS and retried; without AbortController the 30 s limit
+    // below still ends the waiting.
+    var controller = typeof AbortController === "function" ? new AbortController() : null;
+    var timer = setTimeout(function () { if (controller) controller.abort(); }, REQUEST_MS);
+    fetch(server + "/thanks-lookup?txn=" + encodeURIComponent(txn), { headers: { Accept: "application/json" }, signal: controller ? controller.signal : undefined })
       .then(function (r) {
+        clearTimeout(timer);
         if (r.status === 200) return r.json().then(found);
         if (r.status === 404) return retry("not yet issued");
         if (r.status === 410) {
           return r.json().catch(function () { return {}; }).then(function (body) {
-            if (body.error === "revoked") show("bad", "This order was refunded, so its key is no longer active. Changed your mind? Write to " + support + ".");
-            else show("warn", "This page only shows a key for a day after the purchase. Your key is in the email from your purchase; otherwise write to " + support + " with order " + txn + ".");
+            if (body.error === "revoked") final("bad", function (t) { return t.revoked(); });
+            else final("warn", function (t) { return t.expired(txn); });
           });
         }
         return retry("HTTP " + r.status);
       })
-      .catch(function (e) { retry(e && e.message ? e.message : "network error"); });
+      .catch(function (e) {
+        clearTimeout(timer);
+        retry(e && e.name === "AbortError" ? "no answer in " + REQUEST_MS / 1000 + "s" : e && e.message ? e.message : "network error");
+      });
   }
 
   function retry(reason) {
+    if (settled || gaveUpShown) return;
     var elapsed = Date.now() - started;
     if (elapsed + RETRY_MS > GIVE_UP_MS) return gaveUp(reason);
     console.info("Lastout thanks: " + reason + ", retrying in " + (RETRY_MS / 1000) + "s (" + Math.round(elapsed / 1000) + "s elapsed)");
-    show("", "Waiting for your key… (" + Math.round(elapsed / 1000) + "s)");
+    var seconds = Math.round(elapsed / 1000);
+    show("", function (t) { return t.waiting(seconds); });
     setTimeout(poll, RETRY_MS);
   }
 
   copy.addEventListener("click", function () {
     var key = keyOut.textContent;
-    function done() { copy.textContent = "Copied"; setTimeout(function () { copy.textContent = "Copy"; }, 1600); }
+    function done() { copy.textContent = t.copied; setTimeout(function () { copy.textContent = t.copy; }, 1600); }
     function fallback() {
       var range = document.createRange(); range.selectNodeContents(keyOut);
       var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
-      try { document.execCommand("copy"); done(); } catch (e) { copy.textContent = "Select and copy"; }
+      try { document.execCommand("copy"); done(); } catch (e) { copy.textContent = t.selectAndCopy; }
     }
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(key).then(done, fallback);
     else fallback();
   });
 
-  show("", "Looking up your order…");
+  show("", function (t) { return t.looking; });
+  // The 30 s limit on its own clock too: a lookup that never settles
+  // (no AbortController) must not leave the page waiting forever.
+  setTimeout(function () { gaveUp("nothing in " + GIVE_UP_MS / 1000 + "s"); }, GIVE_UP_MS);
   poll();
 })();
 </script>

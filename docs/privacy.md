@@ -12,7 +12,7 @@ only what buying and activating a license needs, described under
 *Buying a license*; for that data we are responsible (the data
 controller). Questions and requests: support@lastout.dev.
 
-Last updated: 2026-10-23.
+Last updated: 2026-10-26.
 
 ## What is recorded
 
@@ -126,8 +126,10 @@ labelled marker such as `[REDACTED:github-token]`, so an LLM still knows
 what was there. Rules: known token formats (GitHub, GitLab, AWS access
 keys, Google, Stripe, Slack tokens and webhooks, SendGrid, Twilio,
 Shopify, npm, PyPI, DigitalOcean, Hugging Face, JWTs, generic API keys),
-private key blocks, passwords in URLs, `Authorization` headers and bearer
-tokens, `--password`-style flags, `SECRET=value` assignments. Your own
+private key blocks, passwords in URLs, authenticator setup keys
+(`otpauth://` links, a labelled `Setup key:`, and base32 keys printed in
+groups of four), `Authorization` headers and bearer tokens,
+`--password`-style flags, `SECRET=value` assignments. Your own
 formats go in `redact.patterns` (regexes) in the config file. `lo
 --no-redact` skips it for a copy you make yourself; nothing else can.
 
@@ -200,6 +202,22 @@ is no newsletter or marketing list. As the seller on Paddle we can also
 see your order in Paddle's dashboard: what was bought, when, for how
 much, your country and email.
 
+You can also buy directly from us, for example after contacting us
+through a marketplace or a messaging app. Then no checkout is involved:
+you pay us with the method we agreed on, under that payment provider's
+own privacy policy, and we enter the license ourselves. For it the
+license server keeps your name, the email or other contact you gave us
+(a messaging-app ID, say), where you found us, the amount, currency and
+date of the payment, any refund we made, and notes we write about the
+order, along with the key and the Mac hashes as above. That is used to
+send you the key, answer you and handle a refund; the key email above
+is never sent for it.
+
+We read and change license records in an admin dashboard
+(`admin.lastout.dev`) that only we can sign in to, with a password and
+a one-time code; it runs on Cloudflare next to the license server and
+keeps a log of what was changed in it.
+
 The license record is kept as long as the license exists, since a key
 can't be checked without it. It is stored with Cloudflare, and your
 email passes through Resend to deliver the key; both, like Paddle, may
@@ -220,7 +238,8 @@ server for your key, with the transaction ID from its address.
 ## Third parties
 
 - **Paddle** sells the license and processes the payment (above).
-- **Cloudflare** runs the license server and its database.
+- **Cloudflare** runs the license server, its database and the admin
+  dashboard.
 - **Resend** delivers the email with your key.
 - **GitHub** hosts the releases the update check reads, and the
   lastout.dev website.

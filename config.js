@@ -4,8 +4,10 @@
 window.LASTOUT_STORE = {
   // Which Paddle environment the Buy button uses. "sandbox" rehearses with
   // test cards and sandbox keys; "production" charges real cards.
-  // 上线前：改成 "production"（同时 service/ 的 Worker 也切到 live 的密钥）。
-  environment: "sandbox",
+  // Live since 0.3.4. It moves together with service/wrangler.toml's
+  // PADDLE_ENVIRONMENT (and the Worker's live secrets): a sandbox checkout
+  // against the live Worker issues no key, and sandbox keys don't work live.
+  environment: "production",
 
   paddle: {
     // Paddle sandbox (sandbox-vendors.paddle.com): Developer tools →
@@ -18,10 +20,11 @@ window.LASTOUT_STORE = {
     },
     // The same two values from the live dashboard (vendors.paddle.com):
     // the client-side token starts with live_…, the price id with pri_….
-    // 上线前填。
+    // Live token ctkn_01m5v2keqfxxfjzn0a7p12npkp "lastout site"; the price
+    // is $29 one-time on "Lastout for Mac" (pro_01m56esd3gyfhngcah22apxka4).
     production: {
-      clientToken: "",
-      priceId: "",
+      clientToken: "live_164136e9fadbb86a29b392f2598",
+      priceId: "pri_01m5e2hbfy8xp006zree8mce6c",
     },
   },
 
