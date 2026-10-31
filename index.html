@@ -505,7 +505,7 @@ error TS2322: Type 'string' is not assignable
     <div>
       <div class="label">For coding agents</div>
       <h2>“Wait for my build, <em>then fix it.”</em></h2>
-      <p class="big">Claude Code, Codex and other agents can read your terminals through a built-in MCP server — wait for a command running in another window, search past output, read just the errors. Read-only, always redacted.</p>
+      <p class="big">Claude Code, Codex, Cursor and other agents can read your terminals through a built-in MCP server — wait for a command running in another window, search past output, read just the errors. Read-only, always redacted.</p>
     </div>
     <div class="chat">
       <div class="msg you">I'm running the tests in my other terminal. Wait for them and fix whatever fails.</div>
@@ -520,7 +520,7 @@ error TS2322: Type 'string' is not assignable
     <div>
       <div class="label">给编程 Agent</div>
       <h2><span>「等构建跑完，</span><em>再把它修好。」</em></h2>
-      <p class="big">Claude Code、Codex 和其他 Agent 可以通过内置的 MCP 服务器读取你的终端：等另一个窗口里正在跑的命令结束，搜索过去的输出，只读其中的错误。只读，而且始终遮盖密钥。</p>
+      <p class="big">Claude Code、Codex、Cursor 和其他 Agent 可以通过内置的 MCP 服务器读取你的终端：等另一个窗口里正在跑的命令结束，搜索过去的输出，只读其中的错误。只读，而且始终遮盖密钥。</p>
     </div>
     <div class="chat">
       <div class="msg you">测试在我另一个终端里跑着。等它跑完，把失败的都修好。</div>
@@ -538,23 +538,23 @@ error TS2322: Type 'string' is not assignable
     <div class="label">Privacy</div>
     <h2>Nothing goes anywhere <em>you don't paste it.</em></h2>
     <div class="privacy">
-      <div><h4>Local only</h4><p>No analytics, no account. Recordings live in a private folder on your Mac; the app connects only to check for updates, and once when you activate a license.</p></div>
+      <div><h4>Local only</h4><p>No analytics, no account. Recordings live in a private folder on your Mac. The app connects only to check for updates and, about every 15 minutes, to verify your trial or license; neither sends anything you recorded.</p></div>
       <div><h4>Redacted by default</h4><p>Every copy and every agent read is scrubbed first. Agents can't turn it off.</p></div>
       <div><h4>Pause or forget</h4><p><code>lo pause --for 30m</code> stops recording; commands starting with a space are never stored, not even their text. Printed a password? <code>lo forget</code> erases that command for good.</p></div>
       <div><h4>Gone on its own</h4><p>200 commands per terminal, 30 days, 500 MB — then it cleans up after itself.</p></div>
     </div>
-    <p class="fine">Every claim above is checked against the code in the <a href="privacy.html">privacy policy</a>, which also says what activating a license sends.</p>
+    <p class="fine">Every claim above is checked against the code in the <a href="privacy.html">privacy policy</a>, which also says what each license check sends.</p>
   </div>
   <div class="wrap" lang="zh-CN" data-doc="zh" hidden>
     <div class="label">隐私</div>
     <h2><span>你不粘贴，</span><em>它哪儿也不去。</em></h2>
     <div class="privacy">
-      <div><h4>只在本机</h4><p>没有统计，不用注册账号。记录存在你 Mac 上的一个私有文件夹里；App 只在检查更新时联网，再就是激活授权时联网一次。</p></div>
+      <div><h4>只在本机</h4><p>没有统计，不用注册账号。记录存在你 Mac 上的一个私有文件夹里。App 只为两件事联网：检查更新，以及大约每 15 分钟向服务器校验一次试用或授权，两者都不带你记录的任何内容。</p></div>
       <div><h4>默认遮盖</h4><p>每一次复制、每一次 Agent 读取，都先清理一遍。Agent 关不掉它。</p></div>
       <div><h4>暂停或忘掉</h4><p><code>lo pause --for 30m</code> 暂停录制；以空格开头的命令完全不存，连命令文本都不存。不小心打印了密码？<code>lo forget</code> 把那条命令彻底删掉。</p></div>
       <div><h4>自己清理</h4><p>每个终端 200 条命令、30 天、500 MB，超出后自动清理。</p></div>
     </div>
-    <p class="fine">上面每一条，<a href="privacy.html?lang=zh">隐私政策</a>里都对照代码核实过；激活授权时会发送什么，那里也写清楚了。</p>
+    <p class="fine">上面每一条，<a href="privacy.html?lang=zh">隐私政策</a>里都对照代码核实过；每次授权校验发送什么，那里也写清楚了。</p>
   </div>
 </section>
 
@@ -565,11 +565,12 @@ error TS2322: Type 'string' is not assignable
     <div class="plans">
       <div class="plan paid">
         <div class="name">Lastout for Mac</div>
-        <div class="price"><b>$29</b><span>one-time · USD</span></div>
+        <div class="price"><b>$29</b><span>one-time · USD · nothing renews</span></div>
         <ul>
+          <li><code>lo mcp</code> for coding agents: Claude Code, Codex and Cursor read what ran in your terminals, with secrets redacted</li>
           <li>The Mac app: <b>⌃⌥⌘C</b> from any app, the <b>⌃⌥⌘L</b> picker across your terminals, a Copy button when a long command finishes, and the island, bubble, side dock or menu bar</li>
           <li>The whole <code>lo</code> command line: <code>lo</code> copies the last command's output, cleaned up and redacted, and <code>--running</code> copies one that's still going</li>
-          <li><code>lssh</code> for remote hosts, <code>lo save</code> for commands worth keeping, <code>lo mcp</code> for coding agents</li>
+          <li><code>lssh</code> for remote hosts, <code>lo save</code> for commands worth keeping</li>
           <li>One person, up to <b>2 Macs</b></li>
           <li>Every update for <b>one year</b>; Lastout keeps working after that</li>
           <li>Try it free for <b>14 days</b> first, no card needed</li>
@@ -591,11 +592,12 @@ error TS2322: Type 'string' is not assignable
     <div class="plans">
       <div class="plan paid">
         <div class="name">Lastout for Mac</div>
-        <div class="price"><b>$29</b><span>一次性付款 · 美元</span></div>
+        <div class="price"><b>$29</b><span>一次性付款 · 美元 · 不会自动扣费</span></div>
         <ul>
+          <li><code>lo mcp</code> 接入编程 Agent：Claude Code、Codex、Cursor 直接读你终端里跑过的命令和输出，密钥已遮盖</li>
           <li>Mac App：在任何 App 里按 <b>⌃⌥⌘C</b> 复制，按 <b>⌃⌥⌘L</b> 从所有终端里挑命令，长命令跑完时通知上有「复制」按钮，还有灵动岛、气泡、侧边停靠或菜单栏几种摆法</li>
           <li>完整的 <code>lo</code> 命令行：<code>lo</code> 复制上一条命令整理好、遮盖过密钥的输出，<code>--running</code> 复制还没跑完的命令</li>
-          <li><code>lssh</code> 用于远程主机，<code>lo save</code> 收藏值得留下的命令，<code>lo mcp</code> 接入编程 Agent</li>
+          <li><code>lssh</code> 用于远程主机，<code>lo save</code> 收藏值得留下的命令</li>
           <li>一人使用，最多 <b>2 台 Mac</b></li>
           <li><b>一年</b>内的所有更新；一年后 Lastout 照常可用</li>
           <li>先免费试用 <b>14 天</b>，不用绑卡</li>

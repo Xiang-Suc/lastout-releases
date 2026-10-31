@@ -132,7 +132,7 @@ if [ -n "$app" ]; then
     osascript -e "tell application id \"$APP_BUNDLE_ID\" to quit" >/dev/null 2>&1 || true
     i=0
     while pgrep -qf "$dest/Contents/MacOS/" 2>/dev/null; do
-      i=$((i + 1)); [ "$i" -lt 50 ] || die "Lastout is still running; quit it from the menu bar, then run this again"
+      i=$((i + 1)); [ "$i" -lt 50 ] || die "Lastout is still running; choose Quit Lastout from its menu (or quit it in Activity Monitor), then run this again"
       sleep 0.2
     done
   fi

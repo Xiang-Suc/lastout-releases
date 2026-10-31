@@ -15,13 +15,13 @@
 <body>
 <div class="wrap">
   <nav>
-    <a class="brand" href="index.html"><img src="icon.png" alt="">Lastout</a>
+    <a class="brand" href="index.html" data-lang-link><img src="icon.png" alt="">Lastout</a>
     <div class="links">
-      <a href="index.html#pricing">Pricing</a>
-      <a href="terms.html" aria-current="page">Terms</a>
-      <a href="refund.html">Refund Policy</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="eula.html">EULA</a>
+      <a href="index.html#pricing" data-lang-link>Pricing</a>
+      <a href="terms.html" data-lang-link aria-current="page">Terms</a>
+      <a href="refund.html" data-lang-link>Refund Policy</a>
+      <a href="privacy.html" data-lang-link>Privacy</a>
+      <a href="eula.html" data-lang-link>EULA</a>
     </div>
   </nav>
 
@@ -80,28 +80,55 @@
   <footer>
     <span>Lastout · Rocha Tech LLC</span>
     <span class="links">
-      <a href="terms.html">Terms of Sale</a>
-      <a href="refund.html">Refund Policy</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="eula.html">EULA</a>
+      <a href="terms.html" data-lang-link>Terms of Sale</a>
+      <a href="refund.html" data-lang-link>Refund Policy</a>
+      <a href="privacy.html" data-lang-link>Privacy</a>
+      <a href="eula.html" data-lang-link>EULA</a>
       <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>
     </span>
   </footer>
 </div>
 
 <script>
+// Language: a choice saved on this site, then ?lang= (or #zh), then the
+// browser's, else English. The same rule as index.html and thanks.html.
 (function () {
   "use strict";
+  var LANG_KEY = "lastoutLang";
+  var LANGS = { en: true, zh: true };
   var buttons = document.querySelectorAll("[data-lang]");
   var docs = document.querySelectorAll("[data-doc]");
+
+  function savedLang() {
+    try { return window.localStorage.getItem(LANG_KEY); } catch (e) { return null; }
+  }
+  function firstLang() {
+    var saved = savedLang();
+    if (LANGS.hasOwnProperty(saved)) return saved;
+    var asked = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
+    if (LANGS.hasOwnProperty(asked)) return asked;
+    var language = (window.navigator && window.navigator.language) || "";
+    return /^zh\b/i.test(language) ? "zh" : "en";
+  }
   function pick(lang) {
     docs.forEach(function (d) { d.hidden = d.getAttribute("data-doc") !== lang; });
     buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang)); });
+    // Links to the other pages open them in the same language.
+    document.querySelectorAll("[data-lang-link]").forEach(function (a) {
+      var href = a.getAttribute("href").replace(/\?lang=zh(?=#|$)/, "");
+      a.setAttribute("href", lang === "zh" ? href.replace(/(#.*)?$/, "?lang=zh$1") : href);
+    });
     document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
   }
-  buttons.forEach(function (b) { b.addEventListener("click", function () { pick(b.getAttribute("data-lang")); }); });
-  var wanted = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
-  if (wanted === "zh") pick("zh");
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var lang = b.getAttribute("data-lang");
+      pick(lang);
+      // Blocked storage (some private windows): the choice lasts for this page.
+      try { window.localStorage.setItem(LANG_KEY, lang); } catch (e) { /* see above */ }
+    });
+  });
+  pick(firstLang());
 })();
 </script>
 </body>

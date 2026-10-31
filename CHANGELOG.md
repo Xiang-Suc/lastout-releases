@@ -3,6 +3,204 @@
 User-facing changes. Compatibility with other tools, and how each part
 of it is tested, is in [docs/compatibility.md](docs/compatibility.md).
 
+## Unreleased
+
+### On lastout.dev, in the key email and in install.sh
+
+No app update needed: these take effect when the site is published and
+the license server updated.
+
+- Buying: checkout on lastout.dev is open again. It was paused on
+  October 27, while 0.4 made licenses enforceable, and the Buy button
+  said so; it reopens with 0.4.1, the first version with signed licenses.
+- Buying: the price card lists coding agents first (Claude Code, Codex
+  and Cursor reading your terminals through `lo mcp`) and says that
+  nothing renews.
+- Buying: the key email has a designed version: the key on its own in a
+  large block that selects in one click, numbered activation steps, and
+  what's included and how the charge reads on a statement in a quieter
+  box below, then the same in Chinese, naming the buttons as the app
+  shows them in Chinese. It follows the mail app's light or dark mode
+  and loads nothing remote; the plain-text version, in both languages, is
+  still sent with it.
+- The Chinese privacy policy's license checks and diagnostics items call
+  a license key 授权码, as the rest of lastout.dev does; they said
+  许可证密钥.
+- lastout.dev's home page said the app connects only to check for
+  updates and once when you activate a license. Since 0.4.0 it also
+  checks the trial or license with Lastout's license server about every
+  15 minutes; the page now says so, as the privacy policy does.
+- lastout.dev's link preview, the picture shown where the link is
+  shared, said the `lo` command line is free. $29 once covers the app
+  and `lo` together, and the 14-day trial is what's free; the picture
+  now says so.
+- The terms, refund policy, EULA and privacy pages on lastout.dev open
+  in the language picked on another page of the site, else in the
+  browser's, as the home and thanks pages do; they went by the address
+  only. Their switch saves the choice and their links keep it.
+- Buying: the page after checkout no longer sends buyers to the menu
+  bar, where by default there is no Lastout icon (the island or the
+  bubble takes its place): opening Lastout again from Applications or
+  Spotlight brings up Settings, then Pass → Activate Lastout…. A key
+  sent by hand comes with the same steps.
+- Buying: the key email no longer sends buyers to the menu bar, where by
+  default there is no Lastout icon (the island or the bubble takes its
+  place): opening Lastout again from Applications or Spotlight brings up
+  Settings, then Pass → Activate Lastout…. It also says where Deactivate
+  on this Mac is on an activated Mac (Settings → Pass → Manage…), and
+  that the page after checkout shows the key for a day, not once.
+- `install.sh --app`: when the running Lastout doesn't quit as asked, it
+  said to quit it from the menu bar. It now says to choose Quit Lastout
+  from its menu, or to quit it in Activity Monitor.
+
+### In the app and `lo`
+
+With the next app update (0.4.2).
+
+- In Chinese the app calls a license key 授权码, as lastout.dev, its
+  legal pages and the thanks page do; it said 许可证密钥.
+- Activating a key already in use on all the Macs it allows: the message
+  said to deactivate it with Activate Lastout… → Deactivate on this Mac,
+  but an activated Mac has no Activate Lastout…. It now says Settings →
+  Pass → Manage… → Deactivate on this Mac.
+- Texts that pointed at a menu bar icon most Macs don't show: Lastout
+  has one only in Settings → Appearance → Menu bar only, and the island,
+  the bubble and the side dock carry its menu instead. The notice shown
+  instead of copying, after the trial or a refund, said copying "from the
+  menu bar" had stopped; it now says copying from the app. The setup
+  window's last step asked "Can't see the menu bar icon?"; it now says to
+  open Lastout again from Applications or Spotlight to change settings.
+- After the trial ended, or a refund, `lo license`, `lo search`,
+  `lo save`, `lo mcp` and `lssh` said to open the app "to start the trial
+  or activate it". They now say which: the trial has ended (buy or
+  activate Lastout), or the license was refunded or revoked (activate
+  another key or buy). Likewise when the app couldn't verify the license
+  for a day, when the Mac's date and time are off, and when the license
+  server needs a newer app; `lo license --json` gives the reason as
+  `trial_ended`, `revoked`, `offline`, `clock` or `update`. The app leaves
+  the reason in `lease.json` in place of the lease: it grants nothing,
+  and they still exit with status 4.
+- `lo license` said "No license or trial" also when the license was only
+  unverified for now (offline for a day, the clock off, after a restart).
+  It now says the paid commands don't work now, and why.
+- The notice shown instead of copying, when the trial has ended or the
+  license was refunded or couldn't be verified, lost its middle under the
+  notch ("This license was refunded or revoked, so c…or buy Lastout"):
+  what stopped and what to do. It now wraps onto as many lines as it
+  takes there, in the side dock (which cut it after three lines) and in
+  the HUD at the bottom of the screen (which stretched it into one line,
+  past the screen's edge for the longest). What was copied still shows on
+  one line, and no longer stretches the HUD when it is long.
+- Settings → Pass: after a refund, or a key revoked by hand, the card
+  said "Expired", as if the license had run out, under the title
+  "Refunded", though a key revoked by hand was never refunded (the
+  license server doesn't say which happened). Both now say "Revoked",
+  the status still in red.
+- A terminal that closed while another process held the database (a
+  backup tool, `lo forget` on a big file) kept its live socket until the
+  database was free: `lo --running` in another terminal still found the
+  closed one, and a proxy killed in the meantime left the socket and its
+  nonce file behind until the next terminal swept them. They go the
+  moment the shell exits now.
+- With 3 days of trial left, and again with 1, a notification says what
+  Lastout did on this Mac so far: how many commands it recorded, how
+  often output was copied and how often coding agents read it, and that
+  the purchase is one-time. Each comes once, whatever the long-command
+  notification switch says; clicking it opens Settings → Pass, where the
+  same three numbers now sit under the card while the trial runs or once
+  it has ended. `lo stats` (`--json`) prints them; the counts live in
+  `usage.tsv` in the data directory, next to the database.
+- The notice shown instead of copying, after the trial or a refund, leads
+  with what was there: "This output is 2,400 lines, recorded." (its size
+  when the lines aren't known, how many outputs for a merged copy).
+- `lo search`, refused after the trial or a refund, first says how many
+  matches there are in your recordings (counted on redacted text, so it
+  confirms no secret), then why it isn't showing them.
+- `lo mcp`, refused after the trial, answers the agent with what is
+  recorded and waiting and a sentence to pass on word for word: a
+  one-time purchase, not a subscription, activated in Settings → Pass;
+  the server's instructions ask the agent to relay such answers as they
+  are.
+- Settings → Pass says until when updates are included ("Updates until
+  2027-10-30; Lastout keeps working after that") and, like the refusals
+  in the app and in `lo`, that it is a one-time purchase, nothing renews.
+  The price itself is only on lastout.dev.
+- Two terminals opening at the same moment (tabs restored at login, a
+  split pane): one could end up without a live view, so `lo --running`
+  and the app's menu didn't see what it was running, and `exec $SHELL` in
+  it stopped recording. One terminal's sweep of leftover sockets probed
+  the other's while it was being created and took it for a crashed
+  session's. A terminal's socket now appears only once it answers.
+
+## 0.4.1 - 2026-10-28
+
+### Action needed
+
+- Coming from 0.3.x or 0.2.0: 0.4.0 was not published on its own, so its
+  section below applies too, Action needed included: open Lastout once
+  with the internet on after updating.
+
+### Fixed
+
+- Settings → Pass: when the license couldn't be verified (offline for a
+  day, the Mac's date and time off, an update required), the card said
+  "Expired" in red under a row saying "Not verified". It now says "Not
+  verified", in amber.
+- Settings → Pass: before the first license check, and after a refund,
+  the card's number changed every second the page redrew. It now stays
+  the same on a given Mac.
+
+## 0.4.0 - 2026-10-27
+
+### Action needed
+
+- Open Lastout once with the internet on after updating. It now asks
+  Lastout's license server what this Mac may do: a Mac activated on 0.3.x
+  renews its key there, any other starts (or continues) its trial. Until
+  that first answer, copying from the menu bar waits.
+- Coming from 0.2.0: none of 0.3.0 to 0.3.4 was published on its own, so
+  their sections below apply too, Action needed included: run `lo setup`
+  (or let the app's prompt update) and open a new tab.
+
+### Changed
+
+- The license and the trial are checked with the license server, which
+  answers with a lease it signed (Ed25519) for this Mac only, good for a
+  day. While the app runs it renews it about every 15 minutes, when the
+  Mac wakes and when the network comes back. Nothing else counts: no
+  stored JSON, no date of the app's own.
+- A refund, a chargeback or a key revoked by hand stops the app's copying
+  and `lo`'s paid commands on every Mac the key was activated on within
+  about 15 minutes, and ends the trial on those Macs. A seat released from
+  another Mac or from the dashboard stops this one at its next check.
+- The trial runs on the server's clock, one per Mac (a hash of its
+  hardware UUID): deleting the app's settings or setting the clock back
+  no longer restarts it, and the first launch needs the internet.
+- Offline, the app keeps working for a day after the last check; then
+  copying pauses, the menu says *Connect to verify the license* and it
+  resumes at the next successful check. Within a day, setting the clock
+  back changes nothing: the lease's age runs on a clock that counts sleep
+  and can't be set. A Mac whose clock runs more than a day fast can't
+  verify either: the app asks you to set the date and time automatically.
+- `lo search`, `lo save`, `lo mcp` and `lssh` need the trial or a license:
+  `lo` reads the lease the app keeps (`lease.json` in the data directory,
+  readable only by you) and never connects itself. Without one they say
+  why and exit with status 4; `lo mcp` answers each tool call with the
+  reason, so a server left running stops serving within a check of a
+  refund. Copying, `--list`, `lo saved`, `lo forget` and the rest work
+  without a license. `lo license` shows where this Mac stands.
+- The license server serves apps from 0.4.0 on; older ones get "update"
+  instead of a lease. Deactivating still works from any version.
+- The privacy policy, the EULA (sections 2 and 5) and the refund policy
+  describe the checks (dated 2026-10-27).
+
+### Fixed
+
+- A license could be made up by writing JSON into the app's preferences,
+  and the trial restarted by deleting a preference or setting the clock
+  back. Neither works any more: the app believes only a lease the server
+  signed for this Mac.
+
 ## 0.3.4 - 2026-10-27
 
 ### Action needed

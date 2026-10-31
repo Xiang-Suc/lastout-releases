@@ -22,12 +22,12 @@ window.LASTOUT_STORE = {
     // the client-side token starts with live_…, the price id with pri_….
     // Live token ctkn_01m5v2keqfxxfjzn0a7p12npkp "lastout site"; the price
     // is $29 one-time on "Lastout for Mac" (pro_01m56esd3gyfhngcah22apxka4).
-    // Checkout is paused until 0.4.0 (signed licenses) ships: with no
-    // priceId the Buy button opens no checkout and says it isn't open yet.
-    // To reopen: priceId: "pri_01m5e2hbfy8xp006zree8mce6c".
+    // Checkout was paused (an empty priceId: the Buy button opens no
+    // checkout and says it isn't open yet) until 0.4.1, the first version
+    // with signed licenses, could be published; it reopens with it.
     production: {
       clientToken: "live_164136e9fadbb86a29b392f2598",
-      priceId: "",
+      priceId: "pri_01m5e2hbfy8xp006zree8mce6c",
     },
   },
 

@@ -15,13 +15,13 @@
 <body>
 <div class="wrap">
   <nav>
-    <a class="brand" href="index.html"><img src="icon.png" alt="">Lastout</a>
+    <a class="brand" href="index.html" data-lang-link><img src="icon.png" alt="">Lastout</a>
     <div class="links">
-      <a href="index.html#pricing">Pricing</a>
-      <a href="terms.html">Terms</a>
-      <a href="refund.html">Refund Policy</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="eula.html" aria-current="page">EULA</a>
+      <a href="index.html#pricing" data-lang-link>Pricing</a>
+      <a href="terms.html" data-lang-link>Terms</a>
+      <a href="refund.html" data-lang-link>Refund Policy</a>
+      <a href="privacy.html" data-lang-link>Privacy</a>
+      <a href="eula.html" data-lang-link aria-current="page">EULA</a>
     </div>
   </nav>
 
@@ -42,7 +42,7 @@
 <p><strong>The license.</strong> After the trial, Lastout needs a license. A license lets one person use the App and the command-line tools on up to 2 Macs that they own or control. It is personal, non-exclusive and non-transferable. A business that buys licenses for its staff needs one license for each person who uses Lastout.</p>
 <h2 id="2-trial-and-beta-builds">2. Trial and beta builds</h2>
 <ul>
-<li><strong>Trial.</strong> You may use Lastout, the App and the command-line tools, free for 14 days from the App's first launch. After that, using it needs a license.</li>
+<li><strong>Trial.</strong> You may use Lastout, the App and the command-line tools, free for 14 days from the App's first launch on a Mac. Our license service times the trial, so the App needs an internet connection at its first launch, and each Mac gets one trial. After that, using it needs a license.</li>
 <li><strong>Beta builds.</strong> A beta build works until the date shown in it (Settings → About), then asks you to update. Beta builds may have bugs and are provided for testing.</li>
 </ul>
 <h2 id="3-updates">3. Updates</h2>
@@ -54,8 +54,8 @@
 <li>Reverse engineer, decompile or disassemble the App, except to the extent the law where you live allows it despite this restriction.</li>
 <li>Use the App to break the law, or to record terminals of other people without their permission.</li>
 </ul>
-<h2 id="5-activation-and-your-data">5. Activation and your data</h2>
-<p>Activating a license sends our license service, once, your license key, a hash of this Mac's hardware identifier (so the key can count the Macs it is used on; the identifier itself never leaves the Mac) and the App's version number. Deactivating on this Mac sends the key and the same hash once more, to free the seat. Nothing about your terminals, commands or their output is sent. Lastout's recordings stay on your Mac. What it records, where it keeps it and what can leave your Mac is described in the privacy policy: <a href="https://lastout.dev/privacy.html">https://lastout.dev/privacy.html</a></p>
+<h2 id="5-license-checks-and-your-data">5. License checks and your data</h2>
+<p>The App checks the trial and the license with our license service: when it first launches, when you activate a key, and then about every 15 minutes while it runs. Each check sends a hash of this Mac's hardware identifier (so the trial and the key can count Macs; the identifier itself never leaves the Mac), the App's version number and, once you activated one, your license key. Deactivating on this Mac sends the key and the same hash to free the seat. If the App can't reach the service, it keeps working for a day after the last successful check, then copying pauses until a check succeeds. Once a license is refunded or charged back, it stops working on every Mac where it was activated, the command-line tools' paid commands included, within about 15 minutes of the check that learns it, and the trial on those Macs ends too. Nothing about your terminals, commands or their output is sent. Lastout's recordings stay on your Mac. What it records, where it keeps it and what can leave your Mac is described in the privacy policy: <a href="https://lastout.dev/privacy.html">https://lastout.dev/privacy.html</a></p>
 <h2 id="6-open-source-components">6. Open-source components</h2>
 <p>The App includes open-source software under its own licenses. Their notices are in the App (Settings → About → Acknowledgements).</p>
 <h2 id="7-no-warranty">7. No warranty</h2>
@@ -85,7 +85,7 @@
 <p><strong>授权。</strong> 试用期结束后，Lastout 需要授权。一份授权允许一个人在最多 2 台自己拥有或掌控的 Mac 上使用 App 和命令行工具。授权属于个人，非独占，不可转让。公司为员工购买时，每个使用 Lastout 的人需要一份授权。</p>
 <h2 id="zh-2-试用版和内测版">2. 试用版和内测版</h2>
 <ul>
-<li><strong>试用。</strong> 从 App 首次启动起，可以免费使用 Lastout（App 和命令行工具）14 天。之后，使用需要授权。</li>
+<li><strong>试用。</strong> 从 App 在一台 Mac 上首次启动起，可以免费使用 Lastout（App 和命令行工具）14 天。试用由我们的授权服务计时，所以 App 首次启动时需要联网，每台 Mac 只有一次试用。之后，使用需要授权。</li>
 <li><strong>内测版。</strong> 内测版在其标注的日期之前可用（设置 → 关于），到期后会提示更新。内测版可能有缺陷，仅供测试。</li>
 </ul>
 <h2 id="zh-3-更新">3. 更新</h2>
@@ -97,8 +97,8 @@
 <li>对 App 进行逆向工程、反编译或反汇编，但你所在地法律在本限制之外仍明确允许的除外。</li>
 <li>用 App 违反法律，或未经他人同意记录他人的终端。</li>
 </ul>
-<h2 id="zh-5-激活和你的数据">5. 激活和你的数据</h2>
-<p>激活授权时，会向我们的授权服务发送一次：你的授权码、这台 Mac 硬件标识的哈希（用来统计一个授权码用在几台 Mac 上；标识本身不会离开这台 Mac）和 App 的版本号。在这台 Mac 上停用时，会再发送一次授权码和同一个哈希，以释放座位。不会发送任何终端、命令或其输出。Lastout 的记录只保存在你的 Mac 上。记录什么、存在哪里、什么会离开你的 Mac，见隐私政策：https://lastout.dev/privacy.html?lang=zh</p>
+<h2 id="zh-5-授权校验和你的数据">5. 授权校验和你的数据</h2>
+<p>App 会向我们的授权服务校验试用和授权：首次启动时、你激活授权码时，以及之后运行期间大约每 15 分钟一次。每次校验发送这台 Mac 硬件标识的哈希（用来让试用和授权码统计 Mac 的数量；标识本身不会离开这台 Mac）、App 的版本号，以及激活之后的授权码。在这台 Mac 上停用时，会发送授权码和同一个哈希，以释放座位。如果 App 连不上授权服务，它在上次成功校验后照常工作一天，之后复制会暂停，直到校验成功。授权一旦退款或被拒付，在得知此事的那次校验之后大约 15 分钟内，它在所有激活过的 Mac 上停止工作，包括命令行工具的付费命令，这些 Mac 的试用也随之结束。不会发送任何终端、命令或其输出。Lastout 的记录只保存在你的 Mac 上。记录什么、存在哪里、什么会离开你的 Mac，见隐私政策：https://lastout.dev/privacy.html?lang=zh</p>
 <h2 id="zh-6-开源组件">6. 开源组件</h2>
 <p>App 包含开源软件，它们各自适用自己的许可证，声明见 App 内（设置 → 关于 → 致谢）。</p>
 <h2 id="zh-7-不提供担保">7. 不提供担保</h2>
@@ -126,28 +126,55 @@
   <footer>
     <span>Lastout · Rocha Tech LLC</span>
     <span class="links">
-      <a href="terms.html">Terms of Sale</a>
-      <a href="refund.html">Refund Policy</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="eula.html">EULA</a>
+      <a href="terms.html" data-lang-link>Terms of Sale</a>
+      <a href="refund.html" data-lang-link>Refund Policy</a>
+      <a href="privacy.html" data-lang-link>Privacy</a>
+      <a href="eula.html" data-lang-link>EULA</a>
       <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>
     </span>
   </footer>
 </div>
 
 <script>
+// Language: a choice saved on this site, then ?lang= (or #zh), then the
+// browser's, else English. The same rule as index.html and thanks.html.
 (function () {
   "use strict";
+  var LANG_KEY = "lastoutLang";
+  var LANGS = { en: true, zh: true };
   var buttons = document.querySelectorAll("[data-lang]");
   var docs = document.querySelectorAll("[data-doc]");
+
+  function savedLang() {
+    try { return window.localStorage.getItem(LANG_KEY); } catch (e) { return null; }
+  }
+  function firstLang() {
+    var saved = savedLang();
+    if (LANGS.hasOwnProperty(saved)) return saved;
+    var asked = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
+    if (LANGS.hasOwnProperty(asked)) return asked;
+    var language = (window.navigator && window.navigator.language) || "";
+    return /^zh\b/i.test(language) ? "zh" : "en";
+  }
   function pick(lang) {
     docs.forEach(function (d) { d.hidden = d.getAttribute("data-doc") !== lang; });
     buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang)); });
+    // Links to the other pages open them in the same language.
+    document.querySelectorAll("[data-lang-link]").forEach(function (a) {
+      var href = a.getAttribute("href").replace(/\?lang=zh(?=#|$)/, "");
+      a.setAttribute("href", lang === "zh" ? href.replace(/(#.*)?$/, "?lang=zh$1") : href);
+    });
     document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
   }
-  buttons.forEach(function (b) { b.addEventListener("click", function () { pick(b.getAttribute("data-lang")); }); });
-  var wanted = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
-  if (wanted === "zh") pick("zh");
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var lang = b.getAttribute("data-lang");
+      pick(lang);
+      // Blocked storage (some private windows): the choice lasts for this page.
+      try { window.localStorage.setItem(LANG_KEY, lang); } catch (e) { /* see above */ }
+    });
+  });
+  pick(firstLang());
 })();
 </script>
 </body>

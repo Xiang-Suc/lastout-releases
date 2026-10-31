@@ -8,11 +8,11 @@ names the command or setting that enforces it.
 
 Lastout is made by Rocha Tech LLC, a company registered in New Jersey,
 United States ("we"). What you record never reaches us. What does is
-only what buying and activating a license needs, described under
-*Buying a license*; for that data we are responsible (the data
-controller). Questions and requests: support@lastout.dev.
+only what buying a license and checking the trial and the license need,
+described under *License checks* and *Buying a license*; for that data
+we are responsible (the data controller). Questions and requests: support@lastout.dev.
 
-Last updated: 2026-10-26.
+Last updated: 2026-10-27.
 
 ## What is recorded
 
@@ -77,7 +77,7 @@ copies and prints a command as saved, without redaction.
 
 Nothing you recorded, ever, on its own. The command-line tools have no
 network code. The menu bar app makes two kinds of connection: the update
-check, and activating a license (below). Once a day (and when you choose
+check, and the license checks (below). Once a day (and when you choose
 *Check for Updates…*) it fetches the release list
 at `github.com/Xiang-Suc/lastout-releases/releases/latest/download/appcast.xml`
 to see whether a newer version exists. That request carries no data
@@ -98,18 +98,28 @@ only when you, or a tool you run, ask for it:
   nothing the server can write or delete.
 - **Notifications** show the command line and its exit status on your
   screen, through macOS's notification center, nowhere else.
-- **Activation** (a paid version): when you enter a license key, the app
-  sends one request to Lastout's license server (the address is in the
-  app's Info.plist as `LastoutLicenseServer`; it is a Cloudflare Worker
-  run by Lastout, source in `service/`): the key, a SHA-256 hash of this
-  Mac's hardware UUID (so a key can count the Macs it is used on; the
-  UUID itself never leaves the Mac), and the app's version. The server
-  answers with the name and email from the purchase and the day the
-  purchase's year of updates ends, which the app keeps in your keychain. That is the only time it connects, except *Deactivate
-  on this Mac*, which sends the key and the same hash once more to free
-  the seat. Nothing about your recordings goes with either request, and
-  the app never phones home afterwards. A build with no server configured
-  refuses every key and sends nothing.
+- **License checks**: the app asks Lastout's license server (the
+  address is in the app's Info.plist as `LastoutLicenseServer`; it is a
+  Cloudflare Worker run by Lastout, source in `service/`) what this Mac
+  may do. At the first launch it starts the 14-day trial there, so that
+  the trial runs on the server's clock and each Mac gets one; once you
+  enter a license key it activates the key; and while the app runs it
+  checks again about every 15 minutes, when the Mac wakes and when the
+  network comes back, so that a refunded license stops. Each request
+  carries a SHA-256 hash of this Mac's hardware UUID (the UUID itself
+  never leaves the Mac), the app's version, and, once you activated one,
+  the license key; a 0.3 install's first trial request also carries the
+  day it was first launched. *Deactivate on this Mac* sends the key and
+  the hash to free the seat. The server answers with a lease it signed:
+  what this Mac may do (the trial and when it ends, or the license and
+  its seats), valid for a day. The app keeps it in your keychain and in
+  `lease.json` (readable only by you) in the data directory, where `lo`
+  reads it: `lo search`, `lo save`, `lo mcp` and `lssh` need a valid one,
+  and `lo` itself still sends nothing. Without the network the app keeps
+  working for a day after the last check, then copying waits until a
+  check succeeds. Nothing about your recordings goes with any of these
+  requests. A build with no server configured refuses every key and
+  sends nothing.
 - **Diagnostics** (Settings → About → *Export Diagnostics…*) writes a zip
   where you choose, for you to attach to a bug report; the app sends it
   nowhere. In it: versions, Lastout's settings, the screens' sizes, the
@@ -161,7 +171,7 @@ It asks for one permission, notifications, when it starts; it works
 without them (the menu and shortcuts don't need them). "Open at login" is off until
 you turn it on in Settings. It needs no accessibility, screen recording
 or input monitoring permission. Its only network connections are the
-update check and license activation, both described above.
+update check and the license checks, both described above.
 
 While you record or share your screen, its overlays (the island, the
 bubble, the side dock, the copy confirmations, the picker) are left out
@@ -190,13 +200,23 @@ When a purchase completes, Paddle notifies Lastout's license server
 
 - your name and email, Paddle's customer and transaction IDs, the
   license key and the date it was issued;
-- for each Mac it is activated on: the hash described under
-  *Activation* above, the app version, and when it was activated;
+- for each Mac it is activated on: the hash described under *License
+  checks* above, the app version, when it was activated and the last
+  day it checked in (noted at most once a day). When the seat is freed,
+  only the hash stays with the key, so that a refund still ends that
+  Mac's trial;
 - whether the key was revoked, and why (a refund or a chargeback).
+
+For each Mac that starts the trial, it keeps the same hash, when the
+trial started and ends, the first and latest app versions and the last
+day it checked in, whether or not you buy.
 
 That is used to email you the key, to show it once more on the page you
 land on after checkout (for 24 hours), to count the Macs a key is used
-on, and to stop a refunded key from activating. Apart from replies when
+on, to give each Mac one trial, and to stop a refunded key on the Macs
+it was activated on: within about 15 minutes of the refund, the app
+there stops copying and `lo` stops its paid commands. A refund also ends
+the trial of those Macs. Apart from replies when
 you write to us, the email with your key is the only one we send: there
 is no newsletter or marketing list. As the seller on Paddle we can also
 see your order in Paddle's dashboard: what was bought, when, for how
@@ -219,7 +239,8 @@ a one-time code; it runs on Cloudflare next to the license server and
 keeps a log of what was changed in it.
 
 The license record is kept as long as the license exists, since a key
-can't be checked without it. It is stored with Cloudflare, and your
+can't be checked without it; a trial record as long as Lastout sells
+licenses, since a Mac gets one trial. It is stored with Cloudflare, and your
 email passes through Resend to deliver the key; both, like Paddle, may
 process it outside your country, including in the United States. Only
 we can read the database; the app and the website reach the server over
@@ -256,16 +277,16 @@ requires us to.
 What Lastout records stays on your Mac, under your control with the
 commands above; we can't see it. For the license record we keep, write
 to support@lastout.dev to get a copy, correct it or delete it. Once it
-is deleted the key can no longer activate a Mac; Macs already activated
-keep working, because the app doesn't check again. Paddle keeps its own
+is deleted the key stops working on every Mac within a day, because the
+app checks it again; deleting a Mac's trial record gives it a new trial. Paddle keeps its own
 record of the order, as tax law requires: ask Paddle, or ask us and
 we'll pass the request on. Depending on where you live (in the EU, the
 UK or California, for example) you may have further rights, such as to
 object or to complain to a data protection authority.
 
-We use the license record because we need it to deliver what you bought
-(for EU and UK law, the legal basis is performing our contract with
-you).
+We use the license and trial records because we need them to deliver
+what you bought or are trying (for EU and UK law, the legal basis is
+performing our contract with you: the EULA's trial and license terms).
 
 ## Changes
 

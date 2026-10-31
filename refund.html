@@ -15,13 +15,13 @@
 <body>
 <div class="wrap">
   <nav>
-    <a class="brand" href="index.html"><img src="icon.png" alt="">Lastout</a>
+    <a class="brand" href="index.html" data-lang-link><img src="icon.png" alt="">Lastout</a>
     <div class="links">
-      <a href="index.html#pricing">Pricing</a>
-      <a href="terms.html">Terms</a>
-      <a href="refund.html" aria-current="page">Refund Policy</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="eula.html">EULA</a>
+      <a href="index.html#pricing" data-lang-link>Pricing</a>
+      <a href="terms.html" data-lang-link>Terms</a>
+      <a href="refund.html" data-lang-link aria-current="page">Refund Policy</a>
+      <a href="privacy.html" data-lang-link>Privacy</a>
+      <a href="eula.html" data-lang-link>EULA</a>
     </div>
   </nav>
 
@@ -41,7 +41,7 @@
 <p>Write to <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a> with your order number, or reply to your receipt email from Paddle.com Market Ltd (Paddle). Orders are processed by Paddle.com Market Ltd (Paddle), our merchant of record, which issues the refund to your original payment method. On card statements the charge reads <code>PADDLE.NET* ROCHA TECH</code> (<code>PAYPAL *PADDLE.NET</code> with PayPal). Refunds usually reach you within a few business days, depending on your bank.</p>
 <p>If you bought directly from us, write to <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a> or reply where you bought, and we refund you ourselves, to the payment method you used.</p>
 <h2 id="after-a-refund">After a refund</h2>
-<p>The refunded license key is revoked: it can no longer activate Lastout on any Mac, and your license, for the App and the command-line tools, ends. You must then stop using Lastout on every Mac where the key was activated, and delete the App. Your recordings stay on your Mac.</p>
+<p>The refunded license key is revoked: it can no longer activate Lastout on any Mac, and your license, for the App and the command-line tools, ends. Within about 15 minutes the App stops copying on every Mac where the key was activated, and so do the command-line tools' paid commands; the trial on those Macs ends too. You may then delete the App. Your recordings stay on your Mac.</p>
 <h2 id="your-legal-rights">Your legal rights</h2>
 <p>This policy doesn't limit any right to a refund or withdrawal that the law where you live gives you.</p>
     </article>
@@ -51,7 +51,7 @@
 <p>写信到 <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a> 并附上订单号，或直接回复 Paddle.com Market Ltd（Paddle）发给你的收据邮件。订单由我们的代收商户 Paddle.com Market Ltd（Paddle）处理，退款会原路退回你的付款方式。这笔扣款在银行卡账单上显示为 <code>PADDLE.NET* ROCHA TECH</code>（PayPal 付款显示为 <code>PAYPAL *PADDLE.NET</code>）。到账时间视银行而定，通常几个工作日。</p>
 <p>如果你是直接向我们购买的，写信到 <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a> 或在当初购买的对话里告诉我们，我们会把钱原路退回你付款时用的方式。</p>
 <h2 id="zh-退款之后">退款之后</h2>
-<p>被退款的授权码会被吊销：不能再在任何 Mac 上激活 Lastout，你对 App 和命令行工具的授权也随之终止。你必须在每一台激活过该授权码的 Mac 上停止使用 Lastout 并删除 App。你的记录仍然保存在你的 Mac 上。</p>
+<p>被退款的授权码会被吊销：不能再在任何 Mac 上激活 Lastout，你对 App 和命令行工具的授权也随之终止。大约 15 分钟内，每一台激活过该授权码的 Mac 上的 App 停止复制，命令行工具的付费命令也一样停下；这些 Mac 的试用也随之结束。之后你可以删除 App。你的记录仍然保存在你的 Mac 上。</p>
 <h2 id="zh-你的法定权利">你的法定权利</h2>
 <p>本政策不限制你所在地法律赋予你的任何退款或撤回权利。</p>
     </article>
@@ -60,28 +60,55 @@
   <footer>
     <span>Lastout · Rocha Tech LLC</span>
     <span class="links">
-      <a href="terms.html">Terms of Sale</a>
-      <a href="refund.html">Refund Policy</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="eula.html">EULA</a>
+      <a href="terms.html" data-lang-link>Terms of Sale</a>
+      <a href="refund.html" data-lang-link>Refund Policy</a>
+      <a href="privacy.html" data-lang-link>Privacy</a>
+      <a href="eula.html" data-lang-link>EULA</a>
       <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>
     </span>
   </footer>
 </div>
 
 <script>
+// Language: a choice saved on this site, then ?lang= (or #zh), then the
+// browser's, else English. The same rule as index.html and thanks.html.
 (function () {
   "use strict";
+  var LANG_KEY = "lastoutLang";
+  var LANGS = { en: true, zh: true };
   var buttons = document.querySelectorAll("[data-lang]");
   var docs = document.querySelectorAll("[data-doc]");
+
+  function savedLang() {
+    try { return window.localStorage.getItem(LANG_KEY); } catch (e) { return null; }
+  }
+  function firstLang() {
+    var saved = savedLang();
+    if (LANGS.hasOwnProperty(saved)) return saved;
+    var asked = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
+    if (LANGS.hasOwnProperty(asked)) return asked;
+    var language = (window.navigator && window.navigator.language) || "";
+    return /^zh\b/i.test(language) ? "zh" : "en";
+  }
   function pick(lang) {
     docs.forEach(function (d) { d.hidden = d.getAttribute("data-doc") !== lang; });
     buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang)); });
+    // Links to the other pages open them in the same language.
+    document.querySelectorAll("[data-lang-link]").forEach(function (a) {
+      var href = a.getAttribute("href").replace(/\?lang=zh(?=#|$)/, "");
+      a.setAttribute("href", lang === "zh" ? href.replace(/(#.*)?$/, "?lang=zh$1") : href);
+    });
     document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
   }
-  buttons.forEach(function (b) { b.addEventListener("click", function () { pick(b.getAttribute("data-lang")); }); });
-  var wanted = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
-  if (wanted === "zh") pick("zh");
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var lang = b.getAttribute("data-lang");
+      pick(lang);
+      // Blocked storage (some private windows): the choice lasts for this page.
+      try { window.localStorage.setItem(LANG_KEY, lang); } catch (e) { /* see above */ }
+    });
+  });
+  pick(firstLang());
 })();
 </script>
 </body>
