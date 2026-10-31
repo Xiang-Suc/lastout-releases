@@ -1,4 +1,4 @@
-/* Shared styles for the secondary pages (terms, refund, privacy, eula, thanks).
+/* Shared styles for the secondary pages (terms, refund, privacy, eula, thanks, activate).
    Same tokens, fonts and nav as index.html, which keeps its own inline
    stylesheet because of the demo animation. */
 :root {
@@ -81,7 +81,7 @@ code, kbd { font: 500 0.88em var(--mono); color: var(--paper); background: var(-
 .btn.ghost:hover { border-color: var(--dim); }
 .btn.small { padding: 9px 16px; font-size: 14px; }
 
-/* thanks page */
+/* thanks and activate pages */
 .status { margin-top: 36px; padding: 20px 22px; border: 1px solid var(--line); border-radius: 14px; background: var(--ink-2); color: #cfcabe; display: flex; gap: 14px; align-items: flex-start; }
 .status.ok { border-color: rgba(116, 217, 191, 0.5); }
 .status.warn { border-color: rgba(230, 182, 92, 0.5); }
@@ -98,6 +98,7 @@ code, kbd { font: 500 0.88em var(--mono); color: var(--paper); background: var(-
   font: 500 clamp(15px, 2.4vw, 20px)/1.4 var(--mono); color: var(--paper); letter-spacing: 0.02em; word-break: break-all; user-select: all;
 }
 .keybox .btn { align-self: center; }
+.actions { margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; }
 .steps { margin-top: 44px; }
 .steps h2 { font: 400 30px/1.1 var(--serif); }
 .steps ol { margin-top: 16px; padding-left: 1.3em; color: #cfcabe; }

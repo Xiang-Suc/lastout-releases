@@ -52,11 +52,29 @@ the license server updated.
 - `install.sh --app`: when the running Lastout doesn't quit as asked, it
   said to quit it from the menu bar. It now says to choose Quit Lastout
   from its menu, or to quit it in Activity Monitor.
+- Buying: the key email has an Activate in Lastout button (a link in the
+  plain-text version, and in the Chinese section) that opens
+  lastout.dev/activate, a new page showing the key with a Copy button and
+  an Open Lastout button. Open Lastout hands the key to Lastout on this
+  Mac (0.4.2 or later), which opens Settings → Pass with the key filled
+  into Activate Lastout…; you still click Activate there. The key travels
+  only in the page's address: the page sends it nowhere and asks search
+  engines not to index it. With no Lastout on the Mac, or an older one,
+  the page says what to do instead.
+- Buying: on the page after checkout, in a browser without the clipboard
+  API or one that refused it, Copy said "Copied" even when the browser's
+  older copy command had done nothing. It now says "Select and copy" then,
+  with the key already selected; the activate page does the same.
 
 ### In the app and `lo`
 
 With the next app update (0.4.2).
 
+- `lastout://activate?key=…`: a new URL the app answers to, the one the
+  key email's Activate in Lastout button opens through lastout.dev.
+  Settings opens on the Pass page with the key filled into the Activate
+  Lastout… window, nothing clicked for you. Without a key, or with text
+  not shaped like one, only the Pass page opens.
 - In Chinese the app calls a license key 授权码, as lastout.dev, its
   legal pages and the thanks page do; it said 许可证密钥.
 - Activating a key already in use on all the Macs it allows: the message

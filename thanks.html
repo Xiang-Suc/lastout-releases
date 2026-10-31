@@ -296,7 +296,10 @@
     function fallback() {
       var range = document.createRange(); range.selectNodeContents(keyOut);
       var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
-      try { document.execCommand("copy"); done(); } catch (e) { copy.textContent = t.selectAndCopy; }
+      // execCommand reports failure by returning false, not only by throwing.
+      var copied = false;
+      try { copied = document.execCommand("copy") === true; } catch (e) { copied = false; }
+      if (copied) done(); else copy.textContent = t.selectAndCopy;
     }
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(key).then(done, fallback);
     else fallback();

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activate — Lastout</title>
+<meta name="robots" content="noindex">
+<!-- The key is in this page's address: no link or font request carries it on. -->
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="page.css">
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="brand" href="index.html" data-lang-link><img src="icon.png" alt="">Lastout</a>
+    <div class="links">
+      <a href="index.html#pricing" data-lang-link><span data-doc="en">Pricing</span><span data-doc="zh" hidden>价格</span></a>
+      <a href="terms.html" data-lang-link><span data-doc="en">Terms</span><span data-doc="zh" hidden>条款</span></a>
+      <a href="refund.html" data-lang-link><span data-doc="en">Refund Policy</span><span data-doc="zh" hidden>退款政策</span></a>
+      <a href="privacy.html" data-lang-link><span data-doc="en">Privacy</span><span data-doc="zh" hidden>隐私</span></a>
+      <a href="eula.html" data-lang-link><span data-doc="en">EULA</span><span data-doc="zh" hidden>许可协议</span></a>
+    </div>
+  </nav>
+
+  <main class="narrow">
+    <div data-doc="en">
+      <div class="label">Activate</div>
+      <h1>Your key, <em>into Lastout.</em></h1>
+    </div>
+    <div lang="zh-CN" data-doc="zh" hidden>
+      <div class="label">激活</div>
+      <h1>把授权码<em style="white-space: nowrap">送进 Lastout。</em></h1>
+    </div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">English</button>
+      <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+    </div>
+
+    <div class="status" id="status" aria-live="polite">
+      <span id="status-text"></span>
+    </div>
+
+    <div class="keybox" id="keybox" hidden>
+      <output id="key"></output>
+      <button class="btn primary" id="copy" type="button">Copy</button>
+    </div>
+    <p class="actions" id="actions" hidden>
+      <a class="btn primary" id="open" href="lastout://activate">Open Lastout</a>
+      <a class="btn ghost" data-download href="https://github.com/Xiang-Suc/lastout-releases/releases/latest" id="download">Download Lastout</a>
+    </p>
+
+    <div class="steps" data-doc="en">
+      <h2>If nothing opens</h2>
+      <ol>
+        <li>No Lastout on this Mac yet? <a data-download href="https://github.com/Xiang-Suc/lastout-releases/releases/latest">Download for macOS</a>, unzip, move it to Applications and open it once. Then click <b>Open Lastout</b> above again.</li>
+        <li>Lastout older than 0.4.2 opens but leaves the field empty. Copy the key, open Lastout again from Applications or Spotlight to bring up its Settings, go to <b>Pass</b> → <b>Activate Lastout…</b>, paste the key and click <b>Activate</b>.</li>
+        <li>The same key works on up to 2 Macs; <i>Deactivate on this Mac</i> frees a seat.</li>
+      </ol>
+      <p>The key is only in this page's address: nothing here sends it anywhere, and Lastout checks it with the license server only when you click Activate. Questions: <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>.</p>
+    </div>
+    <div class="steps" lang="zh-CN" data-doc="zh" hidden>
+      <h2>没反应的话</h2>
+      <ol>
+        <li>这台 Mac 还没装 Lastout？<a data-download href="https://github.com/Xiang-Suc/lastout-releases/releases/latest">下载 macOS 版</a>，解压后拖进「应用程序」文件夹，打开一次，再点上面的「<b>打开 Lastout</b>」。</li>
+        <li>0.4.2 之前的 Lastout 会打开，但不会填入授权码。复制授权码，从「应用程序」或聚焦搜索再打开一次 Lastout，会弹出设置窗口；进入「<b>通行证</b>」→「<b>激活 Lastout…</b>」，粘贴授权码，点「<b>激活</b>」。</li>
+        <li>同一个授权码最多可以用在 2 台 Mac 上；点<i>在这台 Mac 上停用</i>可以腾出一个名额。</li>
+      </ol>
+      <p>授权码只在这个页面的地址里：这里不会把它发到任何地方，Lastout 也只在你点「激活」时才向授权服务器核对。有问题请写信到 <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>。</p>
+    </div>
+  </main>
+
+  <footer>
+    <span>Lastout · Rocha Tech LLC</span>
+    <span class="links">
+      <a href="terms.html" data-lang-link><span data-doc="en">Terms of Sale</span><span data-doc="zh" hidden>销售条款</span></a>
+      <a href="refund.html" data-lang-link><span data-doc="en">Refund Policy</span><span data-doc="zh" hidden>退款政策</span></a>
+      <a href="privacy.html" data-lang-link><span data-doc="en">Privacy</span><span data-doc="zh" hidden>隐私政策</span></a>
+      <a href="eula.html" data-lang-link><span data-doc="en">EULA</span><span data-doc="zh" hidden>许可协议</span></a>
+      <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>
+    </span>
+  </footer>
+</div>
+
+<script src="config.js"></script>
+<script>
+(function () {
+  "use strict";
+  var cfg = window.LASTOUT_STORE || {};
+  var support = cfg.support || "support@lastout.dev";
+
+  // Everything this script writes, in both languages.
+  var STRINGS = {
+    en: {
+      title: "Activate — Lastout",
+      ready: "Click Open Lastout: the key goes into Lastout's activation window on this Mac, where you read it and click Activate.",
+      noKey: "This page is opened from the key email, with the key in its address. Opened it some other way? Your key is in the email from your purchase.",
+      badKey: function () { return "What this address carries isn't shaped like a Lastout key. Your key is in the email from your purchase; otherwise write to " + support + "."; },
+      copy: "Copy",
+      copied: "Copied",
+      selectAndCopy: "Select and copy",
+      open: "Open Lastout",
+      download: "Download Lastout"
+    },
+    zh: {
+      title: "激活 — Lastout",
+      ready: "点「打开 Lastout」，授权码会填进这台 Mac 上 Lastout 的激活窗口，看一眼再点「激活」。",
+      noKey: "这个页面从授权码邮件打开，授权码在它的地址里。从别处打开的？授权码在购买后收到的邮件里。",
+      badKey: function () { return "这个地址里带的不像 Lastout 的授权码。授权码在购买后收到的邮件里；找不到的话，请写信到 " + support + "。"; },
+      copy: "复制",
+      copied: "已复制",
+      selectAndCopy: "请手动选中并复制",
+      open: "打开 Lastout",
+      download: "下载 Lastout"
+    }
+  };
+
+  document.querySelectorAll("[data-support]").forEach(function (a) {
+    a.href = "mailto:" + support;
+    a.textContent = support;
+  });
+
+  var status = document.getElementById("status");
+  var text = document.getElementById("status-text");
+  var keybox = document.getElementById("keybox");
+  var keyOut = document.getElementById("key");
+  var copy = document.getElementById("copy");
+  var actions = document.getElementById("actions");
+  var open = document.getElementById("open");
+  var download = document.getElementById("download");
+
+  // Language: a choice saved on this site, then ?lang= (or #zh), then the
+  // browser's, else English. The same rule as index.html.
+  var LANG_KEY = "lastoutLang";
+  var t = STRINGS.en;
+  var said = null;  // what the status line says, as a function of t
+
+  function savedLang() {
+    try { return window.localStorage.getItem(LANG_KEY); } catch (e) { return null; }
+  }
+  function firstLang() {
+    var saved = savedLang();
+    if (STRINGS.hasOwnProperty(saved)) return saved;
+    var asked = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
+    if (STRINGS.hasOwnProperty(asked)) return asked;
+    var language = (window.navigator && window.navigator.language) || "";
+    return /^zh\b/i.test(language) ? "zh" : "en";
+  }
+  function pick(lang) {
+    t = STRINGS[lang];
+    document.querySelectorAll("[data-doc]").forEach(function (d) { d.hidden = d.getAttribute("data-doc") !== lang; });
+    document.querySelectorAll("[data-lang]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang)); });
+    // Links to the other pages open them in the same language.
+    document.querySelectorAll("[data-lang-link]").forEach(function (a) {
+      var href = a.getAttribute("href").replace(/\?lang=zh(?=#|$)/, "");
+      a.setAttribute("href", lang === "zh" ? href.replace(/(#.*)?$/, "?lang=zh$1") : href);
+    });
+    document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+    document.title = t.title;
+    copy.textContent = t.copy;
+    open.textContent = t.open;
+    download.textContent = t.download;
+    if (said) text.textContent = said(t);
+  }
+  document.querySelectorAll("[data-lang]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var lang = b.getAttribute("data-lang");
+      pick(lang);
+      // Blocked storage (some private windows): the choice lasts for this page.
+      try { window.localStorage.setItem(LANG_KEY, lang); } catch (e) { /* see above */ }
+    });
+  });
+
+  // `say` is a string from t, or a function of t, so a language switch can
+  // write the same message again.
+  function show(kind, say) {
+    said = typeof say === "function" ? say : function () { return say; };
+    status.className = "status" + (kind ? " " + kind : "");
+    text.textContent = said(t);
+  }
+
+  // A key as the license server stores it, from what the address carries:
+  // case, whitespace and hyphens are ignored, O reads as 0 and I/L as 1
+  // (Crockford's rule, service/src/keys.ts), the LO prefix is optional.
+  // Null for anything else, so the page never shows or passes on text
+  // that only looks like a key.
+  var CROCKFORD = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+  function normalizeKey(input) {
+    var s = String(input == null ? "" : input).toUpperCase().replace(/[\s-]/g, "");
+    if (s.indexOf("LO") === 0 && s.length === 18) s = s.slice(2);
+    if (s.length !== 16) return null;
+    var out = "";
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charAt(i);
+      var mapped = c === "O" ? "0" : (c === "I" || c === "L") ? "1" : c;
+      if (CROCKFORD.indexOf(mapped) < 0) return null;
+      out += mapped;
+    }
+    return "LO-" + out.match(/.{4}/g).join("-");
+  }
+
+  pick(firstLang());
+
+  var params = new URLSearchParams(location.search);
+  var raw = params.get("key");
+  if (raw === null || raw === "") {
+    show("warn", function (t) { return t.noKey; });
+    return;
+  }
+  var key = normalizeKey(raw);
+  if (!key) {
+    show("bad", function (t) { return t.badKey(); });
+    return;
+  }
+
+  keyOut.textContent = key;
+  keybox.hidden = false;
+  // The app's own URL (AppCommand.swift): Settings → Pass, the key in the
+  // activation window, nothing clicked for the user.
+  open.href = "lastout://activate?key=" + encodeURIComponent(key);
+  actions.hidden = false;
+  show("ok", function (t) { return t.ready; });
+
+  copy.addEventListener("click", function () {
+    function done() { copy.textContent = t.copied; setTimeout(function () { copy.textContent = t.copy; }, 1600); }
+    function fallback() {
+      var range = document.createRange(); range.selectNodeContents(keyOut);
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+      // execCommand reports failure by returning false, not only by throwing.
+      var copied = false;
+      try { copied = document.execCommand("copy") === true; } catch (e) { copied = false; }
+      if (copied) done(); else copy.textContent = t.selectAndCopy;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(key).then(done, fallback);
+    else fallback();
+  });
+})();
+</script>
+</body>
+</html>
