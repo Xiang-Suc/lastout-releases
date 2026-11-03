@@ -9,7 +9,9 @@
 <link rel="icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Loaded as print and switched on when it arrives: a stylesheet link would hold the whole page blank (up to 75 s) where Google is unreachable. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
 <link rel="stylesheet" href="page.css">
 </head>
 <body>
@@ -29,7 +31,7 @@
     <div class="label">Legal</div>
     <h1>Refund <em>Policy.</em></h1>
     <!-- 由 scripts/legal_pages.py 从 docs/legal/refund-policy.md 和 refund-policy.zh-CN.md 生成；别手改，改原文后重新运行。 -->
-    <p class="meta">Last updated: 2026-10-27 · English is the binding version; 中文为译本，两者不一致时以英文版为准。</p>
+    <p class="meta">Last updated: 2026-11-01 · English is the binding version; 中文为译本，两者不一致时以英文版为准。</p>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-lang="en" aria-pressed="true">English</button>
       <button type="button" data-lang="zh" aria-pressed="false">中文</button>
@@ -41,7 +43,7 @@
 <p>Write to <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a> with your order number, or reply to your receipt email from Paddle.com Market Ltd (Paddle). Orders are processed by Paddle.com Market Ltd (Paddle), our merchant of record, which issues the refund to your original payment method. On card statements the charge reads <code>PADDLE.NET* ROCHA TECH</code> (<code>PAYPAL *PADDLE.NET</code> with PayPal). Refunds usually reach you within a few business days, depending on your bank.</p>
 <p>If you bought directly from us, write to <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a> or reply where you bought, and we refund you ourselves, to the payment method you used.</p>
 <h2 id="after-a-refund">After a refund</h2>
-<p>The refunded license key is revoked: it can no longer activate Lastout on any Mac, and your license, for the App and the command-line tools, ends. Within about 15 minutes the App stops copying on every Mac where the key was activated, and so do the command-line tools' paid commands; the trial on those Macs ends too. You may then delete the App. Your recordings stay on your Mac.</p>
+<p>The refunded license key is revoked: it can no longer activate Lastout on any Mac, and your license, for the App and the command-line tools, ends. Once the refund is issued, the App stops copying within about 15 minutes on a Mac that is online with Lastout running, and at most a day later on any other Mac where the key was activated; so do the command-line tools' paid commands, and the trial on those Macs ends too. Recording doesn't depend on the license: to stop it, run <code>lo setup --uninstall</code>, then delete the App. Your recordings stay on your Mac until you delete them; the Privacy page lists where they are.</p>
 <h2 id="your-legal-rights">Your legal rights</h2>
 <p>This policy doesn't limit any right to a refund or withdrawal that the law where you live gives you.</p>
     </article>
@@ -51,7 +53,7 @@
 <p>写信到 <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a> 并附上订单号，或直接回复 Paddle.com Market Ltd（Paddle）发给你的收据邮件。订单由我们的代收商户 Paddle.com Market Ltd（Paddle）处理，退款会原路退回你的付款方式。这笔扣款在银行卡账单上显示为 <code>PADDLE.NET* ROCHA TECH</code>（PayPal 付款显示为 <code>PAYPAL *PADDLE.NET</code>）。到账时间视银行而定，通常几个工作日。</p>
 <p>如果你是直接向我们购买的，写信到 <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a> 或在当初购买的对话里告诉我们，我们会把钱原路退回你付款时用的方式。</p>
 <h2 id="zh-退款之后">退款之后</h2>
-<p>被退款的授权码会被吊销：不能再在任何 Mac 上激活 Lastout，你对 App 和命令行工具的授权也随之终止。大约 15 分钟内，每一台激活过该授权码的 Mac 上的 App 停止复制，命令行工具的付费命令也一样停下；这些 Mac 的试用也随之结束。之后你可以删除 App。你的记录仍然保存在你的 Mac 上。</p>
+<p>被退款的授权码会被吊销：不能再在任何 Mac 上激活 Lastout，你对 App 和命令行工具的授权也随之终止。退款完成后，每一台激活过该授权码的 Mac 上的 App 停止复制，命令行工具的付费命令也一样停下：联网且 Lastout 正在运行的 Mac 上约 15 分钟内，其他 Mac 最迟一天；这些 Mac 的试用也随之结束。录制不看授权：要停止录制，先运行 <code>lo setup --uninstall</code>，再删除 App。你的记录会留在 Mac 上，直到你自己删除；隐私政策列出了它们的位置。</p>
 <h2 id="zh-你的法定权利">你的法定权利</h2>
 <p>本政策不限制你所在地法律赋予你的任何退款或撤回权利。</p>
     </article>

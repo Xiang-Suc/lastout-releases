@@ -65,6 +65,59 @@ the license server updated.
   API or one that refused it, Copy said "Copied" even when the browser's
   older copy command had done nothing. It now says "Select and copy" then,
   with the key already selected; the activate page does the same.
+- lastout.dev and the privacy policy said things the code doesn't back;
+  the wording now follows it. Masking is described as masking
+  *recognized* secrets, not every secret, and the policy lists five
+  writings it doesn't catch today (`curl -u user:pass`,
+  `mysql -p<password>`, `sshpass -p`, `Cookie` headers, `DB_PASS=`). Only
+  the start of a command is matched against the list of tools whose output
+  isn't stored, so in a chain such as `cd x && op read …` the output is
+  recorded. `lo forget` is described as zeroing the deleted rows' bytes,
+  with the two limits it has: an older copy of a command line can stay in
+  unused parts of the database file, and a copy printed with
+  `lo --print` or `--json` is its own command that plain `lo forget`
+  skips (`lo forget --id N` removes it). Redaction can't be turned off
+  through MCP, but an agent that has a shell runs as you and can run
+  `lo --no-redact`. The page that said the home page "has no analytics"
+  now says Paddle.js, which the page loads, also loads ProfitWell,
+  Paddle's analytics product; the policy lists it. The policy also names
+  Cloudflare as the database host, says the support mailbox forwards
+  through Cloudflare, and lists what is left behind when you remove
+  Lastout by hand: the keychain item, `~/.config/lastout`, the caches and
+  the `.lastout-backup-*` copies of your rc files that `lo setup` and
+  `--uninstall` write (`brew uninstall --zap` removes only two paths).
+- The pages say how a refund takes effect: within about 15 minutes on a
+  Mac that is online with Lastout running, at most a day later on any
+  other, and that recording doesn't depend on the license (to stop it, run
+  `lo setup --uninstall`). The EULA's "keeps working after the update
+  period" now says it needs a connection to the license service at least
+  once a day. The home page says the same about being offline, and which
+  parts keep working. The terms, refund and EULA pages are dated
+  November 1, 2026.
+- lastout.dev and the usage guide say which terminals are recorded
+  (Ghostty, iTerm2, Terminal, kitty, WezTerm, Alacritty, and the terminals
+  of VS Code, Cursor and Zed) and which are not (Warp, JetBrains IDE
+  terminals, Emacs terminals); what works in tmux and screen, and that
+  tmux shows `lastout-shell` as the pane's process; that Zed's tasks,
+  which run `zsh -i -c '…'`, stop at a prompt (a fix is planned); that
+  the shortcuts, `lo search`, `lo save`, `lo mcp` and `lssh` need the
+  Lastout app running (turn on *Open at login*); that `lo mcp` keeps
+  running without a license but answers every tool call with the reason,
+  while the other three exit with status 4; that `--mode full` cuts a line
+  at 2,000 characters and `smart` keeps errors only as far as its budget
+  allows (`--mode errors` finds the rest); and that terminal output is
+  untrusted text for an agent.
+- The page's web fonts no longer hold the page blank where
+  fonts.googleapis.com can't be reached: the font sheet loads without
+  blocking, so every page of lastout.dev paints at once in the fallback
+  fonts and switches when the fonts arrive. The privacy, terms, refund
+  and EULA pages come from `scripts/privacy_page.py` and
+  `scripts/legal_pages.py`, which carry the same change.
+- `install.sh`: the command-line install ended by suggesting `lo setup`,
+  which doesn't record a new tab when `PATH` is set after the rc file's
+  Lastout block; it now suggests `lo setup --bin <dir>`, and says the
+  trial, activation, `lo search`, `lo save`, `lo mcp` and `lssh` need the
+  app running. The releases README gives the same command.
 
 ### In the app and `lo`
 

@@ -9,7 +9,9 @@
 <link rel="icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Loaded as print and switched on when it arrives: a stylesheet link would hold the whole page blank (up to 75 s) where Google is unreachable. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
 <link rel="stylesheet" href="page.css">
 </head>
 <body>
@@ -29,7 +31,7 @@
     <div class="label">Legal</div>
     <h1>End User <em>License Agreement.</em></h1>
     <!-- 由 scripts/legal_pages.py 从 docs/legal/eula.md 和 eula.zh-CN.md 生成；别手改，改原文后重新运行。 -->
-    <p class="meta">Last updated: 2026-10-27 · English is the binding version; 中文为译本，两者不一致时以英文版为准。</p>
+    <p class="meta">Last updated: 2026-11-01 · English is the binding version; 中文为译本，两者不一致时以英文版为准。</p>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-lang="en" aria-pressed="true">English</button>
       <button type="button" data-lang="zh" aria-pressed="false">中文</button>
@@ -46,7 +48,7 @@
 <li><strong>Beta builds.</strong> A beta build works until the date shown in it (Settings → About), then asks you to update. Beta builds may have bugs and are provided for testing.</li>
 </ul>
 <h2 id="3-updates">3. Updates</h2>
-<p>A license includes every update we release during one year from the day you buy it. After that period, the App keeps working with the last version you were entitled to, for as long as it runs on your Mac. Paying again later gives you a new update period.</p>
+<p>A license includes every update we release during one year from the day you buy it. After that period, the App keeps working with the last version you were entitled to, as long as it runs on your Mac and can reach our license service at least once a day (see section 5). Paying again later gives you a new update period.</p>
 <h2 id="4-what-you-may-not-do">4. What you may not do</h2>
 <ul>
 <li>Share, sell, rent or publish your license key, or let more people use it than this agreement allows.</li>
@@ -55,7 +57,7 @@
 <li>Use the App to break the law, or to record terminals of other people without their permission.</li>
 </ul>
 <h2 id="5-license-checks-and-your-data">5. License checks and your data</h2>
-<p>The App checks the trial and the license with our license service: when it first launches, when you activate a key, and then about every 15 minutes while it runs. Each check sends a hash of this Mac's hardware identifier (so the trial and the key can count Macs; the identifier itself never leaves the Mac), the App's version number and, once you activated one, your license key. Deactivating on this Mac sends the key and the same hash to free the seat. If the App can't reach the service, it keeps working for a day after the last successful check, then copying pauses until a check succeeds. Once a license is refunded or charged back, it stops working on every Mac where it was activated, the command-line tools' paid commands included, within about 15 minutes of the check that learns it, and the trial on those Macs ends too. Nothing about your terminals, commands or their output is sent. Lastout's recordings stay on your Mac. What it records, where it keeps it and what can leave your Mac is described in the privacy policy: <a href="https://lastout.dev/privacy.html">https://lastout.dev/privacy.html</a></p>
+<p>The App checks the trial and the license with our license service: when it first launches, when you activate a key, and then about every 15 minutes while it runs. Each check sends a hash of this Mac's hardware identifier (so the trial and the key can count Macs; the identifier itself never leaves the Mac), the App's version number and, once you activated one, your license key. Deactivating on this Mac sends the key and the same hash to free the seat. If the App can't reach the service, it keeps working for a day after the last successful check, then copying pauses until a check succeeds. Once a license is refunded or charged back, it stops working on every Mac where it was activated, the command-line tools' paid commands included: within about 15 minutes on a Mac that is online with Lastout running, and at most a day later on any other Mac. The trial on those Macs ends too. Nothing about your terminals, commands or their output is sent. Lastout's recordings stay on your Mac. What it records, where it keeps it and what can leave your Mac is described in the privacy policy: <a href="https://lastout.dev/privacy.html">https://lastout.dev/privacy.html</a></p>
 <h2 id="6-open-source-components">6. Open-source components</h2>
 <p>The App includes open-source software under its own licenses. Their notices are in the App (Settings → About → Acknowledgements).</p>
 <h2 id="7-no-warranty">7. No warranty</h2>
@@ -89,7 +91,7 @@
 <li><strong>内测版。</strong> 内测版在其标注的日期之前可用（设置 → 关于），到期后会提示更新。内测版可能有缺陷，仅供测试。</li>
 </ul>
 <h2 id="zh-3-更新">3. 更新</h2>
-<p>授权包含购买之日起一年内发布的所有更新。此后，你有权使用的最后一个版本只要还能在你的 Mac 上运行，就可以一直用下去。之后再次付费，会获得新的更新期。</p>
+<p>授权包含购买之日起一年内发布的所有更新。此后，你有权使用的最后一个版本只要还能在你的 Mac 上运行、并且至少每天能连上一次我们的授权服务（见第 5 条），就可以一直用下去。之后再次付费，会获得新的更新期。</p>
 <h2 id="zh-4-你不可以做什么">4. 你不可以做什么</h2>
 <ul>
 <li>分享、出售、出租或公开你的授权码，或让超出本协议允许的人数使用。</li>
@@ -98,7 +100,7 @@
 <li>用 App 违反法律，或未经他人同意记录他人的终端。</li>
 </ul>
 <h2 id="zh-5-授权校验和你的数据">5. 授权校验和你的数据</h2>
-<p>App 会向我们的授权服务校验试用和授权：首次启动时、你激活授权码时，以及之后运行期间大约每 15 分钟一次。每次校验发送这台 Mac 硬件标识的哈希（用来让试用和授权码统计 Mac 的数量；标识本身不会离开这台 Mac）、App 的版本号，以及激活之后的授权码。在这台 Mac 上停用时，会发送授权码和同一个哈希，以释放座位。如果 App 连不上授权服务，它在上次成功校验后照常工作一天，之后复制会暂停，直到校验成功。授权一旦退款或被拒付，在得知此事的那次校验之后大约 15 分钟内，它在所有激活过的 Mac 上停止工作，包括命令行工具的付费命令，这些 Mac 的试用也随之结束。不会发送任何终端、命令或其输出。Lastout 的记录只保存在你的 Mac 上。记录什么、存在哪里、什么会离开你的 Mac，见隐私政策：https://lastout.dev/privacy.html?lang=zh</p>
+<p>App 会向我们的授权服务校验试用和授权：首次启动时、你激活授权码时，以及之后运行期间大约每 15 分钟一次。每次校验发送这台 Mac 硬件标识的哈希（用来让试用和授权码统计 Mac 的数量；标识本身不会离开这台 Mac）、App 的版本号，以及激活之后的授权码。在这台 Mac 上停用时，会发送授权码和同一个哈希，以释放座位。如果 App 连不上授权服务，它在上次成功校验后照常工作一天，之后复制会暂停，直到校验成功。授权一旦退款或被拒付，它在所有激活过的 Mac 上停止工作，包括命令行工具的付费命令：联网且 Lastout 正在运行的 Mac 上约 15 分钟内，其他 Mac 最迟一天。这些 Mac 的试用也随之结束。不会发送任何终端、命令或其输出。Lastout 的记录只保存在你的 Mac 上。记录什么、存在哪里、什么会离开你的 Mac，见隐私政策：https://lastout.dev/privacy.html?lang=zh</p>
 <h2 id="zh-6-开源组件">6. 开源组件</h2>
 <p>App 包含开源软件，它们各自适用自己的许可证，声明见 App 内（设置 → 关于 → 致谢）。</p>
 <h2 id="zh-7-不提供担保">7. 不提供担保</h2>

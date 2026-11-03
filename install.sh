@@ -159,11 +159,13 @@ case ":$PATH:" in
   *)
     # Not found by name yet: give the full path, so the next step works now.
     lo="\"$BIN_DIR/lo\""
-    say "$BIN_DIR is not on your PATH: add it in your shell's startup file (new terminals need it to find lastout-shell)"
+    say "$BIN_DIR is not on your PATH: add it in your shell's startup file so new terminals find lo"
     ;;
 esac
 if [ -n "$app" ]; then
   say "next: open $dest (it sets up your shell and explains each step), then \`lo doctor\` in a new tab"
 else
-  say "next: run \`$lo setup\` to record your terminals, then \`lo doctor\` in a new tab"
+  # --bin: the rc block then names lastout-shell by full path, so a PATH set later in the rc file (or not at all) doesn't stop recording.
+  say "next: run \`$lo setup --bin \"$BIN_DIR\"\` to record your terminals, then \`lo doctor\` in a new tab"
+  say "the trial, activation, \`lo search\`, \`lo save\`, \`lo mcp\` and \`lssh\` need the Lastout app, running: https://lastout.dev"
 fi

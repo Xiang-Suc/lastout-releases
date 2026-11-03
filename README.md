@@ -21,12 +21,18 @@ The app (sets up the shell itself when opened):
 curl -fsSL https://raw.githubusercontent.com/Xiang-Suc/lastout-releases/main/install.sh | sh -s -- --app
 ```
 
-The command line on its own, into `~/.local/bin`:
+The command line on its own, into `~/.local/bin`. It records and
+copies; the trial, activation, `lo search`, `lo save`, `lo mcp` and
+`lssh` need the app above, running:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Xiang-Suc/lastout-releases/main/install.sh | sh
-lo setup
+~/.local/bin/lo setup --bin ~/.local/bin
 ```
+
+Recorded: Ghostty, iTerm2, Terminal, kitty, WezTerm, Alacritty and the
+terminals of VS Code, Cursor and Zed. Not recorded: Warp, JetBrains IDE
+terminals and Emacs terminals.
 
 Every archive is listed in each release's `SHA256SUMS`; the script
 verifies what it downloads. The app updates itself from `appcast.xml`

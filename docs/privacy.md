@@ -3,8 +3,8 @@
 English · [简体中文](privacy.zh-CN.md)
 
 What Lastout records, where it keeps it, what can leave your machine and
-how to delete it. Every statement here is checked against the code, and
-names the command or setting that enforces it.
+how to delete it. Each statement names the command or setting behind it;
+if one doesn't hold, tell us.
 
 Lastout is made by Rocha Tech LLC, a company registered in New Jersey,
 United States ("we"). What you record never reaches us. What does is
@@ -12,7 +12,7 @@ only what buying a license and checking the trial and the license need,
 described under *License checks* and *Buying a license*; for that data
 we are responsible (the data controller). Questions and requests: support@lastout.dev.
 
-Last updated: 2026-10-27.
+Last updated: 2026-11-01.
 
 ## What is recorded
 
@@ -36,18 +36,23 @@ contents the command did not print, no information about other apps.
 - **A command starting with a space**: not even its text (the row says
   `(private)`). This is the shell's own convention for "keep out of history".
 - **While paused**: `lo pause` (every terminal) or `lo pause --here` (this
-  one), optionally `--for 30m`; `lo resume` ends it early. Nothing is
-  stored, not even the command.
+  one), optionally `--for 30m`. `lo resume` ends a pause of every
+  terminal, `lo resume --here` a pause of this one. Nothing is stored,
+  not even the command.
 - **Commands that print secrets**: for the built-in list (`op`, `pass`,
-  `gopass`, `bw`, `lpass`, `aws configure`, `aws sts`, `gcloud auth`,
-  `az login`, `ssh-keygen`, `gpg --export-secret-keys`,
-  `security find-*-password`, `vault read|kv get|login|token`,
-  `kubectl get secret`, `kubectl config view`, `gh auth token`,
-  `heroku auth:token`, `npm token`, `doppler secrets`, `openssl genrsa`,
-  `openssl genpkey`, `age-keygen`, `wg genkey`, and more in
-  `crates/lastout-core/src/config.rs`) only the command line and exit
-  status are kept, never the output. Add your own with `record.ignore` in
-  the config file, or lift a built-in entry with `record.allow`.
+  `gopass`, `bw`, `lpass`, `aws configure`, `aws sts`,
+  `aws ecr get-login-password`, `gcloud auth`, `az login`,
+  `az account get-access-token`, `ssh-keygen`,
+  `gpg --export-secret-keys`, `security find-generic-password`,
+  `security find-internet-password`, `vault read|kv get|login|token`,
+  `kubectl get secret`, `kubectl describe secret`,
+  `kubectl config view`, `gh auth token`, `heroku auth:token`,
+  `npm token`, `doppler secrets`, `openssl genrsa`, `openssl genpkey`,
+  `age-keygen`, `wg genkey`) the command line and exit status are kept,
+  not the output. This looks only at the start of the command: in a chain
+  (`cd x && op read …`) the output is recorded. Add your own with
+  `record.ignore` in the config file, or lift a built-in entry with
+  `record.allow`.
 - **Terminals you did not set up**: recording only happens where the two
   marked blocks from `lo setup` are in the shell's rc file. `lo setup
   --uninstall` removes them everywhere.
@@ -94,13 +99,14 @@ only when you, or a tool you run, ask for it:
   redaction.
 - **Agents** (`lo mcp`, the MCP server for Claude Code, Codex and
   others): read-only tools that return rendered output with redaction
-  always on. There is no argument an agent can pass to turn it off, and
+  of recognized secrets always on. There is no argument an agent can pass
+  to turn it off, and
   nothing the server can write or delete.
 - **Notifications** show the command line and its exit status on your
   screen, through macOS's notification center, nowhere else.
 - **License checks**: the app asks Lastout's license server (the
   address is in the app's Info.plist as `LastoutLicenseServer`; it is a
-  Cloudflare Worker run by Lastout, source in `service/`) what this Mac
+  Cloudflare Worker run by Lastout, its source is private) what this Mac
   may do. At the first launch it starts the 14-day trial there, so that
   the trial runs on the server's clock and each Mac gets one; once you
   enter a license key it activates the key; and while the app runs it
@@ -118,8 +124,9 @@ only when you, or a tool you run, ask for it:
   and `lo` itself still sends nothing. Without the network the app keeps
   working for a day after the last check, then copying waits until a
   check succeeds. Nothing about your recordings goes with any of these
-  requests. A build with no server configured refuses every key and
-  sends nothing.
+  requests. Like any web request, each check shows your IP address to
+  Cloudflare; the license server's code doesn't read or store it. A build
+  with no server configured refuses every key and sends nothing.
 - **Diagnostics** (Settings → About → *Export Diagnostics…*) writes a zip
   where you choose, for you to attach to a bug report; the app sends it
   nowhere. In it: versions, Lastout's settings, the screens' sizes, the
@@ -130,8 +137,10 @@ only when you, or a tool you run, ask for it:
 
 ### Redaction
 
-Applied to every copy, print and agent read, never to what is stored (so
-`lo forget` exists for a secret that was printed). Each match becomes a
+Redaction masks recognized secrets: it follows the rules below, which
+catch known formats, not every secret. It is applied to every copy, print
+and agent read, never to what is stored (so `lo forget` exists for a
+secret that was printed). Each match becomes a
 labelled marker such as `[REDACTED:github-token]`, so an LLM still knows
 what was there. Rules: known token formats (GitHub, GitLab, AWS access
 keys, Google, Stripe, Slack tokens and webhooks, SendGrid, Twilio,
@@ -140,8 +149,14 @@ private key blocks, passwords in URLs, authenticator setup keys
 (`otpauth://` links, a labelled `Setup key:`, and base32 keys printed in
 groups of four), `Authorization` headers and bearer tokens,
 `--password`-style flags, `SECRET=value` assignments. Your own
-formats go in `redact.patterns` (regexes) in the config file. `lo
---no-redact` skips it for a copy you make yourself; nothing else can.
+formats go in `redact.patterns` (regexes) in the config file.
+
+Not caught today: `curl -u user:pass`, `mysql -p<password>`, `sshpass -p`,
+`Cookie` headers, `DB_PASS=`. Check before you paste.
+
+`lo --no-redact` skips redaction for a copy you make yourself; no MCP tool
+or setting can. An agent that also has a shell runs as you: it could run
+`lo --no-redact` or read the recordings on disk, like any file you own.
 
 ## Remote hosts
 
@@ -149,42 +164,66 @@ formats go in `redact.patterns` (regexes) in the config file. `lo
 block per rc file on the remote host, no binaries. With `lssh host`, each
 remote command's output travels through your own ssh connection to the
 recorder on your machine and is stored only there. The remote host keeps
-nothing.
+none of the output.
 
 ## Deleting
 
 - `lo forget` removes the previous command; `lo forget --id 42` a specific
-  one; `lo forget --all` everything. Each removes the rows, the output
-  files and the bytes they occupied in the database file (which is
-  vacuumed), so nothing is recoverable from free space.
+  one; `lo forget --all` everything. Each deletes the rows and the output
+  files and zeroes the deleted rows' bytes in the database. An older copy
+  of a command line can stay in unused parts of the database file until
+  it is overwritten, so if a password was typed on the command line,
+  change the password. `lo forget` does not touch your shell history or
+  your backups. A copy you printed with `lo --print` or `--json` is its
+  own command, and plain `lo forget` skips it: remove it with
+  `lo forget --id N`.
 - `lo setup --uninstall` removes Lastout's blocks from every shell's rc
   files (and a login file it created). Open terminals keep running as they
-  are; new ones are plain.
-- To remove every trace: the two directories in the table above, the app
-  from `/Applications`, and `lo` and `lastout-shell` from `~/.local/bin`.
-  The Homebrew cask's `zap` does the same.
+  are; new ones are plain. Before it changes a file, `lo setup` (and
+  `--uninstall`) keeps a copy next to it, named `.lastout-backup-*`;
+  nothing removes those copies.
+- To remove Lastout from this Mac: run `lo setup --uninstall` first, then
+  delete `~/Library/Application Support/lastout/`, `~/.config/lastout/`,
+  `~/Library/Preferences/dev.lastout.app.plist`,
+  `~/Library/Caches/dev.lastout.app`,
+  `~/Library/HTTPStorages/dev.lastout.app` and
+  `dev.lastout.app.binarycookies` beside it, the app from
+  `/Applications`, `lo` and `lastout-shell` from `~/.local/bin`, and the
+  `.lastout-backup-*` copies next to your rc files. Remove the license
+  from your keychain with
+  `security delete-generic-password -s dev.lastout.app -a license`. The
+  Homebrew cask's `zap` removes only your recordings and the app's
+  settings, not the rest of this list. Lastout does not encrypt
+  recordings and does not exclude them from Time Machine, so backups you
+  already made keep their copies.
 - Saved commands: `lo saved --rm ID`, or delete the file (`lo saved --path`).
 
 ## The menu bar app
 
 It asks for one permission, notifications, when it starts; it works
-without them (the menu and shortcuts don't need them). "Open at login" is off until
+without them (the menu and shortcuts don't need them). If you turn on
+*Copy from the exact window in front* in Settings, macOS also asks once
+to let Lastout ask Terminal or iTerm2 which window is in front; it reads
+only that window's terminal device name. "Open at login" is off until
 you turn it on in Settings. It needs no accessibility, screen recording
 or input monitoring permission. Its only network connections are the
 update check and the license checks, both described above.
 
-While you record or share your screen, its overlays (the island, the
-bubble, the side dock, the copy confirmations, the picker) are left out
-of what is captured: you still see them, screenshots, recordings and the
-people watching your screen don't. The island, the bubble and the side
+Its overlays (the island, the bubble, the side dock, the copy
+confirmations, the picker) are marked to stay out of screenshots, screen
+recordings and screen sharing, so you see them and the people watching
+your screen usually don't. That is a request to macOS, and whether a
+given screenshot, recording or sharing app honors it depends on the app
+and the macOS version; we haven't tested them all. Before you share your
+screen, check that they don't show. The island, the bubble and the side
 dock also step aside while a video app, Keynote, PowerPoint or a game
 fills the screen. To tell, Lastout looks at which apps have windows on
 screen and where (macOS lists that without any permission; window titles
 and contents are not read, and nothing is kept), and at the category an
 app gives itself. Full-screen browsers, editors and terminals keep the
-overlays, a video full screen in a browser too. Both are on by default
-and can be turned off in Settings → Appearance (to record a demo of
-Lastout, say).
+overlays, a video full screen in a browser too. Staying out of captures
+and stepping aside are both on by default and can be turned off in
+Settings → Appearance (to record a demo of Lastout, say).
 
 ## Buying a license
 
@@ -214,11 +253,14 @@ day it checked in, whether or not you buy.
 That is used to email you the key, to show it once more on the page you
 land on after checkout (for 24 hours), to count the Macs a key is used
 on, to give each Mac one trial, and to stop a refunded key on the Macs
-it was activated on: within about 15 minutes of the refund, the app
-there stops copying and `lo` stops its paid commands. A refund also ends
-the trial of those Macs. Apart from replies when
+it was activated on: once the refund is issued, the app there stops
+copying and `lo` stops its paid commands, within about 15 minutes on a
+Mac that is online with Lastout running and at most a day later on any
+other. A refund also ends the trial of those Macs. Apart from replies when
 you write to us, the email with your key is the only one we send: there
-is no newsletter or marketing list. As the seller on Paddle we can also
+is no newsletter or marketing list. If you enter your email at checkout
+and don't finish the purchase, Paddle may send you one reminder; that
+email is Paddle's, under Paddle's privacy policy, not ours. As the seller on Paddle we can also
 see your order in Paddle's dashboard: what was bought, when, for how
 much, your country and email.
 
@@ -241,26 +283,33 @@ keeps a log of what was changed in it.
 The license record is kept as long as the license exists, since a key
 can't be checked without it; a trial record as long as Lastout sells
 licenses, since a Mac gets one trial. It is stored with Cloudflare, and your
-email passes through Resend to deliver the key; both, like Paddle, may
-process it outside your country, including in the United States. Only
-we can read the database; the app and the website reach the server over
-HTTPS.
+name, email and key pass through Resend to deliver the key; both, like
+Paddle, may process it outside your country, including in the United
+States. Only we hold a login to the database; Cloudflare hosts it. The
+app and the website reach the server over HTTPS.
 
 ## The website
 
 lastout.dev is a set of static pages served by GitHub Pages. It sets no
-cookies of its own and has no analytics, tracking pixels or ads. Its
-fonts load from Google Fonts. The product page loads Paddle's checkout
-script (Paddle.js) so that *Buy* can open Paddle's checkout over the
-page; that checkout is Paddle's, and Paddle's privacy and cookie
-policies apply to it. After you pay, the thanks page asks the license
-server for your key, with the transaction ID from its address.
+cookies of its own and has no analytics, tracking pixels or ads of its
+own. Its fonts load from Google Fonts. The product page loads Paddle's
+checkout script (Paddle.js) as soon as it opens, so that *Buy* can open
+Paddle's checkout over the page. The page loads Paddle.js, which also
+loads ProfitWell, Paddle's analytics product, and may set Paddle's
+cookies. Paddle.js, ProfitWell and the checkout are Paddle's, and
+Paddle's privacy and cookie policies apply to them. After you pay, the
+thanks page asks the license server for your key, with the transaction ID
+from its address.
 
 ## Third parties
 
-- **Paddle** sells the license and processes the payment (above).
+- **Paddle** sells the license and processes the payment (above). Its
+  script on the product page also loads ProfitWell, its analytics product
+  (see *The website*).
 - **Cloudflare** runs the license server, its database and the admin
-  dashboard.
+  dashboard, and forwards the mail sent to support@lastout.dev.
+- **Google** (Google Workspace) hosts the mailbox that mail lands in, so
+  what you write to us and your address are kept there.
 - **Resend** delivers the email with your key.
 - **GitHub** hosts the releases the update check reads, and the
   lastout.dev website.
