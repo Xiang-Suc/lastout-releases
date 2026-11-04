@@ -3,7 +3,7 @@
 User-facing changes. Compatibility with other tools, and how each part
 of it is tested, is in [docs/compatibility.md](docs/compatibility.md).
 
-## Unreleased
+## 0.4.2 - 2026-11-04
 
 ### On lastout.dev, in the key email and in install.sh
 
@@ -123,6 +123,82 @@ the license server updated.
 
 With the next app update (0.4.2).
 
+- Setup's last step offers "Open Lastout at login, so the shortcuts and
+  coding agents keep working after a restart", ticked unless it is
+  already on (and only from an Applications folder), and turns it on when
+  you press Done. It used to be off and unmentioned: after the first
+  restart the shortcuts, `lo search`, `lo save`, `lo mcp` and `lssh` were
+  refused until the app was opened by hand. The privacy policy says the
+  setting is on unless unticked.
+- The first-run window said "Everything stays on this Mac. Nothing is
+  sent anywhere." while the app was already checking the trial or license
+  and looking for updates. It now says: your recordings stay on this Mac
+  and aren't uploaded; Lastout only goes online to check the trial or
+  license and look for updates.
+- The first-run window said your own settings are not changed. Setup
+  adds marked blocks to your startup files and binds ⌃G at the prompt to
+  your saved commands; it now says your own lines aren't edited, a backup
+  is made first, and the key can be changed or turned off.
+- Settings → Erase all recordings no longer says the database keeps no
+  leftover bytes: after an erase or `lo forget`, a command line can stay
+  in the database file's unused space until it is overwritten.
+- An editor started from a recorded tab (`code .`, `cursor .`, `zed .`)
+  now records its terminals. It inherited the tab's Lastout environment
+  and every terminal it opened took it for a shell already inside a
+  recorded one: nothing from those terminals was stored, the shortcut
+  and `lo` (and an agent over MCP) never saw them, and `lo doctor`
+  still said "this terminal is recorded". A terminal whose name differs
+  from the one the environment records (VS Code in a Ghostty tab) now
+  gets a recording of its own. `lo doctor` also checks that the
+  recording proxy is really above the shell, and says so when it only
+  borrowed the environment: that is still what happens with `code .`
+  typed in VS Code's own terminal, since both sides are called VS Code;
+  open the editor from the Dock or Spotlight instead.
+- The copy shortcut with an editor in front (VS Code, Cursor, Windsurf,
+  Zed) copied nothing and said none of its windows was recorded, or
+  copied an older command from the editor's own terminal, when the
+  command had run in Ghostty, iTerm2 or another terminal. The editor's
+  terminal now counts only if it ran the newest command; otherwise the
+  shortcut copies the newest command anywhere, as it does from a
+  browser. A terminal that isn't recorded still says so.
+- `lo mcp --help` no longer lists `--no-redact`, `--max-chars`, `--mode`
+  and `--json`. They are the flags every `lo` command shares and do
+  nothing for the server (which is read-only and always redacted), but the
+  list made it look as if redaction could be switched off.
+- The six MCP tools are marked read-only (`readOnlyHint`). Codex and VS
+  Code asked for an approval at every call of a tool without the mark, and
+  `codex exec` refused the call.
+- The MCP server's instructions say that terminal output is untrusted
+  text (a program, a log line or a web response can print words aimed at
+  an agent, including text a terminal hides), that Lastout doesn't filter
+  it, and to treat it as data, not instructions.
+- A first launch the license server hasn't answered yet (a firewall, a
+  slow route from some networks) no longer says Lastout "couldn't verify
+  its license for over a day" and opens the activation window. It says it
+  couldn't reach the license server to start the trial and keeps trying:
+  the first retry after 15 seconds (then 30, 60…), a request gets 30
+  seconds instead of 15, and a copy blocked for want of a license asks the
+  server again at once (at most every 30 seconds). A key already on record
+  isn't offered "Buy Lastout" while it can't be verified.
+- The trial's last-day reminder said "ends tomorrow"; it can end the same
+  afternoon. It now says "Lastout trial ends in less than a day".
+- Opened straight from Downloads, macOS runs Lastout from a temporary
+  copy and Set Up stays off. The first window's "Not Now" is now "Quit
+  Lastout" there and remembers nothing, so the next launch from
+  Applications asks again; "Not Now" used to hide the window for good.
+- A new version found by the daily check is no longer opened behind other
+  windows, where a menu bar app with no Dock icon could go unseen for
+  weeks. Sparkle shows it only when Lastout is already in front; any
+  other time a notification says it is available and the menu reads
+  "Update Available…".
+- Without the Lastout app installed (command line only), `lo search`,
+  `lo save`, `lo mcp` and `lo license` said "open the Lastout app", with
+  no way to get it. They now say "install and open the Lastout app
+  (https://lastout.dev) to start the trial or activate it".
+- `lo doctor`, when every check passes, ends with "Now run any other
+  command and press the shortcut: lo itself doesn't count." `lo doctor`
+  is the newest command then, the shortcut skips `lo` calls, and the
+  first press said no command had finished yet.
 - `lastout://activate?key=…`: a new URL the app answers to, the one the
   key email's Activate in Lastout button opens through lastout.dev.
   Settings opens on the Pass page with the key filled into the Activate
@@ -188,10 +264,11 @@ With the next app update (0.4.2).
   matches there are in your recordings (counted on redacted text, so it
   confirms no secret), then why it isn't showing them.
 - `lo mcp`, refused after the trial, answers the agent with what is
-  recorded and waiting and a sentence to pass on word for word: a
-  one-time purchase, not a subscription, activated in Settings → Pass;
-  the server's instructions ask the agent to relay such answers as they
-  are.
+  recorded and that Lastout is a one-time purchase, not a subscription,
+  activated in Settings → Pass. It states these as facts: it doesn't tell
+  the agent what to say, and the server's instructions no longer ask it to
+  relay the answer (a tool result giving the model orders looks like a
+  prompt injection).
 - Settings → Pass says until when updates are included ("Updates until
   2027-10-30; Lastout keeps working after that") and, like the refusals
   in the app and in `lo`, that it is a one-time purchase, nothing renews.
@@ -202,6 +279,54 @@ With the next app update (0.4.2).
   it stopped recording. One terminal's sweep of leftover sockets probed
   the other's while it was being created and took it for a crashed
   session's. A terminal's socket now appears only once it answers.
+- `errors` mode (`mode: "errors"` in the MCP tools, `lo --mode errors`)
+  missed thrown error types: a Node dev server whose log was full of
+  `TypeError: Cannot read properties of undefined` lines got "No error
+  lines found". It now finds names like `TypeError`,
+  `ModuleNotFoundError` and `NullPointerException`, and 5xx lines in a
+  server's access log (`GET /api/orders/42 500`). `onError`,
+  `errorHandler` and `ErrorBoundary` still don't count.
+- `errors` mode and the default mode also find what a shell, a linker or
+  the system says without the word "error": `command not found`,
+  `undefined reference`, `symbol(s) not found`, `Killed`, `exit status 1`
+  and errno names such as `ENOENT`, `EADDRINUSE` and `ECONNREFUSED`.
+  Labels that merely start with E (`ENVIRONMENT:`, `EXAMPLE:`) don't count.
+- Summary lines that count nothing ("Found 0 errors", "No errors found",
+  `cargo test`'s "0 failed", Maven's "Failures: 0, Errors: 0") no longer
+  count as errors, so a clean run says "No error lines found" instead of
+  showing the summary as if it were a failure. RSpec's "2 failures" now
+  counts. Mutants a mutation test killed ("Mutants: 12 killed", "Killed
+  80 (80%)") are a count too; the shell's `Killed: 9` still counts.
+- On a Mac with 4 or fewer cores the app could hang at launch: the
+  several `lo` runs it starts at once (the terminals list, recent
+  commands, the doctor check) held every thread Swift gave them while
+  waiting for output that needed one more, so none finished: no setup
+  window, no shortcut, no error. Each run now waits on a thread of its
+  own, a run past its time limit is still ended, and a child that `lo`
+  left running with its output pipes open no longer keeps the run
+  waiting after `lo` has exited.
+- The privacy policy and the READMEs now describe what the app does: your
+  recordings aren't uploaded, but the app goes online to check the trial
+  or license and look for updates (they said everything stays on the
+  Mac); it wakes when a command starts or finishes, about every 15
+  minutes for the license check and for update checks (the Chinese README
+  said it had no timers). The policy also says what
+  `usage.tsv` holds (two counts `lo stats` shows, which never leave the
+  Mac) and that the MCP server can't change or delete anything you
+  recorded: it only adds one to the read count.
+- If Lastout's recording proxy can't start (the Mac is out of
+  pseudo-terminals or file descriptors) in a terminal opened by an editor
+  you started from a recorded tab (VS Code, Cursor, Zed), or in a new
+  tmux pane, the shell no longer starts itself again over and over: the
+  tab stays usable, without recording.
+- The app's setup, guide and MCP settings text, and what `lo mcp` tells a
+  coding agent, now say that *recognized* secrets are redacted, as the
+  READMEs and the privacy policy did: a secret in a format Lastout doesn't
+  know is copied as it is.
+- `lo remote-install` (and `--uninstall`) no longer cuts a remote startup
+  file short when its Lastout block has no closing marker (a hand edit):
+  it stops with an error and leaves the file as it is. Each file it
+  changes is first copied to `<file>.lastout-bak` on the remote host.
 
 ## 0.4.1 - 2026-10-28
 
