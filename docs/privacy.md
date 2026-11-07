@@ -12,7 +12,7 @@ only what buying a license and checking the trial and the license need,
 described under *License checks* and *Buying a license*; for that data
 we are responsible (the data controller). Questions and requests: support@lastout.dev.
 
-Last updated: 2026-11-01.
+Last updated: 2026-11-05.
 
 ## What is recorded
 
@@ -50,9 +50,12 @@ contents the command did not print, no information about other apps.
   `npm token`, `doppler secrets`, `openssl genrsa`, `openssl genpkey`,
   `age-keygen`, `wg genkey`) the command line and exit status are kept,
   not the output. This looks only at the start of the command: in a chain
-  (`cd x && op read …`) the output is recorded. Add your own with
-  `record.ignore` in the config file, or lift a built-in entry with
-  `record.allow`.
+  (`cd x && op read …`) the output is recorded. Only recognized formats
+  are redacted in the command line too, so a secret typed as a plain
+  argument (`aws configure set aws_secret_access_key KEY`) stays
+  readable, also to an agent: start such a command with a space. Add
+  your own with `record.ignore` in the config file, or lift a built-in
+  entry with `record.allow`.
 - **Terminals you did not set up**: recording only happens where the two
   marked blocks from `lo setup` are in the shell's rc file. `lo setup
   --uninstall` removes them everywhere.
@@ -78,6 +81,10 @@ the app's diagnostics export only says how many there are. A secret you
 save in a command stays in that file as you typed it, and `lo saved`
 copies and prints a command as saved, without redaction.
 
+`usage.tsv` in the data directory holds two numbers: how many times output
+was copied and how many times an agent read it. `lo stats` prints them;
+they never leave your Mac.
+
 ## What leaves your machine
 
 Nothing you recorded, ever, on its own. The command-line tools have no
@@ -100,8 +107,8 @@ only when you, or a tool you run, ask for it:
 - **Agents** (`lo mcp`, the MCP server for Claude Code, Codex and
   others): read-only tools that return rendered output with redaction
   of recognized secrets always on. There is no argument an agent can pass
-  to turn it off, and
-  nothing the server can write or delete.
+  to turn it off. The server can't change or delete anything you
+  recorded; it only adds one to the read count in `usage.tsv`.
 - **Notifications** show the command line and its exit status on your
   screen, through macOS's notification center, nowhere else.
 - **License checks**: the app asks Lastout's license server (the
@@ -151,8 +158,16 @@ groups of four), `Authorization` headers and bearer tokens,
 `--password`-style flags, `SECRET=value` assignments. Your own
 formats go in `redact.patterns` (regexes) in the config file.
 
-Not caught today: `curl -u user:pass`, `mysql -p<password>`, `sshpass -p`,
-`Cookie` headers, `DB_PASS=`. Check before you paste.
+Not caught today, among others: `curl -u user:pass` and `curl --user`,
+`mysql -p<password>`, `docker login -p`, `sshpass -p`, `redis-cli -a`,
+`gpg --passphrase`, `Cookie` and `Set-Cookie` headers, `DB_PASS=`,
+`MYSQL_PWD=` and `SECRET_KEY_BASE=` assignments, a Redis URL without a
+user name (`redis://:password@host`), Azure `AccountKey=` and the `sig=`
+of a signed URL, the `auth` in Docker's `config.json`, `client-key-data`
+in a kubeconfig, a `.netrc` password, `SecretString` in the output of
+`aws secretsmanager get-secret-value`, and a password inside escaped
+JSON. A token written right after letters, digits or an underscore may
+not match either. Check before you paste.
 
 `lo --no-redact` skips redaction for a copy you make yourself; no MCP tool
 or setting can. An agent that also has a shell runs as you: it could run
@@ -202,10 +217,11 @@ none of the output.
 
 It asks for one permission, notifications, when it starts; it works
 without them (the menu and shortcuts don't need them). If you turn on
-*Copy from the exact window in front* in Settings, macOS also asks once
-to let Lastout ask Terminal or iTerm2 which window is in front; it reads
-only that window's terminal device name. "Open at login" is off until
-you turn it on in Settings. It needs no accessibility, screen recording
+*Copy from the exact window in front* in Settings, Lastout asks Terminal
+or iTerm2 which window is in front (macOS may ask you to allow that); it
+reads only that window's terminal device name. "Open at login" is on unless you
+untick it during Set Up; you can change it in Settings any time. It needs
+no accessibility, screen recording
 or input monitoring permission. Its only network connections are the
 update check and the license checks, both described above.
 

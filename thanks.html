@@ -105,6 +105,7 @@
       badTxn: function () { return "That doesn't look like an order id. Your key is in the email from your purchase; otherwise write to " + support + "."; },
       found: function (txn) { return "Here it is. Order " + txn + "."; },
       noEmail: "No email address came with this order, so no copy will be emailed: copy the key now and keep it.",
+      emailPending: "We're still fetching your email address from Paddle; a copy of the key is emailed as soon as we have it (we keep asking, every 15 minutes at first, for three days). Copy the key now anyway.",
       mailed: function (who) { return ["A copy was emailed to ", who, ", so you can close this page."]; },
       mailing: function (who) { return ["A copy is being emailed to ", who, ". Copy the key now in case the email is slow."]; },
       gaveUp: function (txn) { return "Your key is taking longer than usual to show here. It is emailed to the address you entered at checkout once the payment goes through, usually within a few minutes. Nothing after that? Write to " + support + " with order " + txn + "."; },
@@ -122,6 +123,7 @@
       badTxn: function () { return "这看起来不是订单号。授权码在购买后收到的邮件里；找不到的话，请写信到 " + support + "。"; },
       found: function (txn) { return "授权码在这里。订单号 " + txn + "。"; },
       noEmail: "这笔订单没有附带邮箱地址，所以不会发邮件副本：请现在就复制授权码，妥善保存。",
+      emailPending: "我们还在向 Paddle 获取你的邮箱地址，拿到地址就会把授权码副本发过去（起初每 15 分钟问一次，最多问三天）。请先复制授权码。",
       mailed: function (who) { return ["副本已发送到 ", who, "，可以关闭这个页面了。"]; },
       mailing: function (who) { return ["副本正在发送到 ", who, "。邮件可能会慢一些，请先复制授权码。"]; },
       gaveUp: function (txn) { return "授权码比平时来得慢。付款完成后，它会发到你结账时填写的邮箱，通常几分钟内送达。之后还没收到？请写信到 " + support + "，并附上订单号 " + txn + "。"; },
@@ -200,16 +202,37 @@
 
   pick(firstLang());
 
-  // Paddle redirects to …/thanks.html?txn={transaction_id}; _ptxn is what
-  // Paddle appends itself when a success URL is set without a placeholder.
+  var TXN_SHAPE = /^txn_[0-9a-z_-]{1,48}$/i;
+
+  // index.html sends the buyer here with ?txn=… when checkout completes in the
+  // page. Paddle's own success redirect (and a payment method that leaves the
+  // page and comes back) carries no order number: checked in the sandbox,
+  // nothing is appended and {transaction_id} is not filled in. So index.html
+  // also keeps the number in this tab the moment the buyer pays, and it is
+  // read here when the address has none, but only on ?returned=1, the mark
+  // index.html puts on successUrl, which Paddle goes to once the order is
+  // complete. The number is kept before the payment has gone through, so a
+  // declined card leaves one behind; without that mark a bare visit would
+  // wait for a key that never comes. Two hours is longer than any bank page;
+  // an older one is somebody's last visit, not this order.
+  function pendingTxn() {
+    try {
+      var saved = JSON.parse(window.sessionStorage.getItem("lastoutPendingTxn") || "null");
+      if (saved && typeof saved.txn === "string" && TXN_SHAPE.test(saved.txn) &&
+          Date.now() - saved.at < 2 * 60 * 60 * 1000) return saved.txn;
+    } catch (e) { /* storage blocked, or not what index.html wrote */ }
+    return "";
+  }
+
+  // _ptxn is Paddle's own name for it, on its default payment link.
   var params = new URLSearchParams(location.search);
-  var txn = params.get("txn") || params.get("_ptxn") || "";
+  var txn = params.get("txn") || params.get("_ptxn") || (params.get("returned") === "1" ? pendingTxn() : "");
 
   if (!txn) {
     show("warn", function (t) { return t.noTxn; });
     return;
   }
-  if (!/^txn_[0-9a-z_-]{1,48}$/i.test(txn)) {
+  if (!TXN_SHAPE.test(txn)) {
     show("bad", function (t) { return t.badTxn(); });
     return;
   }
@@ -230,11 +253,13 @@
   }
 
   // Says what happened to the email copy, as the server knows it: sent,
-  // still being sent (it retries), or impossible (no address on file).
+  // still being sent (it retries), the address still being fetched from
+  // Paddle (the server retries that too), or impossible (no address on
+  // file, which only the server's word establishes).
   function mailedLine(data) {
     mailedData = data;
     if (!data.email) {
-      mailed.replaceChildren(t.noEmail);
+      mailed.replaceChildren(data.email_pending ? t.emailPending : t.noEmail);
     } else {
       var who = document.createElement("b");
       who.textContent = data.email;

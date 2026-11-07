@@ -44,9 +44,11 @@ recorded: Warp, JetBrains IDE terminals and Emacs terminals.
   `lastout-shell`, `#{pane_current_path}` stays where the tab was opened,
   and plugins that read `ps -t #{pane_tty}` (vim-tmux-navigator) can't see
   your programs.
-- **Zed:** its terminal panel is recorded. A command run as
-  `zsh -i -c '…'`, which is how Zed runs its tasks, stops at a prompt in a
-  new terminal instead of running; a fix is planned.
+- **Zed, and anything that starts a shell with `-ic`:** Zed's terminal
+  panel is recorded. A command run as `zsh -i -c '…'`, which is how Zed
+  runs its tasks, stops at a prompt in a new terminal instead of running;
+  `bash -i -c` and `fish -ic` do the same wherever a tool starts them with
+  a terminal. A fix is planned.
 
 ## Keys
 
@@ -146,9 +148,19 @@ commands saved in the repository you are in are listed first.
   `vault read`, `kubectl get secret`, …), only the command line and exit
   status are kept, not the output. This looks only at the start of the
   command: in a chain such as `cd x && op read …` the output is recorded.
-- Redaction knows formats, not every secret. Not caught today:
-  `curl -u user:pass`, `mysql -p<password>`, `sshpass -p`, `Cookie`
-  headers, `DB_PASS=`. Check before you paste.
+  Only recognized formats are redacted in the command line too, so a
+  secret typed as a plain argument (`aws configure set
+  aws_secret_access_key KEY`) stays readable, also to an agent: start
+  such a command with a space.
+- Redaction knows formats, not every secret. Not caught today, among
+  others: `curl -u user:pass` and `curl --user`, `mysql -p<password>`,
+  `docker login -p`, `sshpass -p`, `redis-cli -a`, `Cookie` and
+  `Set-Cookie` headers, `DB_PASS=`, `MYSQL_PWD=`, `SECRET_KEY_BASE=`,
+  `redis://:password@host` (no user name), Azure `AccountKey=`, the
+  `auth` in Docker's `config.json`, `client-key-data` in a kubeconfig, a
+  `.netrc` password, `SecretString` in `aws secretsmanager` output, and a
+  password inside escaped JSON. A token written right after letters,
+  digits or an underscore may not match either. Check before you paste.
 - `lo pause` (or Settings → Recording → Pause) stops recording; nothing is
   stored while paused.
 - Old recordings go by themselves: 200 commands per terminal, 30 days,

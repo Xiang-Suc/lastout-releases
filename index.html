@@ -268,7 +268,7 @@
 
   <header class="hero" data-doc="en">
     <div>
-      <div class="kicker rise">For macOS · Ghostty · iTerm2 · Terminal · kitty · WezTerm · Alacritty · VS Code · Cursor · Zed · tmux</div>
+      <div class="kicker rise">For macOS · Ghostty · iTerm2 · Terminal · kitty · WezTerm · Alacritty · VS Code · Cursor · Zed (terminal panel) · tmux</div>
       <h1 class="rise d1">The last thing your terminal said, <em>ready to paste.</em></h1>
       <p class="lede rise d2">Press a key in any app and the previous command's output is on your clipboard — progress bars gone, errors kept, recognized secrets masked — ready for ChatGPT, Claude, or a teammate. Even while the command is still running.</p>
       <div class="cta rise d3">
@@ -314,7 +314,7 @@ error TS2322: Type 'string' is not assignable
 
   <header class="hero" lang="zh-CN" data-doc="zh" hidden>
     <div>
-      <div class="kicker rise">适用于 macOS · Ghostty · iTerm2 · Terminal · kitty · WezTerm · Alacritty · VS Code · Cursor · Zed · tmux</div>
+      <div class="kicker rise">适用于 macOS · Ghostty · iTerm2 · Terminal · kitty · WezTerm · Alacritty · VS Code · Cursor · Zed（终端面板）· tmux</div>
       <h1 class="rise d1"><span>上一条命令的输出，</span><em>按一下就能贴。</em></h1>
       <p class="lede rise d2">在任何 App 里按一下快捷键，上一条命令的输出就进了剪贴板：进度条去掉，错误留下，识别出的密钥先遮盖，直接贴给 ChatGPT、Claude 或同事。命令还没跑完也能复制。</p>
       <div class="cta rise d3">
@@ -576,7 +576,7 @@ error TS2322: Type 'string' is not assignable
           <li>The whole <code>lo</code> command line: <code>lo</code> copies the last command's output, cleaned up and with recognized secrets redacted, and <code>--running</code> copies one that's still going</li>
           <li><code>lssh</code> for remote hosts, <code>lo save</code> for commands worth keeping</li>
           <li>One person, up to <b>2 Macs</b></li>
-          <li>Every update for <b>one year</b>; Lastout keeps working after that</li>
+          <li>Every update for <b>one year</b>; Lastout keeps working after that, as long as it can reach the license server once a day</li>
           <li>Try it free for <b>14 days</b> first, no card needed</li>
           <li>14-day money-back guarantee</li>
         </ul>
@@ -604,7 +604,7 @@ error TS2322: Type 'string' is not assignable
           <li>完整的 <code>lo</code> 命令行：<code>lo</code> 复制上一条命令整理好、遮盖过识别到的密钥的输出，<code>--running</code> 复制还没跑完的命令</li>
           <li><code>lssh</code> 用于远程主机，<code>lo save</code> 收藏值得留下的命令</li>
           <li>一人使用，最多 <b>2 台 Mac</b></li>
-          <li><b>一年</b>内的所有更新；一年后 Lastout 照常可用</li>
+          <li><b>一年</b>内的所有更新；一年后 Lastout 照常可用，只要每天能连一次授权服务器</li>
           <li>先免费试用 <b>14 天</b>，不用绑卡</li>
           <li>14 天内无理由退款</li>
         </ul>
@@ -733,9 +733,12 @@ error TS2322: Type 'string' is not assignable
   function say(which) {
     notes.forEach(function (n) { n.textContent = which ? NOTES[langOf(n)][which] : ""; });
   }
-  function thanksUrl(txn) {
+  // `returned` marks the address given to Paddle as successUrl: thanks.html
+  // trusts the order number kept in this tab only when it is there.
+  function thanksUrl(txn, returned) {
     var url = new URL("thanks.html", location.href);
     if (txn) url.searchParams.set("txn", txn);
+    if (returned) url.searchParams.set("returned", "1");
     if (pageLang() === "zh") url.searchParams.set("lang", "zh");
     return url.href;
   }
@@ -755,6 +758,34 @@ error TS2322: Type 'string' is not assignable
     return;
   }
 
+  // Paddle's own success redirect (settings.successUrl below) carries no order
+  // number: checked in the sandbox, nothing is appended and {transaction_id}
+  // is not filled in. So the number is kept in this tab as soon as the buyer
+  // pays, and thanks.html reads it back when it was reached through successUrl
+  // (?returned=1). Kept that early, because a payment method that leaves the
+  // page for a bank would otherwise never get to write it. Not checked in the
+  // sandbox: whether such a method fires payment.initiated before it leaves,
+  // and whether it returns to successUrl.
+  function rememberTxn(txn) {
+    try {
+      window.sessionStorage.setItem("lastoutPendingTxn", JSON.stringify({ txn: txn, at: Date.now() }));
+    } catch (e) { /* storage blocked: tabStorageWorks() kept successUrl off, see below */ }
+  }
+
+  // Whether this tab can keep a value. sessionStorage can be missing or throw
+  // (some privacy modes); then there is no successUrl, and the one redirect
+  // that carries ?txn= (eventCallback below) is the only way to thanks.html,
+  // as it was before successUrl existed.
+  function tabStorageWorks() {
+    try {
+      window.sessionStorage.setItem("lastoutProbe", "1");
+      window.sessionStorage.removeItem("lastoutProbe");
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   var ready = false;
   function initPaddle() {
     if (ready) return true;
@@ -764,10 +795,12 @@ error TS2322: Type 'string' is not assignable
       window.Paddle.Initialize({
         token: paddle.clientToken,
         eventCallback: function (event) {
-          if (event && event.name === "checkout.completed") {
-            var txn = event.data && event.data.transaction_id;
-            location.href = thanksUrl(txn);
+          if (!event) return;
+          var txn = event.data && event.data.transaction_id;
+          if (txn && (event.name === "checkout.payment.initiated" || event.name === "checkout.completed")) {
+            rememberTxn(txn);
           }
+          if (event.name === "checkout.completed") location.href = thanksUrl(txn);
         }
       });
       ready = true;
@@ -787,8 +820,15 @@ error TS2322: Type 'string' is not assignable
       }
       say("");
       // The checkout follows the page into Chinese; otherwise Paddle goes by the browser.
+      // successUrl is where Paddle sends the buyer when it completes the order
+      // itself, e.g. back from a bank page. A card payment reaches thanks.html
+      // both through the eventCallback above and through this, and both ways
+      // end on the same page. Only where the order number can be kept for it.
+      var settings = {};
+      if (tabStorageWorks()) settings.successUrl = thanksUrl("", true);
+      if (pageLang() === "zh") settings.locale = "zh-Hans";
       var checkout = { items: [{ priceId: paddle.priceId, quantity: 1 }] };
-      if (pageLang() === "zh") checkout.settings = { locale: "zh-Hans" };
+      if (settings.successUrl || settings.locale) checkout.settings = settings;
       try {
         window.Paddle.Checkout.open(checkout);
       } catch (err) {

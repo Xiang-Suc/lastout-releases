@@ -6,7 +6,7 @@ Lastout 记录什么、存在哪、什么会离开你的电脑、怎么删除。
 
 Lastout 由 Rocha Tech LLC（在美国新泽西州注册的公司，下称「我们」）开发。你记录的内容不会到我们这里；到我们这里的，只有购买授权以及校验试用和授权需要的那些，见下面「授权校验」和「购买授权」两节，这部分数据由我们负责（即数据控制者）。问题和请求请写信到 support@lastout.dev。
 
-最后更新：2026-11-01。
+最后更新：2026-11-05。
 
 ## 记录什么
 
@@ -22,7 +22,7 @@ Lastout 由 Rocha Tech LLC（在美国新泽西州注册的公司，下称「我
 
 - **以空格开头的命令**：连命令文本都不存（那一行只显示 `(private)`）。这是 shell 自己「不进历史」的约定。
 - **暂停期间**：`lo pause`（所有终端）或 `lo pause --here`（只这一个），可加 `--for 30m`。`lo resume` 结束全局暂停，`lo resume --here` 结束这个终端的暂停。什么都不存，连命令都不存。
-- **会打印密钥的命令**：内置列表（`op`、`pass`、`gopass`、`bw`、`lpass`、`aws configure`、`aws sts`、`aws ecr get-login-password`、`gcloud auth`、`az login`、`az account get-access-token`、`ssh-keygen`、`gpg --export-secret-keys`、`security find-generic-password`、`security find-internet-password`、`vault read|kv get|login|token`、`kubectl get secret`、`kubectl describe secret`、`kubectl config view`、`gh auth token`、`heroku auth:token`、`npm token`、`doppler secrets`、`openssl genrsa`、`openssl genpkey`、`age-keygen`、`wg genkey`）只保留命令行和退出状态，不保存输出。这个判断只看命令的开头：写在连写命令里的（`cd x && op read …`），输出会被录下。配置文件里 `record.ignore` 可以加自己的，`record.allow` 可以把内置条目放开。
+- **会打印密钥的命令**：内置列表（`op`、`pass`、`gopass`、`bw`、`lpass`、`aws configure`、`aws sts`、`aws ecr get-login-password`、`gcloud auth`、`az login`、`az account get-access-token`、`ssh-keygen`、`gpg --export-secret-keys`、`security find-generic-password`、`security find-internet-password`、`vault read|kv get|login|token`、`kubectl get secret`、`kubectl describe secret`、`kubectl config view`、`gh auth token`、`heroku auth:token`、`npm token`、`doppler secrets`、`openssl genrsa`、`openssl genpkey`、`age-keygen`、`wg genkey`）只保留命令行和退出状态，不保存输出。这个判断只看命令的开头：写在连写命令里的（`cd x && op read …`），输出会被录下。命令行本身也只遮盖识别得到的格式，所以当作普通参数打出来的密钥（`aws configure set aws_secret_access_key KEY`）仍然看得到，Agent 也读得到：这类命令请在开头加一个空格。配置文件里 `record.ignore` 可以加自己的，`record.allow` 可以把内置条目放开。
 - **你没有接入的终端**：只有 rc 文件里有 `lo setup` 写入的两段标记代码的 shell 才会被录制。`lo setup --uninstall` 从所有地方移除它们。
 
 ## 存在哪
@@ -40,13 +40,15 @@ Lastout 由 Rocha Tech LLC（在美国新泽西州注册的公司，下称「我
 - MCP 不读取它们；App 的诊断导出只记录条数。
 - 命令里存进去的密钥，会按你输入的原样留在文件里；`lo saved` 复制和打印时也按保存的原样给出，不做遮盖。
 
+数据目录里的 `usage.tsv` 只存两个数字：输出被复制了几次、编程助手读取了几次。`lo stats` 可以查看，它们不会离开你的 Mac。
+
 ## 什么会离开你的电脑
 
 你记录的内容，永远不会自己离开。命令行工具没有任何网络代码。菜单栏 App 只有两种连接：更新检查，以及授权校验（见下文）。每天一次（以及你点「检查更新…」时），它从 `github.com/Xiang-Suc/lastout-releases/releases/latest/download/appcast.xml` 取发布列表，看有没有新版本。这个请求只带任何下载都会带的信息（比如 IP 地址），没有关于你或你机器的其他信息（Sparkle 的系统信息上报是关闭的），更新只在你同意后安装，且签名必须与 App 内置的公钥匹配。没有遥测、没有崩溃报告、没有账号。输出只在你或你运行的工具要求时才离开：
 
 - **复制**（`lo`、菜单栏快捷键、通知上的「复制」按钮）把整理后的输出放到剪贴板，先遮盖识别到的密钥。通过 `lssh` 时，剪贴板仍是本地的。
 - **打印**（`lo --print`、`lo --json`）把它写到终端，先遮盖识别到的密钥。
-- **Agent**（`lo mcp`，给 Claude Code、Codex 等用的 MCP 服务器）：只读的工具，返回整理后的输出，始终遮盖识别到的密钥。Agent 没有任何参数能关掉它，服务器也不能写或删任何东西。
+- **Agent**（`lo mcp`，给 Claude Code、Codex 等用的 MCP 服务器）：只读的工具，返回整理后的输出，始终遮盖识别到的密钥。Agent 没有任何参数能关掉它。服务器也不能改动或删除你录下的任何内容，只会把 `usage.tsv` 里的读取次数加一。
 - **通知**在你的屏幕上显示命令行和退出状态，通过 macOS 通知中心，仅此而已。
 - **授权校验**：App 向 Lastout 的许可证服务器（地址写在 App 的 Info.plist 里的 `LastoutLicenseServer`；由 Lastout 运营的 Cloudflare Worker，源码不公开）询问这台 Mac 能做什么。第一次启动时在服务器上开始 14 天试用，让试用按服务器的时钟计时、每台 Mac 只有一次；你输入授权码后激活它；App 运行期间大约每 15 分钟、Mac 唤醒时和网络恢复时再校验一次，让退款的授权停下来。每个请求都带着这台 Mac 硬件 UUID 的 SHA-256 哈希（UUID 本身不会离开这台 Mac）、App 版本号，以及激活之后的授权码；从 0.3 升级上来的安装，第一次试用请求还带着它首次启动的日期。「在这台 Mac 上停用」发送授权码和同一个哈希以释放座位。服务器返回一份它签名的租约：这台 Mac 能做什么（试用和结束时间，或授权和座位数），有效期一天。App 把它存进你的钥匙串，并写到数据目录里只有你能读的 `lease.json`，`lo` 从那里读取：`lo search`、`lo save`、`lo mcp` 和 `lssh` 需要一份有效的租约，`lo` 本身仍然不发送任何东西。断网时，App 在上次校验后照常工作一天，之后复制会暂停，直到校验成功。这些请求都不包含任何关于你记录的内容。和任何网页请求一样，每次校验时 Cloudflare 都能看到你的 IP 地址；授权服务器的代码不读取也不保存它。没有配置服务器的构建拒绝一切授权码，也不发送任何东西。
 - **诊断信息**（设置 → 关于 →「导出…」）把一个 zip 存到你选的位置，供你报告问题时附上；App 不会把它发到任何地方。里面有：版本、Lastout 的设置、屏幕尺寸、`lo doctor` 的检查结果、正在记录的终端数量、Lastout 自己最近一天的日志，以及最近 30 天的崩溃报告。主目录显示为 `~`，用户名和电脑名会被替换，不含任何命令行、输出或授权码。
@@ -55,7 +57,7 @@ Lastout 由 Rocha Tech LLC（在美国新泽西州注册的公司，下称「我
 
 遮盖的是识别到的密钥：它按下面的规则工作，认的是已知格式，不保证遮住所有密钥。它对每次复制、打印和 Agent 读取生效，从不改动存储的内容（所以才有 `lo forget` 处理打印过的密码）。每处匹配变成带标签的标记，例如 `[REDACTED:github-token]`，LLM 仍能知道那里原来是什么。规则：已知的 token 格式（GitHub、GitLab、AWS access key、Google、Stripe、Slack token 和 webhook、SendGrid、Twilio、Shopify、npm、PyPI、DigitalOcean、Hugging Face、JWT、通用 API key）、私钥块、URL 里的密码、两步验证的设置密钥（`otpauth://` 链接、带 `Setup key:` 这类标签的密钥、四个一组打印的 base32 密钥）、`Authorization` 头和 bearer token、`--password` 这类参数、`SECRET=value` 赋值。你自己的格式写在配置的 `redact.patterns`（正则）。
 
-目前认不出：`curl -u user:pass`、`mysql -p<密码>`、`sshpass -p`、`Cookie` 头、`DB_PASS=`。贴出去之前请看一眼。
+目前认不出（只是常见的几类，不是全部）：`curl -u user:pass` 和 `curl --user`、`mysql -p<密码>`、`docker login -p`、`sshpass -p`、`redis-cli -a`、`gpg --passphrase`、`Cookie` 和 `Set-Cookie` 头、`DB_PASS=`、`MYSQL_PWD=` 和 `SECRET_KEY_BASE=` 赋值、没有用户名的 Redis 地址（`redis://:密码@host`）、Azure 的 `AccountKey=` 和签名链接里的 `sig=`、Docker `config.json` 里的 `auth`、kubeconfig 里的 `client-key-data`、`.netrc` 里的密码、`aws secretsmanager get-secret-value` 输出里的 `SecretString`，以及转义过的 JSON 里的密码。紧贴在字母、数字或下划线后面的 token 也可能认不出。贴出去之前请看一眼。
 
 `lo --no-redact` 对你自己做的复制跳过遮盖；任何 MCP 工具和设置都做不到这一点。如果 Agent 还能跑 shell，它就和你是同一身份：可以运行 `lo --no-redact`，也能读磁盘上的录制，和读你的其他文件一样。
 
@@ -72,7 +74,7 @@ Lastout 由 Rocha Tech LLC（在美国新泽西州注册的公司，下称「我
 
 ## 菜单栏 App
 
-它启动时申请一个权限：通知；不给也能用（菜单和快捷键不需要）。如果你在设置里打开「精确复制前台那个窗口」，macOS 还会询问一次，允许 Lastout 向 Terminal 或 iTerm2 询问哪个窗口在最前面；它只读取那个窗口的终端设备名。「登录时启动」默认关闭，要在设置里自己打开。它不需要辅助功能、屏幕录制或输入监控权限。它的网络连接只有上面说的更新检查和授权校验。
+它启动时申请一个权限：通知；不给也能用（菜单和快捷键不需要）。如果你在设置里打开「精确复制前台那个窗口」，Lastout 会向 Terminal 或 iTerm2 询问哪个窗口在最前面（macOS 可能会请你允许一次）；它只读取那个窗口的终端设备名。「登录时启动」默认开启，可以在接入时取消勾选，也可以随时在设置里改。它不需要辅助功能、屏幕录制或输入监控权限。它的网络连接只有上面说的更新检查和授权校验。
 
 它的浮层（灵动岛、全局浮窗、侧边停靠、复制提示、选择面板）被标记为不进截图、录屏和屏幕共享：你自己照常能看到，看你屏幕的人通常看不到。这是对 macOS 提出的请求，具体某个截图、录屏或共享软件是否遵守，取决于那个软件和 macOS 版本；我们没有逐个测过。共享屏幕之前，请先确认它们没有出现。视频 App、Keynote、PowerPoint 或游戏占满屏幕时，灵动岛、全局浮窗和侧边停靠也会让开。为了判断这一点，Lastout 会看哪些 App 在屏幕上有窗口、窗口在哪（macOS 不需要任何权限就能列出这些；不读窗口标题和内容，什么也不保存），以及 App 自己声明的类别。全屏的浏览器、编辑器和终端照常显示浮层，浏览器里全屏播放视频也一样。「不进截图」和「让开」这两项默认打开，可以在「设置 → 外观」里关掉，比如要录 Lastout 的演示时。
 

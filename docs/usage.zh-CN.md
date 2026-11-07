@@ -19,7 +19,7 @@ Lastout 记下终端打印过的内容，不用选中文字，就能把上一条
 
 - **tmux 和 screen：** 请按 ⌃⌥⌘L、在窗格里运行 `lo`，或者从别的 App 按 ⌃⌥⌘C。终端本身在最前时，快捷键暂时拿不到窗格里的输出。
 - **tmux 看到的是 Lastout 的代理进程：** `#{pane_current_command}` 和默认窗口名显示 `lastout-shell`，`#{pane_current_path}` 停在开标签页时的目录，靠 `ps -t #{pane_tty}` 判断程序的插件（vim-tmux-navigator）看不到你的程序。
-- **Zed：** 它的终端面板会录制。以 `zsh -i -c '…'` 方式运行的命令（Zed 的任务就是这样跑的），在新开的终端里会停在提示符、不执行；我们计划修复。
+- **Zed，以及任何用 `-ic` 启动 shell 的工具：** Zed 的终端面板会录制。以 `zsh -i -c '…'` 方式运行的命令（Zed 的任务就是这样跑的），在新开的终端里会停在提示符、不执行；`bash -i -c`、`fish -ic` 只要被工具带着终端启动，也一样。我们计划修复。
 
 ## 快捷键
 
@@ -103,8 +103,8 @@ $ lo save "staging api timeouts, last hour (VPN first)"
 ## 录制与隐私
 
 - 以空格开头的命令完全不保存，连命令本身也不存。
-- 命令以密钥类工具（`op`、`pass`、`aws configure`、`vault read`、`kubectl get secret` 等）开头时，只保留命令行和退出状态，不存输出。这只看命令的开头：写在 `cd x && op read …` 这种连写里的，输出会被录下。
-- 遮盖认的是格式，不是所有密钥。目前认不出：`curl -u user:pass`、`mysql -p<密码>`、`sshpass -p`、`Cookie` 头、`DB_PASS=`。贴出去之前请看一眼。
+- 命令以密钥类工具（`op`、`pass`、`aws configure`、`vault read`、`kubectl get secret` 等）开头时，只保留命令行和退出状态，不存输出。这只看命令的开头：写在 `cd x && op read …` 这种连写里的，输出会被录下。命令行本身也只遮盖识别得到的格式，所以当作普通参数打出来的密钥（`aws configure set aws_secret_access_key KEY`）仍然看得到，Agent 也读得到：这类命令请在开头加一个空格。
+- 遮盖认的是格式，不是所有密钥。目前认不出（只是常见的几类，不是全部）：`curl -u user:pass` 和 `curl --user`、`mysql -p<密码>`、`docker login -p`、`sshpass -p`、`redis-cli -a`、`Cookie` 和 `Set-Cookie` 头、`DB_PASS=`、`MYSQL_PWD=`、`SECRET_KEY_BASE=`、没有用户名的 Redis 地址（`redis://:密码@host`）、Azure 的 `AccountKey=`、Docker `config.json` 里的 `auth`、kubeconfig 里的 `client-key-data`、`.netrc` 里的密码、`aws secretsmanager` 输出里的 `SecretString`，以及转义过的 JSON 里的密码。紧贴在字母、数字或下划线后面的 token 也可能认不出。贴出去之前请看一眼。
 - `lo pause`（或「设置 → 录制 → 暂停」）停止录制；暂停期间什么都不存。
 - 旧的录制会自动清理：每个终端 200 条、30 天、最多 500 MB。`lo forget --all`（或「设置 → 录制 → 抹掉…」）立即删除全部。
 - `lo forget` 会删掉行和输出文件，并把被删行在数据库里占的字节清零。命令行文字的旧副本可能还留在数据库文件的空闲部分，直到被覆盖；所以如果密码写在了命令行里，请把密码换掉。它不会动你的 shell 历史和备份。用 `lo --print` 或 `--json` 打印过的副本是另一条命令，普通 `lo forget` 会跳过，要用 `lo forget --id N` 删。

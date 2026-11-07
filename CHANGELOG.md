@@ -3,6 +3,51 @@
 User-facing changes. Compatibility with other tools, and how each part
 of it is tested, is in [docs/compatibility.md](docs/compatibility.md).
 
+## Unreleased
+
+### On lastout.dev, in the usage guide and in the license server
+
+No app update needed: these take effect when the site is published and
+the license server updated.
+
+- The list of what redaction doesn't catch (usage guide, privacy policy)
+  is longer and now says "among others": `curl --user`, `docker login -p`,
+  `redis-cli -a`, `MYSQL_PWD=`, `SECRET_KEY_BASE=`, a Redis URL without a
+  user name, Azure `AccountKey=`, the `auth` in Docker's `config.json`,
+  kubeconfig `client-key-data`, a `.netrc` password, `SecretString` from
+  `aws secretsmanager`, a password inside escaped JSON, and a token
+  written right after letters, digits or an underscore.
+- Commands on the "prints secrets" list keep their command line, and only
+  recognized formats are redacted in it: a secret typed as a plain
+  argument (`aws configure set aws_secret_access_key KEY`) stays readable,
+  also to an agent. Start such a command with a space.
+- The `-ic` limitation is no longer described as Zed's alone: a command
+  run as `zsh -i -c '…'`, `bash -i -c` or `fish -ic` in a recorded
+  terminal stops at a prompt instead of running, wherever a tool starts
+  it that way (Zed's tasks do). lastout.dev's front page now says "Zed
+  (terminal panel)".
+- The price card's "keeps working after that" now adds the condition the
+  EULA already states: the app has to reach the license server once a
+  day. The README says what `lo mcp` does after the trial (it keeps
+  running and every tool call answers why; only `lo search`, `lo save`
+  and `lssh` exit with status 4).
+- The privacy policy no longer promises that macOS asks once before
+  Lastout asks Terminal or iTerm2 which window is in front; it says
+  macOS may ask.
+- The page after checkout no longer says "no email address came with
+  this order" when the address simply hasn't been fetched from Paddle
+  yet: it now says the address is still being looked up and that a copy
+  of the key is emailed as soon as it arrives (asked every 15 minutes at
+  first, for up to three days). The key stays on the page.
+- The license server gives up on a Paddle or Resend call that doesn't
+  answer (after 2.5 s and 10 s) instead of waiting on it: the key is
+  still issued and its email retried as before.
+- A payment method that sends you away from lastout.dev (a bank redirect)
+  now brings you back to the page with the key: checkout gives Paddle a
+  return address, and the tab keeps the order number for up to two hours
+  so that page can find it. Card payments worked before and are
+  unchanged; a browser that can't keep the number behaves as before.
+
 ## 0.4.2 - 2026-11-04
 
 ### On lastout.dev, in the key email and in install.sh
