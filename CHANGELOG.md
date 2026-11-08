@@ -7,8 +7,42 @@ of it is tested, is in [docs/compatibility.md](docs/compatibility.md).
 
 ### On lastout.dev, in the usage guide and in the license server
 
-No app update needed: these take effect when the site is published and
-the license server updated.
+Changes to the site and the license server, not to the app: none of
+them needs an app update. The first group went live with the site on
+November 7, 2026, the second on November 8.
+
+Live since November 8, 2026:
+
+- A "Known issues" page (lastout.dev/known-issues.html, English and
+  Chinese), linked from the front page's navigation and footer: what
+  isn't recorded or recorded wrong in tmux, screen, Warp, JetBrains and
+  Emacs terminals and in `zsh -i -c` style commands, what redaction
+  misses, when the menu's "Running" list keeps a finished command, where
+  the island shows up on an external display, and what we haven't tested
+  yet. Each entry has the workaround we know.
+- The two demo GIFs the posts link to, at lastout.dev/media/
+  (`lastout-en.gif`, `lastout-zh.gif`); `scripts/publish.sh --site` now
+  copies `site/media/` along with the pages.
+- The front page's "Local only" / 「只在本机」 card is now "Recordings
+  aren't uploaded" / 「录下的内容不上传」, in line with the privacy
+  policy: recordings aren't uploaded, and they leave this Mac only when
+  you paste them or let a coding agent read them.
+- The privacy policy's data-directory table no longer lists a Linux
+  path (Linux isn't published), and "stays on your Mac" became "isn't
+  uploaded, and we can't see it".
+- Checkout: when Paddle reports a completed payment without the order
+  number, the page uses the number from the earlier "payment initiated"
+  event, so the page with the key still finds the order.
+- The license agreement (lastout.dev/eula.html) now says what happens
+  if we ever shut the license service down: we first publish a version
+  of Lastout that works without it, free for everyone who bought a
+  license, whether or not their update period has ended (section 3).
+  The front page's pricing fine print says the same. The agreement also
+  says what runs without a trial or license, as the fine print already
+  did: recording and plain `lo` keep working; the App's copying and
+  `lo search`, `lo save`, `lo mcp` and `lssh` stop (section 1).
+
+Live since November 7, 2026:
 
 - The list of what redaction doesn't catch (usage guide, privacy policy)
   is longer and now says "among others": `curl --user`, `docker login -p`,

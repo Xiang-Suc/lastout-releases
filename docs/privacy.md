@@ -64,7 +64,7 @@ contents the command did not print, no information about other apps.
 
 | What | Where |
 |---|---|
-| Recordings (SQLite index + compressed output files) | macOS: `~/Library/Application Support/lastout/`; Linux: `$XDG_DATA_HOME/lastout/` (default `~/.local/share/lastout/`); or `$LASTOUT_HOME` |
+| Recordings (SQLite index + compressed output files) | `~/Library/Application Support/lastout/`, or `$LASTOUT_HOME` |
 | Configuration | `~/.config/lastout/config.toml` (`$XDG_CONFIG_HOME` honoured), or `$LASTOUT_CONFIG` |
 | App settings (shortcuts, notification threshold) | `~/Library/Preferences/dev.lastout.app.plist` |
 
@@ -339,8 +339,8 @@ requires us to.
 
 ## Your rights
 
-What Lastout records stays on your Mac, under your control with the
-commands above; we can't see it. For the license record we keep, write
+What Lastout records isn't uploaded, and we can't see it: it is under
+your control with the commands above. For the license record we keep, write
 to support@lastout.dev to get a copy, correct it or delete it. Once it
 is deleted the key stops working on every Mac within a day, because the
 app checks it again; deleting a Mac's trial record gives it a new trial. Paddle keeps its own

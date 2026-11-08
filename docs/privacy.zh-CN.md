@@ -29,7 +29,7 @@ Lastout 由 Rocha Tech LLC（在美国新泽西州注册的公司，下称「我
 
 | 内容 | 位置 |
 |---|---|
-| 记录（SQLite 索引 + 压缩的输出文件） | macOS：`~/Library/Application Support/lastout/`；Linux：`$XDG_DATA_HOME/lastout/`（默认 `~/.local/share/lastout/`）；或 `$LASTOUT_HOME` |
+| 记录（SQLite 索引 + 压缩的输出文件） | `~/Library/Application Support/lastout/`，或 `$LASTOUT_HOME` |
 | 配置 | `~/.config/lastout/config.toml`（遵守 `$XDG_CONFIG_HOME`），或 `$LASTOUT_CONFIG` |
 | App 设置（快捷键、通知阈值） | `~/Library/Preferences/dev.lastout.app.plist` |
 
@@ -115,7 +115,7 @@ lastout.dev 是一组由 GitHub Pages 托管的静态页面。网站自己不设
 
 ## 你的权利
 
-Lastout 记录的内容留在你的 Mac 上，用上面的命令由你自己管理，我们看不到。对于我们保存的授权记录，写信到 support@lastout.dev 可以要一份副本、更正或删除。删除后，这个授权码会在一天内在所有 Mac 上停止工作，因为 App 会再次校验它；删除一台 Mac 的试用记录，它就有一次新的试用。Paddle 按税法要求保留自己的订单记录：可以直接找 Paddle，也可以找我们转达。视你所在地区（比如欧盟、英国或加州），法律可能还给你更多权利，比如提出反对，或向数据保护机构投诉。
+Lastout 记录的内容不上传，我们看不到；用上面的命令由你自己管理。对于我们保存的授权记录，写信到 support@lastout.dev 可以要一份副本、更正或删除。删除后，这个授权码会在一天内在所有 Mac 上停止工作，因为 App 会再次校验它；删除一台 Mac 的试用记录，它就有一次新的试用。Paddle 按税法要求保留自己的订单记录：可以直接找 Paddle，也可以找我们转达。视你所在地区（比如欧盟、英国或加州），法律可能还给你更多权利，比如提出反对，或向数据保护机构投诉。
 
 我们使用授权和试用记录，是因为交付你买的或正在试用的东西需要它们（按欧盟和英国法律，法律依据是履行与你的合同：EULA 里的试用和授权条款）。
 

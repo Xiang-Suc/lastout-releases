@@ -255,6 +255,7 @@
       <a href="#how"><span data-doc="en">How it works</span><span data-doc="zh" hidden>工作原理</span></a>
       <a href="#agents"><span data-doc="en">Agents</span><span data-doc="zh" hidden>编程 Agent</span></a>
       <a href="#pricing"><span data-doc="en">Pricing</span><span data-doc="zh" hidden>价格</span></a>
+      <a href="known-issues.html" data-lang-link><span data-doc="en">Known issues</span><span data-doc="zh" hidden>已知问题</span></a>
       <a href="terms.html" data-lang-link><span data-doc="en">Terms</span><span data-doc="zh" hidden>条款</span></a>
       <a href="refund.html" data-lang-link><span data-doc="en">Refund Policy</span><span data-doc="zh" hidden>退款政策</span></a>
       <a href="privacy.html" data-lang-link><span data-doc="en">Privacy</span><span data-doc="zh" hidden>隐私</span></a>
@@ -542,7 +543,7 @@ error TS2322: Type 'string' is not assignable
     <div class="label">Privacy</div>
     <h2>Stays on your Mac <em>until you paste it or connect an agent.</em></h2>
     <div class="privacy">
-      <div><h4>Local only</h4><p>The app has no analytics and no account. Recordings live in a private folder on your Mac. The app connects only to check for updates and, about every 15 minutes, to verify your trial or license; neither sends anything you recorded.</p></div>
+      <div><h4>Recordings aren't uploaded</h4><p>The app has no analytics and no account. Recordings live in a private folder on your Mac. The app connects only to check for updates and, about every 15 minutes, to verify your trial or license; neither sends anything you recorded.</p></div>
       <div><h4>Recognized secrets masked</h4><p>Recognized secrets are masked in every copy of recorded output and every agent read through MCP. The rules know known formats, not every secret, and MCP has no way to turn them off. An agent that also has a shell runs as you: it could run <code>lo --no-redact</code> or read the recordings on disk, like any file you own.</p></div>
       <div><h4>Pause or forget</h4><p><code>lo pause --for 30m</code> stops recording; commands starting with a space are never stored, not even their text. Printed a password? <code>lo forget</code> deletes that command and zeroes its bytes in the database; a copy printed with <code>lo --print</code> or <code>--json</code> is its own command: remove it with <code>lo forget --id N</code>. An older copy of a command line can linger in the database file's unused space, so change a password typed on the command line.</p></div>
       <div><h4>Gone on its own</h4><p>200 commands per terminal, 30 days, 500 MB — then it cleans up after itself.</p></div>
@@ -553,7 +554,7 @@ error TS2322: Type 'string' is not assignable
     <div class="label">隐私</div>
     <h2><span>你不粘贴、不接 Agent，</span><em>它哪儿也不去。</em></h2>
     <div class="privacy">
-      <div><h4>只在本机</h4><p>App 没有统计，不用注册账号。记录存在你 Mac 上的一个私有文件夹里。App 只为两件事联网：检查更新，以及大约每 15 分钟向服务器校验一次试用或授权，两者都不带你记录的任何内容。</p></div>
+      <div><h4>录下的内容不上传</h4><p>App 没有统计，不用注册账号。记录存在你 Mac 上的一个私有文件夹里。App 只为两件事联网：检查更新，以及大约每 15 分钟向服务器校验一次试用或授权，两者都不带你记录的任何内容。</p></div>
       <div><h4>默认遮盖识别出的密钥</h4><p>每一次复制录下的输出、每一次 Agent 通过 MCP 的读取，都会遮盖识别到的密钥。规则只认已知格式，不保证遮住所有密钥，MCP 也没有办法关掉它。如果 Agent 还能跑 shell，它就和你是同一身份：可以运行 <code>lo --no-redact</code>，也能读磁盘上的录制，和读你的其他文件一样。</p></div>
       <div><h4>暂停或忘掉</h4><p><code>lo pause --for 30m</code> 暂停录制；以空格开头的命令完全不存，连命令文本都不存。不小心打印了密码？<code>lo forget</code> 删掉那条命令，并把它在数据库里占的字节清零；用 <code>lo --print</code> 或 <code>--json</code> 打印过的副本是另一条命令，要用 <code>lo forget --id N</code> 删。命令行文字的旧副本可能还留在数据库文件的空闲部分，所以写在命令行里的密码请换掉。</p></div>
       <div><h4>自己清理</h4><p>每个终端 200 条命令、30 天、500 MB，超出后自动清理。</p></div>
@@ -585,7 +586,7 @@ error TS2322: Type 'string' is not assignable
           <a class="btn ghost" data-download href="https://github.com/Xiang-Suc/lastout-releases/releases/latest">Download the trial</a>
         </div>
         <p class="buy-note" data-buy-note aria-live="polite"></p>
-        <p class="fine">Checks your license online about every 15 minutes. Offline for over a day, the App's copying and <code>lo</code> mcp, search, save and lssh pause until it reconnects; recording and plain <code>lo</code> keep working.</p>
+        <p class="fine">Checks your license online about every 15 minutes. Offline for over a day, the App's copying and <code>lo</code> mcp, search, save and lssh pause until it reconnects; recording and plain <code>lo</code> keep working. Should we ever shut the license server down, we'll first publish a version that doesn't need it, free for everyone who bought a license (<a href="eula.html">EULA</a>, section 3).</p>
         <p class="fine">Prices in USD; sales tax or VAT may be added at checkout depending on your country. Orders are processed by Paddle.com Market Ltd, our merchant of record, under the <a href="terms.html">Terms of Sale</a>, the <a href="refund.html">Refund Policy</a> and the <a href="eula.html">EULA</a>.</p>
         <p class="fine">Requires macOS 14 or later. Questions before you buy: <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>.</p>
       </div>
@@ -613,7 +614,7 @@ error TS2322: Type 'string' is not assignable
           <a class="btn ghost" data-download href="https://github.com/Xiang-Suc/lastout-releases/releases/latest">下载试用版</a>
         </div>
         <p class="buy-note" data-buy-note aria-live="polite"></p>
-        <p class="fine">约每 15 分钟联网校验一次授权。离线超过一天，App 的复制和 <code>lo</code> 的 mcp、search、save、lssh 会暂停，联网后恢复；录制和普通 <code>lo</code> 命令不受影响。</p>
+        <p class="fine">约每 15 分钟联网校验一次授权。离线超过一天，App 的复制和 <code>lo</code> 的 mcp、search、save、lssh 会暂停，联网后恢复；录制和普通 <code>lo</code> 命令不受影响。如果有一天我们关停授权服务器，会先发布一个不需要它的版本，买过授权的人免费获得（<a href="eula.html?lang=zh">EULA</a> 第 3 条）。</p>
         <p class="fine">价格以美元计；视你所在的国家或地区，结账时可能另加销售税或增值税。订单由我们的代收商户 Paddle.com Market Ltd 处理，适用<a href="terms.html?lang=zh">销售条款</a>、<a href="refund.html?lang=zh">退款政策</a>和<a href="eula.html?lang=zh">最终用户许可协议（EULA）</a>。</p>
         <p class="fine">需要 macOS 14 或更高版本。购买前有疑问：<a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>。</p>
       </div>
@@ -629,6 +630,7 @@ error TS2322: Type 'string' is not assignable
       <a href="refund.html" data-lang-link><span data-doc="en">Refund Policy</span><span data-doc="zh" hidden>退款政策</span></a>
       <a href="privacy.html" data-lang-link><span data-doc="en">Privacy</span><span data-doc="zh" hidden>隐私政策</span></a>
       <a href="eula.html" data-lang-link><span data-doc="en">EULA</span><span data-doc="zh" hidden>许可协议</span></a>
+      <a href="known-issues.html" data-lang-link><span data-doc="en">Known issues</span><span data-doc="zh" hidden>已知问题</span></a>
       <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>
     </span>
   </footer>
@@ -787,6 +789,9 @@ error TS2322: Type 'string' is not assignable
   }
 
   var ready = false;
+  // The order number payment.initiated carried, for a checkout.completed that
+  // comes without one: then the redirect still names the order.
+  var initiatedTxn = "";
   function initPaddle() {
     if (ready) return true;
     if (!window.Paddle) return false;
@@ -798,9 +803,10 @@ error TS2322: Type 'string' is not assignable
           if (!event) return;
           var txn = event.data && event.data.transaction_id;
           if (txn && (event.name === "checkout.payment.initiated" || event.name === "checkout.completed")) {
+            initiatedTxn = txn;
             rememberTxn(txn);
           }
-          if (event.name === "checkout.completed") location.href = thanksUrl(txn);
+          if (event.name === "checkout.completed") location.href = thanksUrl(txn || initiatedTxn);
         }
       });
       ready = true;
