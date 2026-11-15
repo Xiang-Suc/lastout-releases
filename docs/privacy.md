@@ -12,7 +12,7 @@ only what buying a license and checking the trial and the license need,
 described under *License checks* and *Buying a license*; for that data
 we are responsible (the data controller). Questions and requests: support@lastout.dev.
 
-Last updated: 2026-11-05.
+Last updated: 2026-11-15.
 
 ## What is recorded
 
@@ -49,11 +49,12 @@ contents the command did not print, no information about other apps.
   `kubectl config view`, `gh auth token`, `heroku auth:token`,
   `npm token`, `doppler secrets`, `openssl genrsa`, `openssl genpkey`,
   `age-keygen`, `wg genkey`) the command line and exit status are kept,
-  not the output. This looks only at the start of the command: in a chain
-  (`cd x && op read …`) the output is recorded. Only recognized formats
+  not the output, wherever on the line the command sits: in a chain
+  (`cd x && op read …`), a pipe or a `$(…)` substitution too. Quoted text
+  is not a command. Only recognized formats
   are redacted in the command line too, so a secret typed as a plain
-  argument (`aws configure set aws_secret_access_key KEY`) stays
-  readable, also to an agent: start such a command with a space. Add
+  argument with nothing naming it (`htpasswd -b file user PASSWORD`)
+  stays readable, also to an agent: start such a command with a space. Add
   your own with `record.ignore` in the config file, or lift a built-in
   entry with `record.allow`.
 - **Terminals you did not set up**: recording only happens where the two
@@ -125,7 +126,9 @@ only when you, or a tool you run, ask for it:
   day it was first launched. *Deactivate on this Mac* sends the key and
   the hash to free the seat. The server answers with a lease it signed:
   what this Mac may do (the trial and when it ends, or the license and
-  its seats), valid for a day. The app keeps it in your keychain and in
+  its seats), valid for a day. For a license, the answer also carries the
+  name and email the license was bought with; the app keeps them in your
+  keychain and shows them in Settings. The app keeps the lease in your keychain and in
   `lease.json` (readable only by you) in the data directory, where `lo`
   reads it: `lo search`, `lo save`, `lo mcp` and `lssh` need a valid one,
   and `lo` itself still sends nothing. Without the network the app keeps
@@ -134,7 +137,7 @@ only when you, or a tool you run, ask for it:
   requests. Like any web request, each check shows your IP address to
   Cloudflare; the license server's code doesn't read or store it. A build
   with no server configured refuses every key and sends nothing.
-- **Diagnostics** (Settings → About → *Export Diagnostics…*) writes a zip
+- **Diagnostics** (Settings → About → *Export…*) writes a zip
   where you choose, for you to attach to a bug report; the app sends it
   nowhere. In it: versions, Lastout's settings, the screens' sizes, the
   `lo doctor` checks, how many terminals are recorded, Lastout's own log
@@ -150,24 +153,32 @@ and agent read, never to what is stored (so `lo forget` exists for a
 secret that was printed). Each match becomes a
 labelled marker such as `[REDACTED:github-token]`, so an LLM still knows
 what was there. Rules: known token formats (GitHub, GitLab, AWS access
-keys, Google, Stripe, Slack tokens and webhooks, SendGrid, Twilio,
-Shopify, npm, PyPI, DigitalOcean, Hugging Face, JWTs, generic API keys),
-private key blocks, passwords in URLs, authenticator setup keys
-(`otpauth://` links, a labelled `Setup key:`, and base32 keys printed in
-groups of four), `Authorization` headers and bearer tokens,
-`--password`-style flags, `SECRET=value` assignments. Your own
-formats go in `redact.patterns` (regexes) in the config file.
+keys, Google API keys and OAuth tokens, Stripe keys and webhook secrets,
+Slack tokens and webhooks, SendGrid, Twilio, Shopify, npm, PyPI,
+DigitalOcean, Hugging Face, Resend, Supabase, Groq, xAI, age secret
+keys, JWTs, generic API keys), private key blocks, passwords and tokens
+in URLs (`postgres://user:pw@`, `redis://:pw@`, `https://token@`),
+authenticator setup keys (`otpauth://` links, a labelled `Setup key:`,
+and base32 keys printed in groups of four), `Authorization` headers and
+bearer tokens, the values in `Cookie` and `Set-Cookie` headers,
+`--password`-style flags (`--token`, `--db-password`, `--passphrase`,
+…), the password arguments of `curl -u user:pass` and `curl -b`,
+`mysql -p<password>`, `sshpass -p`, `docker login -p`, `redis-cli -a`,
+`openssl … pass:`, `aws configure set` and `gh secret set --body`, and
+`SECRET=value` assignments (`…_TOKEN`, `…_PASSWORD`, `DB_PASS`,
+`MYSQL_PWD`, `SECRET_KEY_BASE`, `AccountKey`, an ALL_CAPS `…_KEY` such
+as `APP_KEY`, `API Key:` and `Secret Key:` labels). Your own formats go
+in `redact.patterns` (regexes) in the config file.
 
-Not caught today, among others: `curl -u user:pass` and `curl --user`,
-`mysql -p<password>`, `docker login -p`, `sshpass -p`, `redis-cli -a`,
-`gpg --passphrase`, `Cookie` and `Set-Cookie` headers, `DB_PASS=`,
-`MYSQL_PWD=` and `SECRET_KEY_BASE=` assignments, a Redis URL without a
-user name (`redis://:password@host`), Azure `AccountKey=` and the `sig=`
-of a signed URL, the `auth` in Docker's `config.json`, `client-key-data`
-in a kubeconfig, a `.netrc` password, `SecretString` in the output of
-`aws secretsmanager get-secret-value`, and a password inside escaped
-JSON. A token written right after letters, digits or an underscore may
-not match either. Check before you paste.
+Not caught today, among others: a secret given as a plain argument with
+no flag or label in front (`htpasswd -b file user PASSWORD`), the `sig=`
+of a signed Azure URL, the `auth` in Docker's `config.json`,
+`client-key-data` in a kubeconfig, a `.netrc` password, `SecretString`
+in the output of `aws secretsmanager get-secret-value`, a password
+inside escaped JSON, and a lower-case `…_key` in code (`app_key = …`;
+`api_key` and `secret_key` are caught). A token written right after
+letters, digits or an underscore may not match either. Check before you
+paste.
 
 `lo --no-redact` skips redaction for a copy you make yourself; no MCP tool
 or setting can. An agent that also has a shell runs as you: it could run
@@ -189,28 +200,32 @@ none of the output.
   of a command line can stay in unused parts of the database file until
   it is overwritten, so if a password was typed on the command line,
   change the password. `lo forget` does not touch your shell history or
-  your backups. A copy you printed with `lo --print` or `--json` is its
-  own command, and plain `lo forget` skips it: remove it with
-  `lo forget --id N`.
+  your backups. What `lo` itself prints (`lo --print`, `--json`) is not
+  recorded, so no copy of a forgotten command's output stays behind.
 - `lo setup --uninstall` removes Lastout's blocks from every shell's rc
   files (and a login file it created). Open terminals keep running as they
   are; new ones are plain. Before it changes a file, `lo setup` (and
   `--uninstall`) keeps a copy next to it, named `.lastout-backup-*`;
-  nothing removes those copies.
-- To remove Lastout from this Mac: run `lo setup --uninstall` first, then
-  delete `~/Library/Application Support/lastout/`, `~/.config/lastout/`,
-  `~/Library/Preferences/dev.lastout.app.plist`,
+  only `lo uninstall` removes those copies.
+- To remove Lastout from this Mac: `lo uninstall` lists what it will
+  remove and asks once: Lastout's blocks in your rc files,
+  `~/Library/Application Support/lastout/` (the recordings, deleted, not
+  moved to the Trash), `~/.config/lastout/` (the config and your saved
+  commands), `~/Library/Preferences/dev.lastout.app.plist`,
   `~/Library/Caches/dev.lastout.app`,
   `~/Library/HTTPStorages/dev.lastout.app` and
-  `dev.lastout.app.binarycookies` beside it, the app from
-  `/Applications`, `lo` and `lastout-shell` from `~/.local/bin`, and the
-  `.lastout-backup-*` copies next to your rc files. Remove the license
-  from your keychain with
-  `security delete-generic-password -s dev.lastout.app -a license`. The
-  Homebrew cask's `zap` removes only your recordings and the app's
-  settings, not the rest of this list. Lastout does not encrypt
-  recordings and does not exclude them from Time Machine, so backups you
-  already made keep their copies.
+  `dev.lastout.app.binarycookies` beside it, the license record in your
+  keychain, `lo` and `lastout-shell` from `~/.local/bin`, the older
+  `.lastout-backup-*` copies next to your rc files (it keeps the one it
+  makes), and the app, which goes to the Trash with Open at Login turned
+  off first (installed with Homebrew, `brew uninstall --zap --cask
+  lastout` removes it). On a Mac that holds one of your license's seats,
+  or may hold one, it first asks you to choose *Deactivate on this Mac*
+  in the app. Lastout does not encrypt recordings and does not
+  exclude them from Time Machine, so backups you already made keep their
+  copies. The license server keeps this Mac's trial record (the hash
+  described under *License checks*), so installing again doesn't start a
+  new trial.
 - Saved commands: `lo saved --rm ID`, or delete the file (`lo saved --path`).
 
 ## The menu bar app
@@ -307,13 +322,38 @@ app and the website reach the server over HTTPS.
 ## The website
 
 lastout.dev is a set of static pages served by GitHub Pages. It sets no
-cookies of its own and has no analytics, tracking pixels or ads of its
-own. Its fonts load from Google Fonts. The product page loads Paddle's
-checkout script (Paddle.js) as soon as it opens, so that *Buy* can open
-Paddle's checkout over the page. The page loads Paddle.js, which also
-loads ProfitWell, Paddle's analytics product, and may set Paddle's
+cookies of its own and has no tracking pixels or ads. It counts visits
+with Cloudflare Web Analytics: the product page, the known-issues page
+and the legal pages (this one included) load a script from Cloudflare
+(`static.cloudflareinsights.com`), which reports which page was opened,
+the site you came from and how fast the page loaded. From the request
+Cloudflare also derives the browser, operating system, device type and
+country; like any request, it shows Cloudflare your IP address.
+Cloudflare states that the script uses no cookies or other storage in
+your browser, and that it doesn't fingerprint visitors or record query
+strings. We see totals only (pages, referring sites, countries,
+browsers), not individual visitors. The script isn't loaded, so the
+visit isn't counted, when your browser sends Global Privacy Control or
+Do Not Track, when you arrive through a payment link from Paddle, or on
+the pages that handle your order or key (`thanks.html`,
+`activate.html`). Its fonts load from Google Fonts. The film on the product page is a file
+on lastout.dev itself, fetched only when you press play. The product page loads Paddle's
+checkout script (Paddle.js) when you point at *Buy*, focus it or press
+it (a touch on it counts), when you arrive through a payment link from
+Paddle, or when you come back to the page within two hours of starting a
+payment there; not when the page simply opens, so that *Buy* can open Paddle's checkout over the page. Once
+loaded, Paddle.js also loads ProfitWell, Paddle's analytics product, and may set Paddle's
 cookies. Paddle.js, ProfitWell and the checkout are Paddle's, and
-Paddle's privacy and cookie policies apply to them. After you pay, the
+Paddle's privacy and cookie policies apply to them. Each time it opens, the product page also asks GitHub's API
+(`api.github.com`) for the latest release, so that *Download* points at
+the current file; like any request, that shows GitHub your IP address.
+The file itself comes from GitHub, or from the download mirror
+(`dl.lastout.dev`, a storage bucket at Cloudflare) when you use the
+mirror link or when GitHub's API didn't answer and *Download* points
+there instead; whichever serves the file sees your IP address.
+Once the checkout has named your order, the page asks the license server
+about that transaction ID every 5 seconds, for at most 30 minutes, to
+take you to your key as soon as the payment is confirmed. After you pay, the
 thanks page asks the license server for your key, with the transaction ID
 from its address.
 
@@ -323,7 +363,9 @@ from its address.
   script on the product page also loads ProfitWell, its analytics product
   (see *The website*).
 - **Cloudflare** runs the license server, its database and the admin
-  dashboard, and forwards the mail sent to support@lastout.dev.
+  dashboard, serves the download mirror (`dl.lastout.dev`), forwards
+  the mail sent to support@lastout.dev, and provides the website's visit
+  counts (see *The website*).
 - **Google** (Google Workspace) hosts the mailbox that mail lands in, so
   what you write to us and your address are kept there.
 - **Resend** delivers the email with your key.
@@ -332,7 +374,7 @@ from its address.
 - **Google Fonts** serves the website's fonts.
 
 Each sees what passes through it, under its own privacy policy. Nothing
-else: Lastout embeds no analytics, crash reporting or advertising SDKs
+else: the app embeds no analytics, crash reporting or advertising SDKs
 (the Sparkle update framework is open source and reports nothing). We
 don't sell your data or share it with anyone else, unless the law
 requires us to.

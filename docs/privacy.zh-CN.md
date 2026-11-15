@@ -6,7 +6,7 @@ Lastout 记录什么、存在哪、什么会离开你的电脑、怎么删除。
 
 Lastout 由 Rocha Tech LLC（在美国新泽西州注册的公司，下称「我们」）开发。你记录的内容不会到我们这里；到我们这里的，只有购买授权以及校验试用和授权需要的那些，见下面「授权校验」和「购买授权」两节，这部分数据由我们负责（即数据控制者）。问题和请求请写信到 support@lastout.dev。
 
-最后更新：2026-11-05。
+最后更新：2026-11-15。
 
 ## 记录什么
 
@@ -22,7 +22,7 @@ Lastout 由 Rocha Tech LLC（在美国新泽西州注册的公司，下称「我
 
 - **以空格开头的命令**：连命令文本都不存（那一行只显示 `(private)`）。这是 shell 自己「不进历史」的约定。
 - **暂停期间**：`lo pause`（所有终端）或 `lo pause --here`（只这一个），可加 `--for 30m`。`lo resume` 结束全局暂停，`lo resume --here` 结束这个终端的暂停。什么都不存，连命令都不存。
-- **会打印密钥的命令**：内置列表（`op`、`pass`、`gopass`、`bw`、`lpass`、`aws configure`、`aws sts`、`aws ecr get-login-password`、`gcloud auth`、`az login`、`az account get-access-token`、`ssh-keygen`、`gpg --export-secret-keys`、`security find-generic-password`、`security find-internet-password`、`vault read|kv get|login|token`、`kubectl get secret`、`kubectl describe secret`、`kubectl config view`、`gh auth token`、`heroku auth:token`、`npm token`、`doppler secrets`、`openssl genrsa`、`openssl genpkey`、`age-keygen`、`wg genkey`）只保留命令行和退出状态，不保存输出。这个判断只看命令的开头：写在连写命令里的（`cd x && op read …`），输出会被录下。命令行本身也只遮盖识别得到的格式，所以当作普通参数打出来的密钥（`aws configure set aws_secret_access_key KEY`）仍然看得到，Agent 也读得到：这类命令请在开头加一个空格。配置文件里 `record.ignore` 可以加自己的，`record.allow` 可以把内置条目放开。
+- **会打印密钥的命令**：内置列表（`op`、`pass`、`gopass`、`bw`、`lpass`、`aws configure`、`aws sts`、`aws ecr get-login-password`、`gcloud auth`、`az login`、`az account get-access-token`、`ssh-keygen`、`gpg --export-secret-keys`、`security find-generic-password`、`security find-internet-password`、`vault read|kv get|login|token`、`kubectl get secret`、`kubectl describe secret`、`kubectl config view`、`gh auth token`、`heroku auth:token`、`npm token`、`doppler secrets`、`openssl genrsa`、`openssl genpkey`、`age-keygen`、`wg genkey`）只保留命令行和退出状态，不保存输出；这条命令写在行内任何位置都算：连写（`cd x && op read …`）、管道、`$(…)` 替换里的也是。引号里的文字不算命令。命令行本身也只遮盖识别得到的格式，所以前面没有任何名字、当作普通参数打出来的密钥（`htpasswd -b file user 密码`）仍然看得到，Agent 也读得到：这类命令请在开头加一个空格。配置文件里 `record.ignore` 可以加自己的，`record.allow` 可以把内置条目放开。
 - **你没有接入的终端**：只有 rc 文件里有 `lo setup` 写入的两段标记代码的 shell 才会被录制。`lo setup --uninstall` 从所有地方移除它们。
 
 ## 存在哪
@@ -40,7 +40,7 @@ Lastout 由 Rocha Tech LLC（在美国新泽西州注册的公司，下称「我
 - MCP 不读取它们；App 的诊断导出只记录条数。
 - 命令里存进去的密钥，会按你输入的原样留在文件里；`lo saved` 复制和打印时也按保存的原样给出，不做遮盖。
 
-数据目录里的 `usage.tsv` 只存两个数字：输出被复制了几次、编程助手读取了几次。`lo stats` 可以查看，它们不会离开你的 Mac。
+数据目录里的 `usage.tsv` 只存两个数字：输出被复制了几次、Agent 读取了几次。`lo stats` 可以查看，它们不会离开你的 Mac。
 
 ## 什么会离开你的电脑
 
@@ -50,14 +50,14 @@ Lastout 由 Rocha Tech LLC（在美国新泽西州注册的公司，下称「我
 - **打印**（`lo --print`、`lo --json`）把它写到终端，先遮盖识别到的密钥。
 - **Agent**（`lo mcp`，给 Claude Code、Codex 等用的 MCP 服务器）：只读的工具，返回整理后的输出，始终遮盖识别到的密钥。Agent 没有任何参数能关掉它。服务器也不能改动或删除你录下的任何内容，只会把 `usage.tsv` 里的读取次数加一。
 - **通知**在你的屏幕上显示命令行和退出状态，通过 macOS 通知中心，仅此而已。
-- **授权校验**：App 向 Lastout 的许可证服务器（地址写在 App 的 Info.plist 里的 `LastoutLicenseServer`；由 Lastout 运营的 Cloudflare Worker，源码不公开）询问这台 Mac 能做什么。第一次启动时在服务器上开始 14 天试用，让试用按服务器的时钟计时、每台 Mac 只有一次；你输入授权码后激活它；App 运行期间大约每 15 分钟、Mac 唤醒时和网络恢复时再校验一次，让退款的授权停下来。每个请求都带着这台 Mac 硬件 UUID 的 SHA-256 哈希（UUID 本身不会离开这台 Mac）、App 版本号，以及激活之后的授权码；从 0.3 升级上来的安装，第一次试用请求还带着它首次启动的日期。「在这台 Mac 上停用」发送授权码和同一个哈希以释放座位。服务器返回一份它签名的租约：这台 Mac 能做什么（试用和结束时间，或授权和座位数），有效期一天。App 把它存进你的钥匙串，并写到数据目录里只有你能读的 `lease.json`，`lo` 从那里读取：`lo search`、`lo save`、`lo mcp` 和 `lssh` 需要一份有效的租约，`lo` 本身仍然不发送任何东西。断网时，App 在上次校验后照常工作一天，之后复制会暂停，直到校验成功。这些请求都不包含任何关于你记录的内容。和任何网页请求一样，每次校验时 Cloudflare 都能看到你的 IP 地址；授权服务器的代码不读取也不保存它。没有配置服务器的构建拒绝一切授权码，也不发送任何东西。
+- **授权校验**：App 向 Lastout 的授权服务器（地址写在 App 的 Info.plist 里的 `LastoutLicenseServer`；由 Lastout 运营的 Cloudflare Worker，源码不公开）询问这台 Mac 能做什么。第一次启动时在服务器上开始 14 天试用，让试用按服务器的时钟计时、每台 Mac 只有一次；你输入授权码后激活它；App 运行期间大约每 15 分钟、Mac 唤醒时和网络恢复时再校验一次，让退款的授权停下来。每个请求都带着这台 Mac 硬件 UUID 的 SHA-256 哈希（UUID 本身不会离开这台 Mac）、App 版本号，以及激活之后的授权码；从 0.3 升级上来的安装，第一次试用请求还带着它首次启动的日期。「在这台 Mac 上停用」发送授权码和同一个哈希以释放座位。服务器返回一份它签名的租约：这台 Mac 能做什么（试用和结束时间，或授权和座位数），有效期一天。如果是授权，返回里还带着购买时的姓名和邮箱；App 把它们存进你的钥匙串，并显示在设置里。App 把租约存进你的钥匙串，并写到数据目录里只有你能读的 `lease.json`，`lo` 从那里读取：`lo search`、`lo save`、`lo mcp` 和 `lssh` 需要一份有效的租约，`lo` 本身仍然不发送任何东西。断网时，App 在上次校验后照常工作一天，之后复制会暂停，直到校验成功。这些请求都不包含任何关于你记录的内容。和任何网页请求一样，每次校验时 Cloudflare 都能看到你的 IP 地址；授权服务器的代码不读取也不保存它。没有配置服务器的构建拒绝一切授权码，也不发送任何东西。
 - **诊断信息**（设置 → 关于 →「导出…」）把一个 zip 存到你选的位置，供你报告问题时附上；App 不会把它发到任何地方。里面有：版本、Lastout 的设置、屏幕尺寸、`lo doctor` 的检查结果、正在记录的终端数量、Lastout 自己最近一天的日志，以及最近 30 天的崩溃报告。主目录显示为 `~`，用户名和电脑名会被替换，不含任何命令行、输出或授权码。
 
 ### 遮盖
 
-遮盖的是识别到的密钥：它按下面的规则工作，认的是已知格式，不保证遮住所有密钥。它对每次复制、打印和 Agent 读取生效，从不改动存储的内容（所以才有 `lo forget` 处理打印过的密码）。每处匹配变成带标签的标记，例如 `[REDACTED:github-token]`，LLM 仍能知道那里原来是什么。规则：已知的 token 格式（GitHub、GitLab、AWS access key、Google、Stripe、Slack token 和 webhook、SendGrid、Twilio、Shopify、npm、PyPI、DigitalOcean、Hugging Face、JWT、通用 API key）、私钥块、URL 里的密码、两步验证的设置密钥（`otpauth://` 链接、带 `Setup key:` 这类标签的密钥、四个一组打印的 base32 密钥）、`Authorization` 头和 bearer token、`--password` 这类参数、`SECRET=value` 赋值。你自己的格式写在配置的 `redact.patterns`（正则）。
+遮盖的是识别到的密钥：它按下面的规则工作，认的是已知格式，不保证遮住所有密钥。它对每次复制、打印和 Agent 读取生效，从不改动存储的内容（所以才有 `lo forget` 处理打印过的密码）。每处匹配变成带标签的标记，例如 `[REDACTED:github-token]`，LLM 仍能知道那里原来是什么。规则：已知的 token 格式（GitHub、GitLab、AWS access key、Google API key 和 OAuth token、Stripe 密钥和 webhook secret、Slack token 和 webhook、SendGrid、Twilio、Shopify、npm、PyPI、DigitalOcean、Hugging Face、Resend、Supabase、Groq、xAI、age 私钥、JWT、通用 API key）、私钥块、URL 里的密码和 token（`postgres://user:pw@`、`redis://:pw@`、`https://token@`）、两步验证的设置密钥（`otpauth://` 链接、带 `Setup key:` 这类标签的密钥、四个一组打印的 base32 密钥）、`Authorization` 头和 bearer token、`Cookie` 和 `Set-Cookie` 头里的值、`--password` 这类参数（`--token`、`--db-password`、`--passphrase` 等）、`curl -u user:pass` 和 `curl -b`、`mysql -p<密码>`、`sshpass -p`、`docker login -p`、`redis-cli -a`、`openssl … pass:`、`aws configure set`、`gh secret set --body` 里的密码参数，以及 `SECRET=value` 赋值（`…_TOKEN`、`…_PASSWORD`、`DB_PASS`、`MYSQL_PWD`、`SECRET_KEY_BASE`、`AccountKey`、全大写的 `…_KEY` 如 `APP_KEY`、`API Key:` 和 `Secret Key:` 这类标签）。你自己的格式写在配置的 `redact.patterns`（正则）。
 
-目前认不出（只是常见的几类，不是全部）：`curl -u user:pass` 和 `curl --user`、`mysql -p<密码>`、`docker login -p`、`sshpass -p`、`redis-cli -a`、`gpg --passphrase`、`Cookie` 和 `Set-Cookie` 头、`DB_PASS=`、`MYSQL_PWD=` 和 `SECRET_KEY_BASE=` 赋值、没有用户名的 Redis 地址（`redis://:密码@host`）、Azure 的 `AccountKey=` 和签名链接里的 `sig=`、Docker `config.json` 里的 `auth`、kubeconfig 里的 `client-key-data`、`.netrc` 里的密码、`aws secretsmanager get-secret-value` 输出里的 `SecretString`，以及转义过的 JSON 里的密码。紧贴在字母、数字或下划线后面的 token 也可能认不出。贴出去之前请看一眼。
+目前认不出（只是常见的几类，不是全部）：前面没有参数名或标签、直接当普通参数给出的密钥（`htpasswd -b file user 密码`）、Azure 签名链接里的 `sig=`、Docker `config.json` 里的 `auth`、kubeconfig 里的 `client-key-data`、`.netrc` 里的密码、`aws secretsmanager get-secret-value` 输出里的 `SecretString`、转义过的 JSON 里的密码，以及代码里小写的 `…_key`（`app_key = …`；`api_key` 和 `secret_key` 认得出）。紧贴在字母、数字或下划线后面的 token 也可能认不出。贴出去之前请看一眼。
 
 `lo --no-redact` 对你自己做的复制跳过遮盖；任何 MCP 工具和设置都做不到这一点。如果 Agent 还能跑 shell，它就和你是同一身份：可以运行 `lo --no-redact`，也能读磁盘上的录制，和读你的其他文件一样。
 
@@ -67,9 +67,9 @@ Lastout 由 Rocha Tech LLC（在美国新泽西州注册的公司，下称「我
 
 ## 删除
 
-- `lo forget` 删上一条命令；`lo forget --id 42` 删指定的；`lo forget --all` 全删。每种都会删掉行和输出文件，并把被删行在数据库里占的字节清零。命令行文字的旧副本可能还留在数据库文件的空闲部分，直到被覆盖；所以如果密码写在了命令行里，请把密码换掉。`lo forget` 不会动你的 shell 历史和备份。用 `lo --print` 或 `--json` 打印过的副本是另一条命令，普通 `lo forget` 会跳过，要用 `lo forget --id N` 删。
-- `lo setup --uninstall` 从所有 shell 的 rc 文件（以及它创建的登录文件）里移除 Lastout 的代码块。开着的终端照旧，新开的恢复原样。改动一个文件之前，`lo setup`（包括 `--uninstall`）会在它旁边留一份副本，名叫 `.lastout-backup-*`；没有任何东西会删掉这些副本。
-- 要把 Lastout 从这台 Mac 上清掉：先运行 `lo setup --uninstall`，再删掉 `~/Library/Application Support/lastout/`、`~/.config/lastout/`、`~/Library/Preferences/dev.lastout.app.plist`、`~/Library/Caches/dev.lastout.app`、`~/Library/HTTPStorages/dev.lastout.app` 和它旁边的 `dev.lastout.app.binarycookies`、`/Applications` 里的 App、`~/.local/bin` 里的 `lo` 和 `lastout-shell`，以及 rc 文件旁边的 `.lastout-backup-*` 备份。钥匙串里的授权码用 `security delete-generic-password -s dev.lastout.app -a license` 删除。Homebrew cask 的 `zap` 只删录制内容和 App 设置，不包括这份清单的其余部分。Lastout 不加密录制内容，也不把它排除在 Time Machine 之外，已经做过的备份里还会留着。
+- `lo forget` 删上一条命令；`lo forget --id 42` 删指定的；`lo forget --all` 全删。每种都会删掉行和输出文件，并把被删行在数据库里占的字节清零。命令行文字的旧副本可能还留在数据库文件的空闲部分，直到被覆盖；所以如果密码写在了命令行里，请把密码换掉。`lo forget` 不会动你的 shell 历史和备份。`lo` 自己打印的内容（`lo --print`、`--json`）不录制，所以被 forget 的命令不会留下输出副本。
+- `lo setup --uninstall` 从所有 shell 的 rc 文件（以及它创建的登录文件）里移除 Lastout 的代码块。开着的终端照旧，新开的恢复原样。改动一个文件之前，`lo setup`（包括 `--uninstall`）会在它旁边留一份副本，名叫 `.lastout-backup-*`；只有 `lo uninstall` 会删掉这些副本。
+- 要把 Lastout 从这台 Mac 上清掉：运行 `lo uninstall`，它先列出要删的东西，问一次再动手：rc 文件里 Lastout 的代码块、`~/Library/Application Support/lastout/`（录制内容，直接删除，不进废纸篓）、`~/.config/lastout/`（配置和已存命令）、`~/Library/Preferences/dev.lastout.app.plist`、`~/Library/Caches/dev.lastout.app`、`~/Library/HTTPStorages/dev.lastout.app` 和它旁边的 `dev.lastout.app.binarycookies`、钥匙串里的授权记录、`~/.local/bin` 里的 `lo` 和 `lastout-shell`、rc 文件旁边较早的 `.lastout-backup-*` 备份（这次新留的那份保留），以及 App（先关掉「登录时打开」，再移到废纸篓；用 Homebrew 装的，由 `brew uninstall --zap --cask lastout` 删除）。这台 Mac 占着授权的一个座位、或者可能占着时，它会先请你在 App 里选「在这台 Mac 上停用」。Lastout 不加密录制内容，也不把它排除在 Time Machine 之外，已经做过的备份里还会留着。授权服务器保留这台 Mac 的试用记录（「授权校验」一条说的哈希），所以重新安装不会再有一次试用。
 - 已存命令：用 `lo saved --rm ID` 删单条，或者直接删掉文件（路径见 `lo saved --path`）。
 
 ## 菜单栏 App
@@ -100,18 +100,18 @@ Lastout 的授权由 Paddle.com Market Ltd（下称「Paddle」）作为代收�
 
 ## 网站
 
-lastout.dev 是一组由 GitHub Pages 托管的静态页面。网站自己不设 cookie，自己也没有统计、追踪像素或广告。字体从 Google Fonts 加载。产品页一打开就会加载 Paddle 的结账脚本（Paddle.js），这样「Buy」才能在页面上打开 Paddle 的结账窗口。页面会加载 Paddle.js，它还会加载 Paddle 自家的分析产品 ProfitWell，并可能设置 Paddle 的 cookie。Paddle.js、ProfitWell 和结账窗口都属于 Paddle，适用 Paddle 的隐私政策和 cookie 政策。付款后，感谢页用地址里的交易号向授权服务器取你的授权码。
+lastout.dev 是一组由 GitHub Pages 托管的静态页面。网站自己不设 cookie，也没有追踪像素或广告。网站用 Cloudflare Web Analytics 统计访问量：产品页、已知问题页和各法律页面（包括本页）会加载 Cloudflare 的一段脚本（`static.cloudflareinsights.com`），它上报打开的是哪个页面、你从哪个网站过来、页面加载有多快；Cloudflare 还会从请求里得出浏览器、操作系统、设备类型和国家或地区，和任何请求一样，它会看到你的 IP 地址。Cloudflare 说明这段脚本不使用 cookie 或浏览器里的其他存储，不对访客做指纹识别，也不记录网址里的查询参数。我们只看得到汇总数字（页面、来源网站、国家或地区、浏览器），看不到单个访客。以下情况不加载这段脚本，也就不统计：浏览器发出了 Global Privacy Control 或 Do Not Track 信号；你从 Paddle 的付款链接进来；处理订单或授权码的页面（`thanks.html`、`activate.html`）。字体从 Google Fonts 加载。产品页上的影片是 lastout.dev 自己的文件，按下播放才开始加载。产品页在你把鼠标移到「购买」上、聚焦或按下它时（手指碰到它也算），从 Paddle 发来的付款链接进来时，或在这个页面开始付款后两小时内又回到它时，才加载 Paddle 的结账脚本（Paddle.js），不是一打开就加载；有了它，「购买」才能在页面上打开 Paddle 的结账窗口。Paddle.js 加载之后，它还会加载 Paddle 自家的分析产品 ProfitWell，并可能设置 Paddle 的 cookie。Paddle.js、ProfitWell 和结账窗口都属于 Paddle，适用 Paddle 的隐私政策和 cookie 政策。产品页每次打开还会向 GitHub 的 API（`api.github.com`）询问最新版本，好让「下载」指向当前的文件；和任何请求一样，GitHub 会看到你的 IP 地址。文件本身从 GitHub 下载；你点了备用下载，或者 GitHub 的 API 没有应答、「下载」改指向备用地址时，文件从下载镜像（`dl.lastout.dev`，Cloudflare 上的一个存储桶）下载。谁提供文件，谁就看到你的 IP 地址。结账窗口给出订单号之后，页面每 5 秒用这个交易号问一次授权服务器，最长 30 分钟，付款一确认就带你去看授权码。付款后，感谢页用地址里的交易号向授权服务器取你的授权码。
 
 ## 第三方
 
 - **Paddle**：销售授权、处理付款（见上）。产品页加载的它的脚本还会加载它的分析产品 ProfitWell（见「网站」）。
-- **Cloudflare**：运行授权服务器、它的数据库和管理后台，并转发发到 support@lastout.dev 的邮件。
+- **Cloudflare**：运行授权服务器、它的数据库和管理后台，提供下载镜像（`dl.lastout.dev`），转发发到 support@lastout.dev 的邮件，并提供网站的访问量统计（见「网站」）。
 - **Google**（Google Workspace）：托管收到这些邮件的邮箱，所以你的来信和邮箱地址会保存在那里。
 - **Resend**：发送带授权码的邮件。
 - **GitHub**：托管更新检查读取的发布，以及 lastout.dev 网站。
 - **Google Fonts**：提供网站的字体。
 
-它们各自只接触经过自己的那部分，适用各自的隐私政策。此外没有：Lastout 不内嵌统计、崩溃上报或广告 SDK（Sparkle 更新框架是开源的，什么都不上报）。我们不出售你的数据，也不与其他任何人分享，法律要求的除外。
+它们各自只接触经过自己的那部分，适用各自的隐私政策。此外没有：App 不内嵌统计、崩溃上报或广告 SDK（Sparkle 更新框架是开源的，什么都不上报）。我们不出售你的数据，也不与其他任何人分享，法律要求的除外。
 
 ## 你的权利
 

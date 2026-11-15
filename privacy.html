@@ -5,8 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacy Policy — Lastout</title>
 <meta name="description" content="What Lastout records, where it keeps it, what can leave your Mac, and what buying a license shares.">
+<link rel="canonical" href="https://lastout.dev/privacy.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Lastout">
+<meta property="og:url" content="https://lastout.dev/privacy.html">
+<meta property="og:title" content="Privacy Policy — Lastout">
+<meta property="og:description" content="What Lastout records, where it keeps it, what can leave your Mac, and what buying a license shares.">
+<meta property="og:image" content="https://lastout.dev/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Loaded as print and switched on when it arrives: a stylesheet link would hold the whole page blank (up to 75 s) where Google is unreachable. -->
@@ -19,19 +28,22 @@
   <nav>
     <a class="brand" href="index.html" data-lang-link><img src="icon.png" alt="">Lastout</a>
     <div class="links">
-      <a href="index.html#pricing" data-lang-link>Pricing</a>
-      <a href="terms.html" data-lang-link>Terms</a>
-      <a href="refund.html" data-lang-link>Refund Policy</a>
-      <a href="privacy.html" data-lang-link aria-current="page">Privacy</a>
-      <a href="eula.html" data-lang-link>EULA</a>
+      <a href="index.html#pricing" data-lang-link><span data-ui="en">Pricing</span><span lang="zh-CN" data-ui="zh" hidden>价格</span></a>
+      <a href="known-issues.html" data-lang-link><span data-ui="en">Known issues</span><span lang="zh-CN" data-ui="zh" hidden>已知问题</span></a>
+      <a href="terms.html" data-lang-link><span data-ui="en">Terms</span><span lang="zh-CN" data-ui="zh" hidden>条款</span></a>
+      <a href="refund.html" data-lang-link><span data-ui="en">Refund Policy</span><span lang="zh-CN" data-ui="zh" hidden>退款政策</span></a>
+      <a href="privacy.html" data-lang-link aria-current="page"><span data-ui="en">Privacy</span><span lang="zh-CN" data-ui="zh" hidden>隐私</span></a>
+      <a href="eula.html" data-lang-link><span data-ui="en">EULA</span><span lang="zh-CN" data-ui="zh" hidden>许可协议</span></a>
     </div>
   </nav>
 
   <main class="narrow">
-    <div class="label">Legal</div>
-    <h1>Privacy <em>policy.</em></h1>
+    <div class="label"><span data-ui="en">Legal</span><span lang="zh-CN" data-ui="zh" hidden>法律文本</span></div>
+    <h1 data-ui="en">Privacy <em>policy.</em></h1>
+    <h1 lang="zh-CN" data-ui="zh" hidden>隐私<em>政策。</em></h1>
     <!-- 由 scripts/privacy_page.py 从 docs/privacy.md 和 privacy.zh-CN.md 生成；别手改，改原文后重新运行。 -->
-    <p class="meta">Last updated: 2026-11-05 · English is the binding version; 中文为译本，两者不一致时以英文版为准。</p>
+    <p class="meta" data-ui="en">Last updated: 2026-11-15 · English is the binding version.</p>
+    <p class="meta" lang="zh-CN" data-ui="zh" hidden>最后更新：2026-11-15 · 中文为译本，两者不一致时以英文版为准。</p>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-lang="en" aria-pressed="true">English</button>
       <button type="button" data-lang="zh" aria-pressed="false">中文</button>
@@ -52,7 +64,7 @@
 <ul>
 <li><strong>A command starting with a space</strong>: not even its text (the row says <code>(private)</code>). This is the shell's own convention for "keep out of history".</li>
 <li><strong>While paused</strong>: <code>lo pause</code> (every terminal) or <code>lo pause --here</code> (this one), optionally <code>--for 30m</code>. <code>lo resume</code> ends a pause of every terminal, <code>lo resume --here</code> a pause of this one. Nothing is stored, not even the command.</li>
-<li><strong>Commands that print secrets</strong>: for the built-in list (<code>op</code>, <code>pass</code>, <code>gopass</code>, <code>bw</code>, <code>lpass</code>, <code>aws configure</code>, <code>aws sts</code>, <code>aws ecr get-login-password</code>, <code>gcloud auth</code>, <code>az login</code>, <code>az account get-access-token</code>, <code>ssh-keygen</code>, <code>gpg --export-secret-keys</code>, <code>security find-generic-password</code>, <code>security find-internet-password</code>, <code>vault read|kv get|login|token</code>, <code>kubectl get secret</code>, <code>kubectl describe secret</code>, <code>kubectl config view</code>, <code>gh auth token</code>, <code>heroku auth:token</code>, <code>npm token</code>, <code>doppler secrets</code>, <code>openssl genrsa</code>, <code>openssl genpkey</code>, <code>age-keygen</code>, <code>wg genkey</code>) the command line and exit status are kept, not the output. This looks only at the start of the command: in a chain (<code>cd x &amp;&amp; op read …</code>) the output is recorded. Only recognized formats are redacted in the command line too, so a secret typed as a plain argument (<code>aws configure set aws_secret_access_key KEY</code>) stays readable, also to an agent: start such a command with a space. Add your own with <code>record.ignore</code> in the config file, or lift a built-in entry with <code>record.allow</code>.</li>
+<li><strong>Commands that print secrets</strong>: for the built-in list (<code>op</code>, <code>pass</code>, <code>gopass</code>, <code>bw</code>, <code>lpass</code>, <code>aws configure</code>, <code>aws sts</code>, <code>aws ecr get-login-password</code>, <code>gcloud auth</code>, <code>az login</code>, <code>az account get-access-token</code>, <code>ssh-keygen</code>, <code>gpg --export-secret-keys</code>, <code>security find-generic-password</code>, <code>security find-internet-password</code>, <code>vault read|kv get|login|token</code>, <code>kubectl get secret</code>, <code>kubectl describe secret</code>, <code>kubectl config view</code>, <code>gh auth token</code>, <code>heroku auth:token</code>, <code>npm token</code>, <code>doppler secrets</code>, <code>openssl genrsa</code>, <code>openssl genpkey</code>, <code>age-keygen</code>, <code>wg genkey</code>) the command line and exit status are kept, not the output, wherever on the line the command sits: in a chain (<code>cd x &amp;&amp; op read …</code>), a pipe or a <code>$(…)</code> substitution too. Quoted text is not a command. Only recognized formats are redacted in the command line too, so a secret typed as a plain argument with nothing naming it (<code>htpasswd -b file user PASSWORD</code>) stays readable, also to an agent: start such a command with a space. Add your own with <code>record.ignore</code> in the config file, or lift a built-in entry with <code>record.allow</code>.</li>
 <li><strong>Terminals you did not set up</strong>: recording only happens where the two marked blocks from <code>lo setup</code> are in the shell's rc file. <code>lo setup --uninstall</code> removes them everywhere.</li>
 </ul>
 <h2 id="where-it-is-kept">Where it is kept</h2>
@@ -88,20 +100,20 @@
 <li><strong>Printing</strong> (<code>lo --print</code>, <code>lo --json</code>) writes it to the terminal, after redaction.</li>
 <li><strong>Agents</strong> (<code>lo mcp</code>, the MCP server for Claude Code, Codex and others): read-only tools that return rendered output with redaction of recognized secrets always on. There is no argument an agent can pass to turn it off. The server can't change or delete anything you recorded; it only adds one to the read count in <code>usage.tsv</code>.</li>
 <li><strong>Notifications</strong> show the command line and its exit status on your screen, through macOS's notification center, nowhere else.</li>
-<li><strong>License checks</strong>: the app asks Lastout's license server (the address is in the app's Info.plist as <code>LastoutLicenseServer</code>; it is a Cloudflare Worker run by Lastout, its source is private) what this Mac may do. At the first launch it starts the 14-day trial there, so that the trial runs on the server's clock and each Mac gets one; once you enter a license key it activates the key; and while the app runs it checks again about every 15 minutes, when the Mac wakes and when the network comes back, so that a refunded license stops. Each request carries a SHA-256 hash of this Mac's hardware UUID (the UUID itself never leaves the Mac), the app's version, and, once you activated one, the license key; a 0.3 install's first trial request also carries the day it was first launched. <em>Deactivate on this Mac</em> sends the key and the hash to free the seat. The server answers with a lease it signed: what this Mac may do (the trial and when it ends, or the license and its seats), valid for a day. The app keeps it in your keychain and in <code>lease.json</code> (readable only by you) in the data directory, where <code>lo</code> reads it: <code>lo search</code>, <code>lo save</code>, <code>lo mcp</code> and <code>lssh</code> need a valid one, and <code>lo</code> itself still sends nothing. Without the network the app keeps working for a day after the last check, then copying waits until a check succeeds. Nothing about your recordings goes with any of these requests. Like any web request, each check shows your IP address to Cloudflare; the license server's code doesn't read or store it. A build with no server configured refuses every key and sends nothing.</li>
-<li><strong>Diagnostics</strong> (Settings → About → <em>Export Diagnostics…</em>) writes a zip where you choose, for you to attach to a bug report; the app sends it nowhere. In it: versions, Lastout's settings, the screens' sizes, the <code>lo doctor</code> checks, how many terminals are recorded, Lastout's own log from the last day and its crash reports from the last 30 days. Your home folder shows as <code>~</code>, your user name and computer name are replaced, and no command line, output or license key is in it.</li>
+<li><strong>License checks</strong>: the app asks Lastout's license server (the address is in the app's Info.plist as <code>LastoutLicenseServer</code>; it is a Cloudflare Worker run by Lastout, its source is private) what this Mac may do. At the first launch it starts the 14-day trial there, so that the trial runs on the server's clock and each Mac gets one; once you enter a license key it activates the key; and while the app runs it checks again about every 15 minutes, when the Mac wakes and when the network comes back, so that a refunded license stops. Each request carries a SHA-256 hash of this Mac's hardware UUID (the UUID itself never leaves the Mac), the app's version, and, once you activated one, the license key; a 0.3 install's first trial request also carries the day it was first launched. <em>Deactivate on this Mac</em> sends the key and the hash to free the seat. The server answers with a lease it signed: what this Mac may do (the trial and when it ends, or the license and its seats), valid for a day. For a license, the answer also carries the name and email the license was bought with; the app keeps them in your keychain and shows them in Settings. The app keeps the lease in your keychain and in <code>lease.json</code> (readable only by you) in the data directory, where <code>lo</code> reads it: <code>lo search</code>, <code>lo save</code>, <code>lo mcp</code> and <code>lssh</code> need a valid one, and <code>lo</code> itself still sends nothing. Without the network the app keeps working for a day after the last check, then copying waits until a check succeeds. Nothing about your recordings goes with any of these requests. Like any web request, each check shows your IP address to Cloudflare; the license server's code doesn't read or store it. A build with no server configured refuses every key and sends nothing.</li>
+<li><strong>Diagnostics</strong> (Settings → About → <em>Export…</em>) writes a zip where you choose, for you to attach to a bug report; the app sends it nowhere. In it: versions, Lastout's settings, the screens' sizes, the <code>lo doctor</code> checks, how many terminals are recorded, Lastout's own log from the last day and its crash reports from the last 30 days. Your home folder shows as <code>~</code>, your user name and computer name are replaced, and no command line, output or license key is in it.</li>
 </ul>
 <h3 id="redaction">Redaction</h3>
-<p>Redaction masks recognized secrets: it follows the rules below, which catch known formats, not every secret. It is applied to every copy, print and agent read, never to what is stored (so <code>lo forget</code> exists for a secret that was printed). Each match becomes a labelled marker such as <code>[REDACTED:github-token]</code>, so an LLM still knows what was there. Rules: known token formats (GitHub, GitLab, AWS access keys, Google, Stripe, Slack tokens and webhooks, SendGrid, Twilio, Shopify, npm, PyPI, DigitalOcean, Hugging Face, JWTs, generic API keys), private key blocks, passwords in URLs, authenticator setup keys (<code>otpauth://</code> links, a labelled <code>Setup key:</code>, and base32 keys printed in groups of four), <code>Authorization</code> headers and bearer tokens, <code>--password</code>-style flags, <code>SECRET=value</code> assignments. Your own formats go in <code>redact.patterns</code> (regexes) in the config file.</p>
-<p>Not caught today, among others: <code>curl -u user:pass</code> and <code>curl --user</code>, <code>mysql -p&lt;password&gt;</code>, <code>docker login -p</code>, <code>sshpass -p</code>, <code>redis-cli -a</code>, <code>gpg --passphrase</code>, <code>Cookie</code> and <code>Set-Cookie</code> headers, <code>DB_PASS=</code>, <code>MYSQL_PWD=</code> and <code>SECRET_KEY_BASE=</code> assignments, a Redis URL without a user name (<code>redis://:password@host</code>), Azure <code>AccountKey=</code> and the <code>sig=</code> of a signed URL, the <code>auth</code> in Docker's <code>config.json</code>, <code>client-key-data</code> in a kubeconfig, a <code>.netrc</code> password, <code>SecretString</code> in the output of <code>aws secretsmanager get-secret-value</code>, and a password inside escaped JSON. A token written right after letters, digits or an underscore may not match either. Check before you paste.</p>
+<p>Redaction masks recognized secrets: it follows the rules below, which catch known formats, not every secret. It is applied to every copy, print and agent read, never to what is stored (so <code>lo forget</code> exists for a secret that was printed). Each match becomes a labelled marker such as <code>[REDACTED:github-token]</code>, so an LLM still knows what was there. Rules: known token formats (GitHub, GitLab, AWS access keys, Google API keys and OAuth tokens, Stripe keys and webhook secrets, Slack tokens and webhooks, SendGrid, Twilio, Shopify, npm, PyPI, DigitalOcean, Hugging Face, Resend, Supabase, Groq, xAI, age secret keys, JWTs, generic API keys), private key blocks, passwords and tokens in URLs (<code>postgres://user:pw@</code>, <code>redis://:pw@</code>, <code>https://token@</code>), authenticator setup keys (<code>otpauth://</code> links, a labelled <code>Setup key:</code>, and base32 keys printed in groups of four), <code>Authorization</code> headers and bearer tokens, the values in <code>Cookie</code> and <code>Set-Cookie</code> headers, <code>--password</code>-style flags (<code>--token</code>, <code>--db-password</code>, <code>--passphrase</code>, …), the password arguments of <code>curl -u user:pass</code> and <code>curl -b</code>, <code>mysql -p&lt;password&gt;</code>, <code>sshpass -p</code>, <code>docker login -p</code>, <code>redis-cli -a</code>, <code>openssl … pass:</code>, <code>aws configure set</code> and <code>gh secret set --body</code>, and <code>SECRET=value</code> assignments (<code>…_TOKEN</code>, <code>…_PASSWORD</code>, <code>DB_PASS</code>, <code>MYSQL_PWD</code>, <code>SECRET_KEY_BASE</code>, <code>AccountKey</code>, an ALL_CAPS <code>…_KEY</code> such as <code>APP_KEY</code>, <code>API Key:</code> and <code>Secret Key:</code> labels). Your own formats go in <code>redact.patterns</code> (regexes) in the config file.</p>
+<p>Not caught today, among others: a secret given as a plain argument with no flag or label in front (<code>htpasswd -b file user PASSWORD</code>), the <code>sig=</code> of a signed Azure URL, the <code>auth</code> in Docker's <code>config.json</code>, <code>client-key-data</code> in a kubeconfig, a <code>.netrc</code> password, <code>SecretString</code> in the output of <code>aws secretsmanager get-secret-value</code>, a password inside escaped JSON, and a lower-case <code>…_key</code> in code (<code>app_key = …</code>; <code>api_key</code> and <code>secret_key</code> are caught). A token written right after letters, digits or an underscore may not match either. Check before you paste.</p>
 <p><code>lo --no-redact</code> skips redaction for a copy you make yourself; no MCP tool or setting can. An agent that also has a shell runs as you: it could run <code>lo --no-redact</code> or read the recordings on disk, like any file you own.</p>
 <h2 id="remote-hosts">Remote hosts</h2>
 <p><code>lo remote-install host</code> puts three small shell scripts and one marked block per rc file on the remote host, no binaries. With <code>lssh host</code>, each remote command's output travels through your own ssh connection to the recorder on your machine and is stored only there. The remote host keeps none of the output.</p>
 <h2 id="deleting">Deleting</h2>
 <ul>
-<li><code>lo forget</code> removes the previous command; <code>lo forget --id 42</code> a specific one; <code>lo forget --all</code> everything. Each deletes the rows and the output files and zeroes the deleted rows' bytes in the database. An older copy of a command line can stay in unused parts of the database file until it is overwritten, so if a password was typed on the command line, change the password. <code>lo forget</code> does not touch your shell history or your backups. A copy you printed with <code>lo --print</code> or <code>--json</code> is its own command, and plain <code>lo forget</code> skips it: remove it with <code>lo forget --id N</code>.</li>
-<li><code>lo setup --uninstall</code> removes Lastout's blocks from every shell's rc files (and a login file it created). Open terminals keep running as they are; new ones are plain. Before it changes a file, <code>lo setup</code> (and <code>--uninstall</code>) keeps a copy next to it, named <code>.lastout-backup-*</code>; nothing removes those copies.</li>
-<li>To remove Lastout from this Mac: run <code>lo setup --uninstall</code> first, then delete <code>~/Library/Application Support/lastout/</code>, <code>~/.config/lastout/</code>, <code>~/Library/Preferences/dev.lastout.app.plist</code>, <code>~/Library/Caches/dev.lastout.app</code>, <code>~/Library/HTTPStorages/dev.lastout.app</code> and <code>dev.lastout.app.binarycookies</code> beside it, the app from <code>/Applications</code>, <code>lo</code> and <code>lastout-shell</code> from <code>~/.local/bin</code>, and the <code>.lastout-backup-*</code> copies next to your rc files. Remove the license from your keychain with <code>security delete-generic-password -s dev.lastout.app -a license</code>. The Homebrew cask's <code>zap</code> removes only your recordings and the app's settings, not the rest of this list. Lastout does not encrypt recordings and does not exclude them from Time Machine, so backups you already made keep their copies.</li>
+<li><code>lo forget</code> removes the previous command; <code>lo forget --id 42</code> a specific one; <code>lo forget --all</code> everything. Each deletes the rows and the output files and zeroes the deleted rows' bytes in the database. An older copy of a command line can stay in unused parts of the database file until it is overwritten, so if a password was typed on the command line, change the password. <code>lo forget</code> does not touch your shell history or your backups. What <code>lo</code> itself prints (<code>lo --print</code>, <code>--json</code>) is not recorded, so no copy of a forgotten command's output stays behind.</li>
+<li><code>lo setup --uninstall</code> removes Lastout's blocks from every shell's rc files (and a login file it created). Open terminals keep running as they are; new ones are plain. Before it changes a file, <code>lo setup</code> (and <code>--uninstall</code>) keeps a copy next to it, named <code>.lastout-backup-*</code>; only <code>lo uninstall</code> removes those copies.</li>
+<li>To remove Lastout from this Mac: <code>lo uninstall</code> lists what it will remove and asks once: Lastout's blocks in your rc files, <code>~/Library/Application Support/lastout/</code> (the recordings, deleted, not moved to the Trash), <code>~/.config/lastout/</code> (the config and your saved commands), <code>~/Library/Preferences/dev.lastout.app.plist</code>, <code>~/Library/Caches/dev.lastout.app</code>, <code>~/Library/HTTPStorages/dev.lastout.app</code> and <code>dev.lastout.app.binarycookies</code> beside it, the license record in your keychain, <code>lo</code> and <code>lastout-shell</code> from <code>~/.local/bin</code>, the older <code>.lastout-backup-*</code> copies next to your rc files (it keeps the one it makes), and the app, which goes to the Trash with Open at Login turned off first (installed with Homebrew, <code>brew uninstall --zap --cask lastout</code> removes it). On a Mac that holds one of your license's seats, or may hold one, it first asks you to choose <em>Deactivate on this Mac</em> in the app. Lastout does not encrypt recordings and does not exclude them from Time Machine, so backups you already made keep their copies. The license server keeps this Mac's trial record (the hash described under <em>License checks</em>), so installing again doesn't start a new trial.</li>
 <li>Saved commands: <code>lo saved --rm ID</code>, or delete the file (<code>lo saved --path</code>).</li>
 </ul>
 <h2 id="the-menu-bar-app">The menu bar app</h2>
@@ -121,17 +133,17 @@
 <p>We read and change license records in an admin dashboard (<code>admin.lastout.dev</code>) that only we can sign in to, with a password and a one-time code; it runs on Cloudflare next to the license server and keeps a log of what was changed in it.</p>
 <p>The license record is kept as long as the license exists, since a key can't be checked without it; a trial record as long as Lastout sells licenses, since a Mac gets one trial. It is stored with Cloudflare, and your name, email and key pass through Resend to deliver the key; both, like Paddle, may process it outside your country, including in the United States. Only we hold a login to the database; Cloudflare hosts it. The app and the website reach the server over HTTPS.</p>
 <h2 id="the-website">The website</h2>
-<p>lastout.dev is a set of static pages served by GitHub Pages. It sets no cookies of its own and has no analytics, tracking pixels or ads of its own. Its fonts load from Google Fonts. The product page loads Paddle's checkout script (Paddle.js) as soon as it opens, so that <em>Buy</em> can open Paddle's checkout over the page. The page loads Paddle.js, which also loads ProfitWell, Paddle's analytics product, and may set Paddle's cookies. Paddle.js, ProfitWell and the checkout are Paddle's, and Paddle's privacy and cookie policies apply to them. After you pay, the thanks page asks the license server for your key, with the transaction ID from its address.</p>
+<p>lastout.dev is a set of static pages served by GitHub Pages. It sets no cookies of its own and has no tracking pixels or ads. It counts visits with Cloudflare Web Analytics: the product page, the known-issues page and the legal pages (this one included) load a script from Cloudflare (<code>static.cloudflareinsights.com</code>), which reports which page was opened, the site you came from and how fast the page loaded. From the request Cloudflare also derives the browser, operating system, device type and country; like any request, it shows Cloudflare your IP address. Cloudflare states that the script uses no cookies or other storage in your browser, and that it doesn't fingerprint visitors or record query strings. We see totals only (pages, referring sites, countries, browsers), not individual visitors. The script isn't loaded, so the visit isn't counted, when your browser sends Global Privacy Control or Do Not Track, when you arrive through a payment link from Paddle, or on the pages that handle your order or key (<code>thanks.html</code>, <code>activate.html</code>). Its fonts load from Google Fonts. The film on the product page is a file on lastout.dev itself, fetched only when you press play. The product page loads Paddle's checkout script (Paddle.js) when you point at <em>Buy</em>, focus it or press it (a touch on it counts), when you arrive through a payment link from Paddle, or when you come back to the page within two hours of starting a payment there; not when the page simply opens, so that <em>Buy</em> can open Paddle's checkout over the page. Once loaded, Paddle.js also loads ProfitWell, Paddle's analytics product, and may set Paddle's cookies. Paddle.js, ProfitWell and the checkout are Paddle's, and Paddle's privacy and cookie policies apply to them. Each time it opens, the product page also asks GitHub's API (<code>api.github.com</code>) for the latest release, so that <em>Download</em> points at the current file; like any request, that shows GitHub your IP address. The file itself comes from GitHub, or from the download mirror (<code>dl.lastout.dev</code>, a storage bucket at Cloudflare) when you use the mirror link or when GitHub's API didn't answer and <em>Download</em> points there instead; whichever serves the file sees your IP address. Once the checkout has named your order, the page asks the license server about that transaction ID every 5 seconds, for at most 30 minutes, to take you to your key as soon as the payment is confirmed. After you pay, the thanks page asks the license server for your key, with the transaction ID from its address.</p>
 <h2 id="third-parties">Third parties</h2>
 <ul>
 <li><strong>Paddle</strong> sells the license and processes the payment (above). Its script on the product page also loads ProfitWell, its analytics product (see <em>The website</em>).</li>
-<li><strong>Cloudflare</strong> runs the license server, its database and the admin dashboard, and forwards the mail sent to <a href="mailto:support@lastout.dev">support@lastout.dev</a>.</li>
+<li><strong>Cloudflare</strong> runs the license server, its database and the admin dashboard, serves the download mirror (<code>dl.lastout.dev</code>), forwards the mail sent to <a href="mailto:support@lastout.dev">support@lastout.dev</a>, and provides the website's visit counts (see <em>The website</em>).</li>
 <li><strong>Google</strong> (Google Workspace) hosts the mailbox that mail lands in, so what you write to us and your address are kept there.</li>
 <li><strong>Resend</strong> delivers the email with your key.</li>
 <li><strong>GitHub</strong> hosts the releases the update check reads, and the lastout.dev website.</li>
 <li><strong>Google Fonts</strong> serves the website's fonts.</li>
 </ul>
-<p>Each sees what passes through it, under its own privacy policy. Nothing else: Lastout embeds no analytics, crash reporting or advertising SDKs (the Sparkle update framework is open source and reports nothing). We don't sell your data or share it with anyone else, unless the law requires us to.</p>
+<p>Each sees what passes through it, under its own privacy policy. Nothing else: the app embeds no analytics, crash reporting or advertising SDKs (the Sparkle update framework is open source and reports nothing). We don't sell your data or share it with anyone else, unless the law requires us to.</p>
 <h2 id="your-rights">Your rights</h2>
 <p>What Lastout records isn't uploaded, and we can't see it: it is under your control with the commands above. For the license record we keep, write to <a href="mailto:support@lastout.dev">support@lastout.dev</a> to get a copy, correct it or delete it. Once it is deleted the key stops working on every Mac within a day, because the app checks it again; deleting a Mac's trial record gives it a new trial. Paddle keeps its own record of the order, as tax law requires: ask Paddle, or ask us and we'll pass the request on. Depending on where you live (in the EU, the UK or California, for example) you may have further rights, such as to object or to complain to a data protection authority.</p>
 <p>We use the license and trial records because we need them to deliver what you bought or are trying (for EU and UK law, the legal basis is performing our contract with you: the EULA's trial and license terms).</p>
@@ -153,7 +165,7 @@
 <ul>
 <li><strong>以空格开头的命令</strong>：连命令文本都不存（那一行只显示 <code>(private)</code>）。这是 shell 自己「不进历史」的约定。</li>
 <li><strong>暂停期间</strong>：<code>lo pause</code>（所有终端）或 <code>lo pause --here</code>（只这一个），可加 <code>--for 30m</code>。<code>lo resume</code> 结束全局暂停，<code>lo resume --here</code> 结束这个终端的暂停。什么都不存，连命令都不存。</li>
-<li><strong>会打印密钥的命令</strong>：内置列表（<code>op</code>、<code>pass</code>、<code>gopass</code>、<code>bw</code>、<code>lpass</code>、<code>aws configure</code>、<code>aws sts</code>、<code>aws ecr get-login-password</code>、<code>gcloud auth</code>、<code>az login</code>、<code>az account get-access-token</code>、<code>ssh-keygen</code>、<code>gpg --export-secret-keys</code>、<code>security find-generic-password</code>、<code>security find-internet-password</code>、<code>vault read|kv get|login|token</code>、<code>kubectl get secret</code>、<code>kubectl describe secret</code>、<code>kubectl config view</code>、<code>gh auth token</code>、<code>heroku auth:token</code>、<code>npm token</code>、<code>doppler secrets</code>、<code>openssl genrsa</code>、<code>openssl genpkey</code>、<code>age-keygen</code>、<code>wg genkey</code>）只保留命令行和退出状态，不保存输出。这个判断只看命令的开头：写在连写命令里的（<code>cd x &amp;&amp; op read …</code>），输出会被录下。命令行本身也只遮盖识别得到的格式，所以当作普通参数打出来的密钥（<code>aws configure set aws_secret_access_key KEY</code>）仍然看得到，Agent 也读得到：这类命令请在开头加一个空格。配置文件里 <code>record.ignore</code> 可以加自己的，<code>record.allow</code> 可以把内置条目放开。</li>
+<li><strong>会打印密钥的命令</strong>：内置列表（<code>op</code>、<code>pass</code>、<code>gopass</code>、<code>bw</code>、<code>lpass</code>、<code>aws configure</code>、<code>aws sts</code>、<code>aws ecr get-login-password</code>、<code>gcloud auth</code>、<code>az login</code>、<code>az account get-access-token</code>、<code>ssh-keygen</code>、<code>gpg --export-secret-keys</code>、<code>security find-generic-password</code>、<code>security find-internet-password</code>、<code>vault read|kv get|login|token</code>、<code>kubectl get secret</code>、<code>kubectl describe secret</code>、<code>kubectl config view</code>、<code>gh auth token</code>、<code>heroku auth:token</code>、<code>npm token</code>、<code>doppler secrets</code>、<code>openssl genrsa</code>、<code>openssl genpkey</code>、<code>age-keygen</code>、<code>wg genkey</code>）只保留命令行和退出状态，不保存输出；这条命令写在行内任何位置都算：连写（<code>cd x &amp;&amp; op read …</code>）、管道、<code>$(…)</code> 替换里的也是。引号里的文字不算命令。命令行本身也只遮盖识别得到的格式，所以前面没有任何名字、当作普通参数打出来的密钥（<code>htpasswd -b file user 密码</code>）仍然看得到，Agent 也读得到：这类命令请在开头加一个空格。配置文件里 <code>record.ignore</code> 可以加自己的，<code>record.allow</code> 可以把内置条目放开。</li>
 <li><strong>你没有接入的终端</strong>：只有 rc 文件里有 <code>lo setup</code> 写入的两段标记代码的 shell 才会被录制。<code>lo setup --uninstall</code> 从所有地方移除它们。</li>
 </ul>
 <h2 id="zh-存在哪">存在哪</h2>
@@ -186,7 +198,7 @@
 <li>MCP 不读取它们；App 的诊断导出只记录条数。</li>
 <li>命令里存进去的密钥，会按你输入的原样留在文件里；<code>lo saved</code> 复制和打印时也按保存的原样给出，不做遮盖。</li>
 </ul>
-<p>数据目录里的 <code>usage.tsv</code> 只存两个数字：输出被复制了几次、编程助手读取了几次。<code>lo stats</code> 可以查看，它们不会离开你的 Mac。</p>
+<p>数据目录里的 <code>usage.tsv</code> 只存两个数字：输出被复制了几次、Agent 读取了几次。<code>lo stats</code> 可以查看，它们不会离开你的 Mac。</p>
 <h2 id="zh-什么会离开你的电脑">什么会离开你的电脑</h2>
 <p>你记录的内容，永远不会自己离开。命令行工具没有任何网络代码。菜单栏 App 只有两种连接：更新检查，以及授权校验（见下文）。每天一次（以及你点「检查更新…」时），它从 <code>github.com/Xiang-Suc/lastout-releases/releases/latest/download/appcast.xml</code> 取发布列表，看有没有新版本。这个请求只带任何下载都会带的信息（比如 IP 地址），没有关于你或你机器的其他信息（Sparkle 的系统信息上报是关闭的），更新只在你同意后安装，且签名必须与 App 内置的公钥匹配。没有遥测、没有崩溃报告、没有账号。输出只在你或你运行的工具要求时才离开：</p>
 <ul>
@@ -194,20 +206,20 @@
 <li><strong>打印</strong>（<code>lo --print</code>、<code>lo --json</code>）把它写到终端，先遮盖识别到的密钥。</li>
 <li><strong>Agent</strong>（<code>lo mcp</code>，给 Claude Code、Codex 等用的 MCP 服务器）：只读的工具，返回整理后的输出，始终遮盖识别到的密钥。Agent 没有任何参数能关掉它。服务器也不能改动或删除你录下的任何内容，只会把 <code>usage.tsv</code> 里的读取次数加一。</li>
 <li><strong>通知</strong>在你的屏幕上显示命令行和退出状态，通过 macOS 通知中心，仅此而已。</li>
-<li><strong>授权校验</strong>：App 向 Lastout 的许可证服务器（地址写在 App 的 Info.plist 里的 <code>LastoutLicenseServer</code>；由 Lastout 运营的 Cloudflare Worker，源码不公开）询问这台 Mac 能做什么。第一次启动时在服务器上开始 14 天试用，让试用按服务器的时钟计时、每台 Mac 只有一次；你输入授权码后激活它；App 运行期间大约每 15 分钟、Mac 唤醒时和网络恢复时再校验一次，让退款的授权停下来。每个请求都带着这台 Mac 硬件 UUID 的 SHA-256 哈希（UUID 本身不会离开这台 Mac）、App 版本号，以及激活之后的授权码；从 0.3 升级上来的安装，第一次试用请求还带着它首次启动的日期。「在这台 Mac 上停用」发送授权码和同一个哈希以释放座位。服务器返回一份它签名的租约：这台 Mac 能做什么（试用和结束时间，或授权和座位数），有效期一天。App 把它存进你的钥匙串，并写到数据目录里只有你能读的 <code>lease.json</code>，<code>lo</code> 从那里读取：<code>lo search</code>、<code>lo save</code>、<code>lo mcp</code> 和 <code>lssh</code> 需要一份有效的租约，<code>lo</code> 本身仍然不发送任何东西。断网时，App 在上次校验后照常工作一天，之后复制会暂停，直到校验成功。这些请求都不包含任何关于你记录的内容。和任何网页请求一样，每次校验时 Cloudflare 都能看到你的 IP 地址；授权服务器的代码不读取也不保存它。没有配置服务器的构建拒绝一切授权码，也不发送任何东西。</li>
+<li><strong>授权校验</strong>：App 向 Lastout 的授权服务器（地址写在 App 的 Info.plist 里的 <code>LastoutLicenseServer</code>；由 Lastout 运营的 Cloudflare Worker，源码不公开）询问这台 Mac 能做什么。第一次启动时在服务器上开始 14 天试用，让试用按服务器的时钟计时、每台 Mac 只有一次；你输入授权码后激活它；App 运行期间大约每 15 分钟、Mac 唤醒时和网络恢复时再校验一次，让退款的授权停下来。每个请求都带着这台 Mac 硬件 UUID 的 SHA-256 哈希（UUID 本身不会离开这台 Mac）、App 版本号，以及激活之后的授权码；从 0.3 升级上来的安装，第一次试用请求还带着它首次启动的日期。「在这台 Mac 上停用」发送授权码和同一个哈希以释放座位。服务器返回一份它签名的租约：这台 Mac 能做什么（试用和结束时间，或授权和座位数），有效期一天。如果是授权，返回里还带着购买时的姓名和邮箱；App 把它们存进你的钥匙串，并显示在设置里。App 把租约存进你的钥匙串，并写到数据目录里只有你能读的 <code>lease.json</code>，<code>lo</code> 从那里读取：<code>lo search</code>、<code>lo save</code>、<code>lo mcp</code> 和 <code>lssh</code> 需要一份有效的租约，<code>lo</code> 本身仍然不发送任何东西。断网时，App 在上次校验后照常工作一天，之后复制会暂停，直到校验成功。这些请求都不包含任何关于你记录的内容。和任何网页请求一样，每次校验时 Cloudflare 都能看到你的 IP 地址；授权服务器的代码不读取也不保存它。没有配置服务器的构建拒绝一切授权码，也不发送任何东西。</li>
 <li><strong>诊断信息</strong>（设置 → 关于 →「导出…」）把一个 zip 存到你选的位置，供你报告问题时附上；App 不会把它发到任何地方。里面有：版本、Lastout 的设置、屏幕尺寸、<code>lo doctor</code> 的检查结果、正在记录的终端数量、Lastout 自己最近一天的日志，以及最近 30 天的崩溃报告。主目录显示为 <code>~</code>，用户名和电脑名会被替换，不含任何命令行、输出或授权码。</li>
 </ul>
 <h3 id="zh-遮盖">遮盖</h3>
-<p>遮盖的是识别到的密钥：它按下面的规则工作，认的是已知格式，不保证遮住所有密钥。它对每次复制、打印和 Agent 读取生效，从不改动存储的内容（所以才有 <code>lo forget</code> 处理打印过的密码）。每处匹配变成带标签的标记，例如 <code>[REDACTED:github-token]</code>，LLM 仍能知道那里原来是什么。规则：已知的 token 格式（GitHub、GitLab、AWS access key、Google、Stripe、Slack token 和 webhook、SendGrid、Twilio、Shopify、npm、PyPI、DigitalOcean、Hugging Face、JWT、通用 API key）、私钥块、URL 里的密码、两步验证的设置密钥（<code>otpauth://</code> 链接、带 <code>Setup key:</code> 这类标签的密钥、四个一组打印的 base32 密钥）、<code>Authorization</code> 头和 bearer token、<code>--password</code> 这类参数、<code>SECRET=value</code> 赋值。你自己的格式写在配置的 <code>redact.patterns</code>（正则）。</p>
-<p>目前认不出（只是常见的几类，不是全部）：<code>curl -u user:pass</code> 和 <code>curl --user</code>、<code>mysql -p&lt;密码&gt;</code>、<code>docker login -p</code>、<code>sshpass -p</code>、<code>redis-cli -a</code>、<code>gpg --passphrase</code>、<code>Cookie</code> 和 <code>Set-Cookie</code> 头、<code>DB_PASS=</code>、<code>MYSQL_PWD=</code> 和 <code>SECRET_KEY_BASE=</code> 赋值、没有用户名的 Redis 地址（<code>redis://:密码@host</code>）、Azure 的 <code>AccountKey=</code> 和签名链接里的 <code>sig=</code>、Docker <code>config.json</code> 里的 <code>auth</code>、kubeconfig 里的 <code>client-key-data</code>、<code>.netrc</code> 里的密码、<code>aws secretsmanager get-secret-value</code> 输出里的 <code>SecretString</code>，以及转义过的 JSON 里的密码。紧贴在字母、数字或下划线后面的 token 也可能认不出。贴出去之前请看一眼。</p>
+<p>遮盖的是识别到的密钥：它按下面的规则工作，认的是已知格式，不保证遮住所有密钥。它对每次复制、打印和 Agent 读取生效，从不改动存储的内容（所以才有 <code>lo forget</code> 处理打印过的密码）。每处匹配变成带标签的标记，例如 <code>[REDACTED:github-token]</code>，LLM 仍能知道那里原来是什么。规则：已知的 token 格式（GitHub、GitLab、AWS access key、Google API key 和 OAuth token、Stripe 密钥和 webhook secret、Slack token 和 webhook、SendGrid、Twilio、Shopify、npm、PyPI、DigitalOcean、Hugging Face、Resend、Supabase、Groq、xAI、age 私钥、JWT、通用 API key）、私钥块、URL 里的密码和 token（<code>postgres://user:pw@</code>、<code>redis://:pw@</code>、<code>https://token@</code>）、两步验证的设置密钥（<code>otpauth://</code> 链接、带 <code>Setup key:</code> 这类标签的密钥、四个一组打印的 base32 密钥）、<code>Authorization</code> 头和 bearer token、<code>Cookie</code> 和 <code>Set-Cookie</code> 头里的值、<code>--password</code> 这类参数（<code>--token</code>、<code>--db-password</code>、<code>--passphrase</code> 等）、<code>curl -u user:pass</code> 和 <code>curl -b</code>、<code>mysql -p&lt;密码&gt;</code>、<code>sshpass -p</code>、<code>docker login -p</code>、<code>redis-cli -a</code>、<code>openssl … pass:</code>、<code>aws configure set</code>、<code>gh secret set --body</code> 里的密码参数，以及 <code>SECRET=value</code> 赋值（<code>…_TOKEN</code>、<code>…_PASSWORD</code>、<code>DB_PASS</code>、<code>MYSQL_PWD</code>、<code>SECRET_KEY_BASE</code>、<code>AccountKey</code>、全大写的 <code>…_KEY</code> 如 <code>APP_KEY</code>、<code>API Key:</code> 和 <code>Secret Key:</code> 这类标签）。你自己的格式写在配置的 <code>redact.patterns</code>（正则）。</p>
+<p>目前认不出（只是常见的几类，不是全部）：前面没有参数名或标签、直接当普通参数给出的密钥（<code>htpasswd -b file user 密码</code>）、Azure 签名链接里的 <code>sig=</code>、Docker <code>config.json</code> 里的 <code>auth</code>、kubeconfig 里的 <code>client-key-data</code>、<code>.netrc</code> 里的密码、<code>aws secretsmanager get-secret-value</code> 输出里的 <code>SecretString</code>、转义过的 JSON 里的密码，以及代码里小写的 <code>…_key</code>（<code>app_key = …</code>；<code>api_key</code> 和 <code>secret_key</code> 认得出）。紧贴在字母、数字或下划线后面的 token 也可能认不出。贴出去之前请看一眼。</p>
 <p><code>lo --no-redact</code> 对你自己做的复制跳过遮盖；任何 MCP 工具和设置都做不到这一点。如果 Agent 还能跑 shell，它就和你是同一身份：可以运行 <code>lo --no-redact</code>，也能读磁盘上的录制，和读你的其他文件一样。</p>
 <h2 id="zh-远程主机">远程主机</h2>
 <p><code>lo remote-install host</code> 在远程主机上放三个很小的 shell 脚本和每个 rc 文件一段标记代码，不装二进制。用 <code>lssh host</code> 时，远程每条命令的输出经由你自己的 ssh 连接传到你机器上的录制进程，只存在你这里。远程主机不保留任何输出。</p>
 <h2 id="zh-删除">删除</h2>
 <ul>
-<li><code>lo forget</code> 删上一条命令；<code>lo forget --id 42</code> 删指定的；<code>lo forget --all</code> 全删。每种都会删掉行和输出文件，并把被删行在数据库里占的字节清零。命令行文字的旧副本可能还留在数据库文件的空闲部分，直到被覆盖；所以如果密码写在了命令行里，请把密码换掉。<code>lo forget</code> 不会动你的 shell 历史和备份。用 <code>lo --print</code> 或 <code>--json</code> 打印过的副本是另一条命令，普通 <code>lo forget</code> 会跳过，要用 <code>lo forget --id N</code> 删。</li>
-<li><code>lo setup --uninstall</code> 从所有 shell 的 rc 文件（以及它创建的登录文件）里移除 Lastout 的代码块。开着的终端照旧，新开的恢复原样。改动一个文件之前，<code>lo setup</code>（包括 <code>--uninstall</code>）会在它旁边留一份副本，名叫 <code>.lastout-backup-*</code>；没有任何东西会删掉这些副本。</li>
-<li>要把 Lastout 从这台 Mac 上清掉：先运行 <code>lo setup --uninstall</code>，再删掉 <code>~/Library/Application Support/lastout/</code>、<code>~/.config/lastout/</code>、<code>~/Library/Preferences/dev.lastout.app.plist</code>、<code>~/Library/Caches/dev.lastout.app</code>、<code>~/Library/HTTPStorages/dev.lastout.app</code> 和它旁边的 <code>dev.lastout.app.binarycookies</code>、<code>/Applications</code> 里的 App、<code>~/.local/bin</code> 里的 <code>lo</code> 和 <code>lastout-shell</code>，以及 rc 文件旁边的 <code>.lastout-backup-*</code> 备份。钥匙串里的授权码用 <code>security delete-generic-password -s dev.lastout.app -a license</code> 删除。Homebrew cask 的 <code>zap</code> 只删录制内容和 App 设置，不包括这份清单的其余部分。Lastout 不加密录制内容，也不把它排除在 Time Machine 之外，已经做过的备份里还会留着。</li>
+<li><code>lo forget</code> 删上一条命令；<code>lo forget --id 42</code> 删指定的；<code>lo forget --all</code> 全删。每种都会删掉行和输出文件，并把被删行在数据库里占的字节清零。命令行文字的旧副本可能还留在数据库文件的空闲部分，直到被覆盖；所以如果密码写在了命令行里，请把密码换掉。<code>lo forget</code> 不会动你的 shell 历史和备份。<code>lo</code> 自己打印的内容（<code>lo --print</code>、<code>--json</code>）不录制，所以被 forget 的命令不会留下输出副本。</li>
+<li><code>lo setup --uninstall</code> 从所有 shell 的 rc 文件（以及它创建的登录文件）里移除 Lastout 的代码块。开着的终端照旧，新开的恢复原样。改动一个文件之前，<code>lo setup</code>（包括 <code>--uninstall</code>）会在它旁边留一份副本，名叫 <code>.lastout-backup-*</code>；只有 <code>lo uninstall</code> 会删掉这些副本。</li>
+<li>要把 Lastout 从这台 Mac 上清掉：运行 <code>lo uninstall</code>，它先列出要删的东西，问一次再动手：rc 文件里 Lastout 的代码块、<code>~/Library/Application Support/lastout/</code>（录制内容，直接删除，不进废纸篓）、<code>~/.config/lastout/</code>（配置和已存命令）、<code>~/Library/Preferences/dev.lastout.app.plist</code>、<code>~/Library/Caches/dev.lastout.app</code>、<code>~/Library/HTTPStorages/dev.lastout.app</code> 和它旁边的 <code>dev.lastout.app.binarycookies</code>、钥匙串里的授权记录、<code>~/.local/bin</code> 里的 <code>lo</code> 和 <code>lastout-shell</code>、rc 文件旁边较早的 <code>.lastout-backup-*</code> 备份（这次新留的那份保留），以及 App（先关掉「登录时打开」，再移到废纸篓；用 Homebrew 装的，由 <code>brew uninstall --zap --cask lastout</code> 删除）。这台 Mac 占着授权的一个座位、或者可能占着时，它会先请你在 App 里选「在这台 Mac 上停用」。Lastout 不加密录制内容，也不把它排除在 Time Machine 之外，已经做过的备份里还会留着。授权服务器保留这台 Mac 的试用记录（「授权校验」一条说的哈希），所以重新安装不会再有一次试用。</li>
 <li>已存命令：用 <code>lo saved --rm ID</code> 删单条，或者直接删掉文件（路径见 <code>lo saved --path</code>）。</li>
 </ul>
 <h2 id="zh-菜单栏-app">菜单栏 App</h2>
@@ -227,17 +239,17 @@
 <p>我们在一个只有我们能登录的管理后台（<code>admin.lastout.dev</code>，登录要密码和一次性验证码）里查看和修改授权记录。它和授权服务器一样运行在 Cloudflare 上，并记录在后台做过的每次改动。</p>
 <p>授权记录在授权存续期间一直保留，因为没有它就无法校验授权码；试用记录在 Lastout 销售授权期间一直保留，因为每台 Mac 只有一次试用。它存放在 Cloudflare；发授权码邮件时，你的姓名、邮箱和授权码会经过 Resend。它们和 Paddle 一样，可能在你所在国家以外（包括美国）处理这些数据。数据库只有我们有登录权限，托管在 Cloudflare。App 和网站通过 HTTPS 连接授权服务器。</p>
 <h2 id="zh-网站">网站</h2>
-<p>lastout.dev 是一组由 GitHub Pages 托管的静态页面。网站自己不设 cookie，自己也没有统计、追踪像素或广告。字体从 Google Fonts 加载。产品页一打开就会加载 Paddle 的结账脚本（Paddle.js），这样「Buy」才能在页面上打开 Paddle 的结账窗口。页面会加载 Paddle.js，它还会加载 Paddle 自家的分析产品 ProfitWell，并可能设置 Paddle 的 cookie。Paddle.js、ProfitWell 和结账窗口都属于 Paddle，适用 Paddle 的隐私政策和 cookie 政策。付款后，感谢页用地址里的交易号向授权服务器取你的授权码。</p>
+<p>lastout.dev 是一组由 GitHub Pages 托管的静态页面。网站自己不设 cookie，也没有追踪像素或广告。网站用 Cloudflare Web Analytics 统计访问量：产品页、已知问题页和各法律页面（包括本页）会加载 Cloudflare 的一段脚本（<code>static.cloudflareinsights.com</code>），它上报打开的是哪个页面、你从哪个网站过来、页面加载有多快；Cloudflare 还会从请求里得出浏览器、操作系统、设备类型和国家或地区，和任何请求一样，它会看到你的 IP 地址。Cloudflare 说明这段脚本不使用 cookie 或浏览器里的其他存储，不对访客做指纹识别，也不记录网址里的查询参数。我们只看得到汇总数字（页面、来源网站、国家或地区、浏览器），看不到单个访客。以下情况不加载这段脚本，也就不统计：浏览器发出了 Global Privacy Control 或 Do Not Track 信号；你从 Paddle 的付款链接进来；处理订单或授权码的页面（<code>thanks.html</code>、<code>activate.html</code>）。字体从 Google Fonts 加载。产品页上的影片是 lastout.dev 自己的文件，按下播放才开始加载。产品页在你把鼠标移到「购买」上、聚焦或按下它时（手指碰到它也算），从 Paddle 发来的付款链接进来时，或在这个页面开始付款后两小时内又回到它时，才加载 Paddle 的结账脚本（Paddle.js），不是一打开就加载；有了它，「购买」才能在页面上打开 Paddle 的结账窗口。Paddle.js 加载之后，它还会加载 Paddle 自家的分析产品 ProfitWell，并可能设置 Paddle 的 cookie。Paddle.js、ProfitWell 和结账窗口都属于 Paddle，适用 Paddle 的隐私政策和 cookie 政策。产品页每次打开还会向 GitHub 的 API（<code>api.github.com</code>）询问最新版本，好让「下载」指向当前的文件；和任何请求一样，GitHub 会看到你的 IP 地址。文件本身从 GitHub 下载；你点了备用下载，或者 GitHub 的 API 没有应答、「下载」改指向备用地址时，文件从下载镜像（<code>dl.lastout.dev</code>，Cloudflare 上的一个存储桶）下载。谁提供文件，谁就看到你的 IP 地址。结账窗口给出订单号之后，页面每 5 秒用这个交易号问一次授权服务器，最长 30 分钟，付款一确认就带你去看授权码。付款后，感谢页用地址里的交易号向授权服务器取你的授权码。</p>
 <h2 id="zh-第三方">第三方</h2>
 <ul>
 <li><strong>Paddle</strong>：销售授权、处理付款（见上）。产品页加载的它的脚本还会加载它的分析产品 ProfitWell（见「网站」）。</li>
-<li><strong>Cloudflare</strong>：运行授权服务器、它的数据库和管理后台，并转发发到 <a href="mailto:support@lastout.dev">support@lastout.dev</a> 的邮件。</li>
+<li><strong>Cloudflare</strong>：运行授权服务器、它的数据库和管理后台，提供下载镜像（<code>dl.lastout.dev</code>），转发发到 <a href="mailto:support@lastout.dev">support@lastout.dev</a> 的邮件，并提供网站的访问量统计（见「网站」）。</li>
 <li><strong>Google</strong>（Google Workspace）：托管收到这些邮件的邮箱，所以你的来信和邮箱地址会保存在那里。</li>
 <li><strong>Resend</strong>：发送带授权码的邮件。</li>
 <li><strong>GitHub</strong>：托管更新检查读取的发布，以及 lastout.dev 网站。</li>
 <li><strong>Google Fonts</strong>：提供网站的字体。</li>
 </ul>
-<p>它们各自只接触经过自己的那部分，适用各自的隐私政策。此外没有：Lastout 不内嵌统计、崩溃上报或广告 SDK（Sparkle 更新框架是开源的，什么都不上报）。我们不出售你的数据，也不与其他任何人分享，法律要求的除外。</p>
+<p>它们各自只接触经过自己的那部分，适用各自的隐私政策。此外没有：App 不内嵌统计、崩溃上报或广告 SDK（Sparkle 更新框架是开源的，什么都不上报）。我们不出售你的数据，也不与其他任何人分享，法律要求的除外。</p>
 <h2 id="zh-你的权利">你的权利</h2>
 <p>Lastout 记录的内容不上传，我们看不到；用上面的命令由你自己管理。对于我们保存的授权记录，写信到 <a href="mailto:support@lastout.dev">support@lastout.dev</a> 可以要一份副本、更正或删除。删除后，这个授权码会在一天内在所有 Mac 上停止工作，因为 App 会再次校验它；删除一台 Mac 的试用记录，它就有一次新的试用。Paddle 按税法要求保留自己的订单记录：可以直接找 Paddle，也可以找我们转达。视你所在地区（比如欧盟、英国或加州），法律可能还给你更多权利，比如提出反对，或向数据保护机构投诉。</p>
 <p>我们使用授权和试用记录，是因为交付你买的或正在试用的东西需要它们（按欧盟和英国法律，法律依据是履行与你的合同：EULA 里的试用和授权条款）。</p>
@@ -249,38 +261,53 @@
   <footer>
     <span>Lastout · Rocha Tech LLC</span>
     <span class="links">
-      <a href="terms.html" data-lang-link>Terms of Sale</a>
-      <a href="refund.html" data-lang-link>Refund Policy</a>
-      <a href="privacy.html" data-lang-link>Privacy</a>
-      <a href="eula.html" data-lang-link>EULA</a>
+      <a href="terms.html" data-lang-link><span data-ui="en">Terms of Sale</span><span lang="zh-CN" data-ui="zh" hidden>销售条款</span></a>
+      <a href="refund.html" data-lang-link><span data-ui="en">Refund Policy</span><span lang="zh-CN" data-ui="zh" hidden>退款政策</span></a>
+      <a href="privacy.html" data-lang-link><span data-ui="en">Privacy</span><span lang="zh-CN" data-ui="zh" hidden>隐私</span></a>
+      <a href="eula.html" data-lang-link><span data-ui="en">EULA</span><span lang="zh-CN" data-ui="zh" hidden>许可协议</span></a>
+      <a href="known-issues.html" data-lang-link><span data-ui="en">Known issues</span><span lang="zh-CN" data-ui="zh" hidden>已知问题</span></a>
       <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>
     </span>
   </footer>
 </div>
 
 <script>
-// Language: a choice saved on this site, then ?lang= (or #zh), then the
+// Language: ?lang= (or #zh), then a choice saved on this site, then the
 // browser's, else English. The same rule as index.html and thanks.html.
 (function () {
   "use strict";
   var LANG_KEY = "lastoutLang";
   var LANGS = { en: true, zh: true };
+  var TITLES = { en: "Privacy Policy — Lastout", zh: "隐私政策 — Lastout" };
   var buttons = document.querySelectorAll("[data-lang]");
   var docs = document.querySelectorAll("[data-doc]");
 
   function savedLang() {
     try { return window.localStorage.getItem(LANG_KEY); } catch (e) { return null; }
   }
+  // The address outranks the saved choice, so an address that names a
+  // language follows the buttons: a reload then shows what was picked.
+  function keepInAddress(lang) {
+    var query = new URLSearchParams(location.search);
+    if (!query.has("lang") && location.hash !== "#zh") return;
+    query.set("lang", lang);
+    try {
+      window.history.replaceState(null, "", location.pathname + "?" + query + (location.hash === "#zh" ? "" : location.hash));
+    } catch (e) { /* the page still shows the pick */ }
+  }
   function firstLang() {
-    var saved = savedLang();
-    if (LANGS.hasOwnProperty(saved)) return saved;
     var asked = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
     if (LANGS.hasOwnProperty(asked)) return asked;
+    var saved = savedLang();
+    if (LANGS.hasOwnProperty(saved)) return saved;
     var language = (window.navigator && window.navigator.language) || "";
     return /^zh\b/i.test(language) ? "zh" : "en";
   }
   function pick(lang) {
     docs.forEach(function (d) { d.hidden = d.getAttribute("data-doc") !== lang; });
+    // The nav, the heading and the footer come in both languages too.
+    document.querySelectorAll("[data-ui]").forEach(function (d) { d.hidden = d.getAttribute("data-ui") !== lang; });
+    document.title = TITLES[lang];
     buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang)); });
     // Links to the other pages open them in the same language.
     document.querySelectorAll("[data-lang-link]").forEach(function (a) {
@@ -295,10 +322,12 @@
       pick(lang);
       // Blocked storage (some private windows): the choice lasts for this page.
       try { window.localStorage.setItem(LANG_KEY, lang); } catch (e) { /* see above */ }
+      keepInAddress(lang);
     });
   });
   pick(firstLang());
 })();
 </script>
+<script defer src="analytics.js"></script>
 </body>
 </html>
