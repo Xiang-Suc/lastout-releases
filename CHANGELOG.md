@@ -3,13 +3,87 @@
 User-facing changes. Compatibility with other tools, and how each part
 of it is tested, is in [docs/compatibility.md](docs/compatibility.md).
 
-## Unreleased
+## 0.4.3 - 2026-11-15
 
 ### On lastout.dev, in the usage guide and in the license server
 
 Changes to the site and the license server, not to the app: none of
 them needs an app update. The first group went live with the site on
-November 7, 2026, the second on November 8.
+November 7, 2026, the second on November 8; the changes under "With
+0.4.3" go live with the site when 0.4.3 is published.
+
+With 0.4.3:
+
+- lastout.dev now counts visits with Cloudflare Web Analytics, which sets
+  no cookies. The privacy policy says what is reported and to whom. A
+  browser that sends Global Privacy Control or Do Not Track isn't
+  counted, nor is a payment link from Paddle, nor the pages that show
+  your order or key. The app itself still has no analytics.
+- With a screen reader, the home page has a main region to jump to, and
+  the headings under Privacy sit one level below their section's instead
+  of two.
+
+- Download has a mirror for where GitHub is slow or blocked: a link under
+  the button (the same signed zip, with its SHA-256, at dl.lastout.dev),
+  and the button itself goes there when GitHub's API doesn't answer.
+  The hero links to the 75-second film and starts it. A link that names
+  a language (`?lang=zh`) now opens in that language even if you picked
+  the other one before, and the switch keeps the address in step. The
+  legal, privacy and known-issues pages have link previews.
+- The home page no longer loads Paddle's checkout script (and the
+  analytics and cookies that come with it) when it opens: it is fetched
+  when you point at Buy or press it. If a blocker stops it, the page now
+  says to allow cdn.paddle.com. On the key pages a screen reader hears
+  "Copied", and hears the waiting line once instead of every three
+  seconds.
+- In Chinese, the legal pages, the privacy policy and the known-issues
+  page now have their navigation, heading, date, footer and tab title in
+  Chinese too, and all of them link to the known-issues page. A wrong
+  address on lastout.dev shows a page that leads back to the site. Small
+  grey text is lighter and readable. On a phone, an iPad or a PC the home
+  page says the download is for a Mac; with JavaScript off, Buy and the
+  key pages say what to do. For screen readers the demo is one image and
+  Buy is a button; with reduced motion the demo's spinner stands still.
+- The privacy policy now also says that the product page asks GitHub
+  for the latest release each time it opens and, during checkout, asks
+  the license server about your order every 5 seconds; and that a
+  license check returns the name and email the license was bought with,
+  which the app keeps in your keychain. The EULA, the refund policy and
+  the home page say recordings "aren't uploaded" instead of "stay on
+  your Mac" (pasting, an agent or a backup can take them off it), and
+  the refund policy mentions automatic cleanup. The home page's demo
+  numbers add up, and its footer lists nushell.
+- The home page has a 75-second film under the first screen, in English
+  and Chinese. It is a file on lastout.dev itself and nothing of it
+  downloads until you press play; the privacy policy says so.
+- The page that shows your key after checkout no longer keeps the order
+  number in its address: it moves into the tab, so the number isn't left
+  in browser history or a copied link (for a day it is all it takes to
+  read the key). A reload of that tab still shows the key. The page also
+  shows the address the key was mailed to in part only
+  (`a***@example.com`).
+- The link in the key email carries the key after a `#`, which your
+  browser sends to no server; links in emails already sent keep working.
+  This takes effect once the license server is deployed, after the site.
+- The key page and the activate page load and run nothing but their own
+  script and fonts (a content security policy), and the Download button
+  only ever points at `Lastout-<version>.zip` in the releases
+  repository.
+- `install.sh` (the `curl | sh` install): when the disk fills up while
+  the new `lo` or `lastout-shell` is being copied, it stops, removes the
+  half-written copy and leaves the working binaries as they were, saying
+  the disk may be full. Before, the truncated copy replaced the working
+  file and the script still said "installed", exit 0. After every install
+  it also runs both binaries once to be sure they work.
+- Buying on the front page with a payment the checkout doesn't see
+  finish now still ends on your key. On November 10 a WeChat Pay order
+  went through on the phone and its key was emailed within seconds, but
+  the checkout window kept spinning on "WeChat Pay not loading?" and the
+  page never moved on. Now, from the moment the checkout names the order,
+  the page asks the license server about it every 5 seconds (for up to
+  half an hour) and opens the key page as soon as the key exists, open
+  checkout window or not. Closing the window after starting a payment
+  says "Checking whether your payment went through" under the Buy button.
 
 Live since November 8, 2026:
 
@@ -44,17 +118,19 @@ Live since November 8, 2026:
 
 Live since November 7, 2026:
 
-- The list of what redaction doesn't catch (usage guide, privacy policy)
-  is longer and now says "among others": `curl --user`, `docker login -p`,
-  `redis-cli -a`, `MYSQL_PWD=`, `SECRET_KEY_BASE=`, a Redis URL without a
-  user name, Azure `AccountKey=`, the `auth` in Docker's `config.json`,
-  kubeconfig `client-key-data`, a `.netrc` password, `SecretString` from
-  `aws secretsmanager`, a password inside escaped JSON, and a token
-  written right after letters, digits or an underscore.
+- The usage guide and the privacy policy now list what redaction
+  catches and, "among others", what it doesn't: Azure's `sig=`, the
+  `auth` in Docker's `config.json`, kubeconfig `client-key-data`, a
+  `.netrc` password, `SecretString` from `aws secretsmanager`, a password
+  inside escaped JSON, a lower-case `…_key` in code, and a token written
+  right after letters, digits or an underscore. (Until 0.4.3 the list
+  also named `curl --user`, `docker login -p`, `redis-cli -a`,
+  `MYSQL_PWD=`, `SECRET_KEY_BASE=`, a Redis URL without a user name and
+  Azure `AccountKey=`; the app update below catches those.)
 - Commands on the "prints secrets" list keep their command line, and only
   recognized formats are redacted in it: a secret typed as a plain
-  argument (`aws configure set aws_secret_access_key KEY`) stays readable,
-  also to an agent. Start such a command with a space.
+  argument with nothing naming it (`htpasswd -b file user PASSWORD`)
+  stays readable, also to an agent. Start such a command with a space.
 - The `-ic` limitation is no longer described as Zed's alone: a command
   run as `zsh -i -c '…'`, `bash -i -c` or `fish -ic` in a recorded
   terminal stops at a prompt instead of running, wherever a tool starts
@@ -81,6 +157,194 @@ Live since November 7, 2026:
   return address, and the tab keeps the order number for up to two hours
   so that page can find it. Card payments worked before and are
   unchanged; a browser that can't keep the number behaves as before.
+
+### In the app and `lo`
+
+- Redaction no longer rewrites code that merely mentions a secret-like
+  word. `Token::Ident(name)`, `token == expected`, `token === undefined`
+  and `Self::Secret => …` are not assignments; the `-secret` inside
+  `my-secret` is not a `--secret` flag (`kubectl get secret my-secret -o
+  yaml` keeps its `-o`); and in code (`key = value`, `key: value`) a
+  value that is a call, an index or a dotted name (`token =
+  lexer.next_token()`, `password = form["password"]`, `secret:
+  env.WEBHOOK_SECRET`) is an expression, not a credential. An agent
+  reading a compiler error, a `git diff` or kubectl output through `lo`
+  now gets the line as it was. On a shell line or in an env file
+  (`DB_PASSWORD=John.Smith`, `--token X`), under an ALL_CAPS key
+  (`DB_PASSWORD: John.Smith`) and in quotes (`"api_key": "…"`) a value
+  is a credential and is redacted as before.
+- A command run as `zsh -i -c '…'` or `bash -i -c '…'` in a recorded
+  terminal runs and exits, as it does without Lastout. Before, the
+  setup block in the rc file took that shell for a new terminal, and the
+  recording proxy started a shell without the command: a prompt waited
+  for input instead (Zed's tasks, dotfiles installers, `ssh -t host
+  'zsh -ic …'`, a Makefile's `$(SHELL) -ic`). `lo doctor` reports the
+  older block and `lo setup` updates it; `fish -ic` still stops at a
+  prompt (fish gives its config no way to tell).
+- What `~/.zprofile` sets up is there in a recorded zsh: aliases,
+  functions, plain variables, and `GPG_TTY`, which now names the tty a
+  pinentry can read from (before, a terminal pinentry showed the
+  passphrase on screen and zsh ran it as a command). The shell Lastout
+  replaces is a login shell and `.zprofile` ran only there; it now runs
+  once more inside the recorded shell, before the rest of `.zshrc`, with
+  each PATH entry kept once. So anything in `.zprofile` with a side
+  effect (a greeting, starting `ssh-agent`) now happens twice; the usage
+  guide says how to guard such lines. `logout` ends the recorded shell
+  and `.zlogout` runs. bash, fish and nushell start as login shells again
+  and were not affected.
+- tmux's `#{pane_current_path}` follows your `cd`: `split-window -c
+  '#{pane_current_path}'` and Terminal.app's "new tab in the same
+  directory" open where you are, not where the tab was opened. They read
+  the directory of the pane's foreground process, which is Lastout's
+  proxy; the shell hooks now tell it where the shell is at every prompt,
+  and it moves there. `#{pane_current_command}` still shows
+  `lastout-shell`. Hooks from an older setup keep working; the proxy then
+  follows the directory one command late.
+- Redaction catches the common ways a password is passed that have no
+  `--password` in them: `curl -u user:pass` (the part after the colon)
+  and `curl -b` cookies, `mysql -p<password>` (also `mysqldump`,
+  `mariadb`), `sshpass -p`, `docker login -p`, `redis-cli -a`,
+  `openssl … pass:`, `aws configure set aws_secret_access_key …`, `gh
+  secret set --body`, and any `--…-password`, `--…-token`,
+  `--passphrase` flag. In output it now masks the values of `Cookie` and
+  `Set-Cookie` headers (names and attributes such as `Path` and
+  `Max-Age` stay), `DB_PASS=`, `MYSQL_PWD=`, `SECRET_KEY_BASE=`,
+  `AccountKey=`, an ALL_CAPS `…_KEY=` (`APP_KEY`, `SESSION_KEY`,
+  `SUPABASE_KEY`), `API Key:` and `Secret Key:` labels, a Redis URL with
+  no user name (`redis://:pw@`), a token alone in a URL
+  (`https://<token>@github.com/…`), and Stripe webhook secrets
+  (`whsec_`), Resend (`re_…_…`), Supabase (`sbp_`), Groq (`gsk_`), xAI
+  (`xai-`), Google OAuth (`ya29.`) and age (`AGE-SECRET-KEY-`) keys.
+  `mysql -p` alone, `docker run -p 8080:80`, `sort -u`, `git push -u`,
+  `curl -b cookies.txt`, `primary_key: "id"` and `PUBLIC_KEY=` are left
+  as they are.
+- The output of a secrets tool is not stored wherever on the line the
+  tool sits: `cd x && op read …`, `… | pass show …`, `echo $(op read …)`,
+  `if op read …; then`, as well as `noglob` and `builtin` in front. The
+  built-in list (and `record.ignore`) used to be matched against the
+  start of the line only, so a chain stored the secret it printed.
+  Quoted text is not a command: `git commit -m 'pass'` is still
+  recorded.
+- The default (`smart`) mode keeps an error in the middle of a long log
+  of wide lines: a Spring Boot or JSON log that goes on for 1,000 lines
+  after the failure. It used to fill the budget with the tail first and
+  stop at the first line that did not fit, so with lines over about 105
+  characters the error was dropped while the footer still said "head,
+  errors and tail". Now half the budget is held for the error windows
+  first, a line that does not fit is skipped rather than ending the
+  selection, and when error lines still had to be left out the footer
+  says so ("head, some errors and tail; not every error line fit,
+  --mode errors keeps more of them; raise --max-chars for all"). `--json`
+  has `errors_dropped`.
+- `--mode full` (and `mode: "full"` over MCP) keeps every line whole. It
+  used to cut a line at 2,000 characters like the other modes, so a
+  one-line JSON response lost its later fields with no way to get them
+  back; `smart` and `errors` still cut long lines.
+- `wait_for_command` over MCP (and `lo wait`) returns a command started
+  after the call, also while something else keeps running. With Claude
+  Code itself running in a recorded terminal, or a dev server left open,
+  the build you started next used to go unseen until the timeout: only
+  the commands running at the call were watched. A timed-out wait no
+  longer says "the command is still running"; it says what is running
+  now (so the agent can pass `session`) and which command finished last,
+  with the `get_command_output` id that reads it.
+- `get_running_output` over MCP passes over the terminal the agent runs
+  in. Started by Claude Code or Gemini CLI in a recorded terminal, `lo
+  mcp` handed the agent its own screen as "the running command"; it now
+  reads the other terminals, unless that terminal is named with
+  `session`.
+- What `lo` itself prints is no longer recorded. `lo --print` or `--json`
+  in a recorded terminal stored a second copy of the command's output
+  under lo's own row, which plain `lo forget` skipped, so after forgetting
+  a command that printed a password the password was still on disk (and
+  `lo --id N` or an agent could read it). lo's rows stay in the list,
+  without output, like a command on the "prints secrets" list.
+- The Homebrew cask's `zap` (`brew uninstall --zap lastout`, from this
+  release's cask on) also trashes `~/.config/lastout` (config and saved
+  outputs), the app's caches and its HTTP storage, not only the
+  recordings and the preferences file. The license in your keychain and
+  the `.lastout-backup-*` copies next to your rc files are still yours
+  to remove, as the privacy policy lists.
+- In tmux or screen, ⌃⌥⌘C with the terminal in front copies from the
+  pane that most recently ran a command. It used to copy the outer
+  shell's last command from before tmux started, or only "tmux is
+  running", with a notice that looked like a normal copy. Lastout can't
+  tell which pane belongs to the window in front, so with several tmux
+  windows open ⌃⌥⌘L is the way to pick; when tmux was started in a tab
+  from before setup, the panes are still found. When no pane has run a
+  command yet, the notice says so instead of copying something old.
+- With Warp, a JetBrains IDE or Emacs in front, ⌃⌥⌘C says that Lastout
+  doesn't record their terminals and names the ones it does, instead of
+  copying the newest command from some other terminal. tmux or screen
+  inside them is still recorded, and the shortcut copies from its pane.
+  The setup window's "Waiting for the first command" step says the same
+  while one of those apps is running, so nobody waits in a terminal that
+  will never show up, and "Also record these apps" no longer offers them
+  (adding them did nothing: the recorder skips their shells).
+- A command that isn't running any more no longer sits under "Running" in
+  the menu, in `lo --list`, `lo sessions` or what agents see, until its
+  terminal closes. That happened when the command's end never reached the
+  database (the data directory was moved while it ran, a write failed)
+  and, until 0.4.2, when the terminal was killed. `lo` now asks the
+  terminal's recorder, and such a command reads as "did not finish"; the
+  next command in that terminal closes the row for good.
+- A `lastout-shell` that is an empty file (a copy cut short by a full
+  disk) no longer closes every new terminal tab the moment it opens. The
+  shell's startup block now skips an empty file, so the tab opens
+  unrecorded, and `lo doctor` says the file is empty and how to reinstall.
+  Before, the empty file passed the "is executable" test, ran as an empty
+  script and was handed the terminal, which then ended at once with no
+  message, leaving no way to type a repair. The block changed, so `lo
+  doctor` reports the older block and `lo setup` updates it.
+- A `terminals` list in `config.toml` that names the same app twice (a
+  hand edit; the file's own example invites them) no longer stops the app
+  at launch. The app has no window, so that crash showed only as a menu
+  bar icon that never appeared, at every login. `lo` now reads a repeated
+  entry once, in `terminals` and `ignore` alike, and `lo config
+  --add-terminal` writes the list back without the repeat.
+- JetBrains Toolbox in front no longer makes the copy shortcut say
+  "Toolbox isn't recorded": it manages the IDEs and has no terminal, so
+  the shortcut copies the latest command as it does for any other app.
+- "Copy from the exact window in front" (Settings) works in the release
+  build: the first time the shortcut asks Terminal or iTerm2 which window
+  is in front, macOS shows its Automation permission dialog once, as the
+  privacy page says. Releases up to 0.4.2 were signed without the Apple
+  Events entitlement, so macOS refused silently and the shortcut fell
+  back to the most recently active window with no sign that it had. The
+  release script now checks the signature carries the entitlement.
+- Settings → About → Acknowledgements lists Sparkle, the update framework
+  inside the app, with its license (MIT, with BSD and zlib parts). The
+  file listed only the Rust crates behind `lo` and `lastout-shell`.
+- The update dialog shows what changed: the release's section of this
+  changelog, with a link to the release page. Up to 0.4.2 it showed the
+  version number alone. A release whose section is missing is not
+  published.
+- `lo uninstall` removes Lastout from this Mac in one go. It lists what
+  it will remove and asks once (`--yes` doesn't ask, `--dry-run` only
+  lists): Lastout's blocks in every shell's rc files (each file is backed
+  up first, and older backups are deleted), the recordings and saved
+  commands (deleted for good, not moved to the Trash), the config, the
+  app's settings and caches, the license record in the keychain, `lo`
+  and `lastout-shell` in `~/.local/bin`, and the app, which is quit,
+  has Open at Login turned off (macOS would open it at the next login
+  even from the Trash) and is moved to the Trash (installed with
+  Homebrew, `brew uninstall --zap --cask lastout` removes it). On a Mac
+  that holds one of your license's seats, or may hold one (the app
+  couldn't check lately), it stops first and asks you to choose
+  Deactivate on this Mac in the app, since `lo` never goes online and
+  can't free the seat; `--keep-seat` goes ahead and keeps it. What it
+  can't remove it lists,
+  with what to do: terminals still open (they keep working, recording
+  nothing), coding agents' `lastout` MCP entries, hosts set up with
+  `lo remote-install`, files named by `LASTOUT_CONFIG` or
+  `LASTOUT_SAVED`, and backups. A `LASTOUT_HOME` directory goes only if
+  it holds nothing but Lastout's files. Until now removing Lastout took a
+  dozen steps by hand, listed in the privacy policy.
+- On a Mac that isn't set up yet, the app's check (`lo doctor` run
+  without a terminal) no longer says your startup file "runs
+  lastout-shell from your shell's PATH" next to saying it is not set
+  up: before setup the file runs nothing. It now reports the
+  `lastout-shell` and `lo` found in the app.
 
 ## 0.4.2 - 2026-11-04
 

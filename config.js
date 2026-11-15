@@ -1,6 +1,6 @@
 // Lastout store configuration, shared by index.html (the Buy button) and
 // thanks.html (the key lookup). Plain values, no build step: edit this file
-// and publish. Everything marked 上线前 has to be filled in before launch.
+// and publish.
 window.LASTOUT_STORE = {
   // Which Paddle environment the Buy button uses. "sandbox" rehearses with
   // test cards and sandbox keys; "production" charges real cards.
@@ -12,19 +12,16 @@ window.LASTOUT_STORE = {
   paddle: {
     // Paddle sandbox (sandbox-vendors.paddle.com): Developer tools →
     // Authentication → client-side token (test_…); Catalog → Products →
-    // "Lastout for Mac" → the one-time price's id (pri_…).
-    // 上线前填（沙盒彩排用；留空则 Buy 按钮不弹结账，只在控制台说缺什么）。
+    // "Lastout for Mac" → the one-time price's id (pri_…). Left empty, the
+    // Buy button opens no checkout and the console says what is missing.
     sandbox: {
       clientToken: "test_c65cc32df1acd5e914038cafc56",
       priceId: "pri_01m5e3vcab25cmb8gh09jkkh30",
     },
     // The same two values from the live dashboard (vendors.paddle.com):
     // the client-side token starts with live_…, the price id with pri_….
-    // Live token ctkn_01m5v2keqfxxfjzn0a7p12npkp "lastout site"; the price
-    // is $29 one-time on "Lastout for Mac" (pro_01m56esd3gyfhngcah22apxka4).
-    // Checkout was paused (an empty priceId: the Buy button opens no
-    // checkout and says it isn't open yet) until 0.4.1, the first version
-    // with signed licenses, could be published; it reopens with it.
+    // An empty priceId pauses the checkout: the Buy button opens none and
+    // says it isn't open yet.
     production: {
       clientToken: "live_164136e9fadbb86a29b392f2598",
       priceId: "pri_01m5e2hbfy8xp006zree8mce6c",
@@ -33,14 +30,20 @@ window.LASTOUT_STORE = {
 
   // The license service (service/, a Cloudflare Worker). thanks.html asks
   // it for the key after checkout: GET {licenseServer}/thanks-lookup?txn=….
-  // 上线前：确认已部署，且 Worker 的 THANKS_ORIGIN 是本站的 origin（否则 CORS 拒绝）。
+  // The Worker's THANKS_ORIGIN has to be this site's origin, or CORS refuses.
   licenseServer: "https://license.lastout.dev",
 
   // Where the Download button points. The page links the latest release
   // and, once the GitHub API answers, the Lastout-<version>.zip inside it.
   releases: "https://github.com/Xiang-Suc/lastout-releases",
 
+  // The download mirror (a Cloudflare R2 bucket, filled by scripts/mirror.sh
+  // after each release is published): {mirror}/Lastout.zip is the latest
+  // app zip, {mirror}/SHA256SUMS its checksum. The page links it under
+  // Download and puts it on the button when GitHub's API doesn't answer.
+  // Empty: no mirror link, and the button stays on the releases page.
+  mirror: "https://dl.lastout.dev",
+
   // Shown wherever the site says "write to us".
-  // 上线前：确认 lastout.dev 已购买，这个地址已转发到收件箱。
   support: "support@lastout.dev",
 };

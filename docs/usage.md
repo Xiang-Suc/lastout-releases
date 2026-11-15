@@ -36,19 +36,27 @@ Recorded: Ghostty, iTerm2, Terminal, kitty, WezTerm, Alacritty and the
 terminals of VS Code, Cursor and Zed, also with tmux inside them. Not
 recorded: Warp, JetBrains IDE terminals and Emacs terminals.
 
-- **tmux and screen:** press ⌃⌥⌘L, run `lo` in the pane, or press ⌃⌥⌘C
-  from another app. With the terminal itself in front, the shortcut
-  doesn't reach panes yet.
+- **tmux and screen:** with the terminal in front, ⌃⌥⌘C copies from the
+  pane that most recently ran a command (since 0.4.3; before, it could
+  copy a command from before tmux started). Lastout can't tell which
+  pane belongs to the window in front, so with several tmux windows
+  open press ⌃⌥⌘L and pick, or run `lo` in the pane.
 - **tmux sees Lastout's proxy as the pane's process:**
   `#{pane_current_command}` and the default window name show
-  `lastout-shell`, `#{pane_current_path}` stays where the tab was opened,
-  and plugins that read `ps -t #{pane_tty}` (vim-tmux-navigator) can't see
-  your programs.
-- **Zed, and anything that starts a shell with `-ic`:** Zed's terminal
-  panel is recorded. A command run as `zsh -i -c '…'`, which is how Zed
-  runs its tasks, stops at a prompt in a new terminal instead of running;
-  `bash -i -c` and `fish -ic` do the same wherever a tool starts them with
-  a terminal. A fix is planned.
+  `lastout-shell`, and plugins that read `ps -t #{pane_tty}`
+  (vim-tmux-navigator) can't see your programs. `#{pane_current_path}`
+  follows your `cd` (since 0.4.3), so `split-window -c` opens where you
+  are.
+- **`~/.zprofile` runs twice:** the terminal's login zsh runs it, and so
+  does the recorded zsh inside Lastout (since 0.4.3, so that its aliases,
+  functions and `GPG_TTY` are there). Anything in it with a side effect
+  runs twice: a greeting prints twice, an `ssh-agent` started there
+  starts twice. Guard such lines with `[[ -n $LASTOUT_NONCE ]] || …`, or
+  move them to `~/.zshrc`.
+- **fish started with `-ic`:** a command run as `fish -ic '…'` with a
+  terminal stops at a prompt instead of running (fish gives its config no
+  way to tell a `-c` shell from an interactive one). `zsh -i -c` and
+  `bash -i -c`, which is how Zed runs its tasks, run as usual since 0.4.3.
 
 ## Keys
 
@@ -104,7 +112,7 @@ focus.
 | `lo --id 41 --id 42` | Specific commands (ids from `lo --list`) |
 | `lo --global` | The newest command from any terminal |
 | `lo --running` | The output so far of a command still running in another terminal: a dev server, a long build |
-| `lo --mode full` / `errors` | Every line that was recorded (each cut at 2,000 characters), or only the context around errors; `smart` is the default |
+| `lo --mode full` / `errors` | Every line that was recorded, whole (the other modes cut a line at 2,000 characters), or only the context around errors; `smart` is the default |
 | `lo --print` / `--plain` | Print instead of copying / text only, no Markdown |
 | `lo --no-redact` | Skip the redaction of recognized secrets |
 | `lo --list` | Recent commands with their ids |
@@ -114,6 +122,7 @@ focus.
 | `lo forget` | Delete the previous command (a secret got printed); `--id 42` or `--all`; see Recording and privacy |
 | `lo sessions` | Terminals being recorded |
 | `lo doctor` | Check the setup, from the rc file to recorded output |
+| `lo uninstall` | Remove Lastout from this Mac: shell setup, recordings and saved commands, settings, the keychain record, `lo` and the app (to the Trash). Lists everything and asks first; `--dry-run` only lists |
 
 `lo --help` lists every option. Copies go through pbcopy, wl-copy or
 xclip/xsel; over ssh or on a headless machine, through your terminal
@@ -144,23 +153,30 @@ commands saved in the repository you are in are listed first.
 ## Recording and privacy
 
 - A command starting with a space is not stored at all, not even its text.
-- When a command starts with a secrets tool (`op`, `pass`, `aws configure`,
-  `vault read`, `kubectl get secret`, …), only the command line and exit
-  status are kept, not the output. This looks only at the start of the
-  command: in a chain such as `cd x && op read …` the output is recorded.
+- When a secrets tool (`op`, `pass`, `aws configure`, `vault read`,
+  `kubectl get secret`, …) is one of the commands on the line, also in a
+  chain, a pipe or a substitution (`cd x && op read …`, `… | pass show
+  …`, `echo $(op read …)`), only the command line and exit status are
+  kept, not the output. Quoted text is not a command (`git commit -m
+  'pass'` is recorded).
   Only recognized formats are redacted in the command line too, so a
-  secret typed as a plain argument (`aws configure set
-  aws_secret_access_key KEY`) stays readable, also to an agent: start
-  such a command with a space.
-- Redaction knows formats, not every secret. Not caught today, among
-  others: `curl -u user:pass` and `curl --user`, `mysql -p<password>`,
-  `docker login -p`, `sshpass -p`, `redis-cli -a`, `Cookie` and
-  `Set-Cookie` headers, `DB_PASS=`, `MYSQL_PWD=`, `SECRET_KEY_BASE=`,
-  `redis://:password@host` (no user name), Azure `AccountKey=`, the
-  `auth` in Docker's `config.json`, `client-key-data` in a kubeconfig, a
-  `.netrc` password, `SecretString` in `aws secretsmanager` output, and a
-  password inside escaped JSON. A token written right after letters,
-  digits or an underscore may not match either. Check before you paste.
+  secret typed as a plain argument with nothing naming it (`htpasswd -b
+  file user PASSWORD`) stays readable, also to an agent: start such a
+  command with a space.
+- Redaction knows formats, not every secret. It catches known token
+  formats, private keys, passwords and tokens in URLs, `Authorization`,
+  `Cookie` and `Set-Cookie` headers, `--password`-style flags, the
+  password arguments of `curl -u`, `mysql -p<password>`, `sshpass -p`,
+  `docker login -p`, `redis-cli -a`, `openssl … pass:`, `aws configure
+  set` and `gh secret set --body`, and `SECRET=value` assignments
+  (`DB_PASS=`, `MYSQL_PWD=`, `SECRET_KEY_BASE=`, `APP_KEY=`, `API Key:`
+  …). Not caught today, among others: a secret with no flag or label in
+  front of it, Azure's `sig=`, the `auth` in Docker's `config.json`,
+  `client-key-data` in a kubeconfig, a `.netrc` password, `SecretString`
+  in `aws secretsmanager` output, a password inside escaped JSON, and a
+  lower-case `…_key` in code (`app_key = …`). A token written right
+  after letters, digits or an underscore may not match either. Check
+  before you paste.
 - `lo pause` (or Settings → Recording → Pause) stops recording; nothing is
   stored while paused.
 - Old recordings go by themselves: 200 commands per terminal, 30 days,
@@ -170,9 +186,9 @@ commands saved in the repository you are in are listed first.
   rows' bytes in the database. An older copy of a command line can stay in
   unused parts of the database file until it is overwritten, so if a
   password was typed on the command line, change the password. It does not
-  touch your shell history or your backups. A copy you printed with
-  `lo --print` or `--json` is its own command, and plain `lo forget` skips
-  it: remove it with `lo forget --id N`.
+  touch your shell history or your backups. What `lo` itself prints
+  (`lo --print`, `--json`) is not recorded, so no copy of a forgotten
+  command's output stays behind.
 
 Everything Lastout records, where it is kept and what can leave your
 machine: [Privacy](privacy.md).

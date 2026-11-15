@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- This page shows a license key. It runs config.js and the one script below (the hash is that script's:
+     site/test/csp.test.mjs prints the new one when the script changes) and connects to nothing. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-ktrnxASZOJWneC68dvxbJ/iHTCC6BeLhjZlx8629yuY='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Activate — Lastout</title>
 <meta name="robots" content="noindex">
@@ -9,10 +12,11 @@
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Loaded as print and switched on when it arrives: a stylesheet link would hold the whole page blank (up to 75 s) where Google is unreachable. -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" id="fonts">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
 <link rel="stylesheet" href="page.css">
 </head>
@@ -30,6 +34,7 @@
   </nav>
 
   <main class="narrow">
+    <noscript><p class="meta">This page needs JavaScript to read the key from the link. Copy the key from the email and paste it in Lastout: Settings → License. · 这个页面需要 JavaScript 才能读出链接里的授权码。请从邮件里复制授权码，粘贴到 Lastout 的「设置 → 授权」。</p></noscript>
     <div data-doc="en">
       <div class="label">Activate</div>
       <h1>Your key, <em>into Lastout.</em></h1>
@@ -50,6 +55,8 @@
     <div class="keybox" id="keybox" hidden>
       <output id="key"></output>
       <button class="btn primary" id="copy" type="button">Copy</button>
+      <!-- "Copied", for a screen reader: a button's changed label is not read out. -->
+      <span class="sr" id="copied" role="status"></span>
     </div>
     <p class="actions" id="actions" hidden>
       <a class="btn primary" id="open" href="lastout://activate">Open Lastout</a>
@@ -90,6 +97,16 @@
 
 <script src="config.js"></script>
 <script>
+// The font stylesheet is loaded as print (see the head) and switched on
+// here once it has arrived: this page's content policy runs no inline
+// handler, so the link can't do it itself.
+(function () {
+  var fonts = document.getElementById("fonts");
+  if (!fonts) return;
+  if (fonts.sheet) fonts.media = "all";
+  else fonts.addEventListener("load", function () { fonts.media = "all"; });
+})();
+
 (function () {
   "use strict";
   var cfg = window.LASTOUT_STORE || {};
@@ -131,11 +148,12 @@
   var keybox = document.getElementById("keybox");
   var keyOut = document.getElementById("key");
   var copy = document.getElementById("copy");
+  var copiedSay = document.getElementById("copied");
   var actions = document.getElementById("actions");
   var open = document.getElementById("open");
   var download = document.getElementById("download");
 
-  // Language: a choice saved on this site, then ?lang= (or #zh), then the
+  // Language: ?lang= (or #zh), then a choice saved on this site, then the
   // browser's, else English. The same rule as index.html.
   var LANG_KEY = "lastoutLang";
   var t = STRINGS.en;
@@ -144,11 +162,21 @@
   function savedLang() {
     try { return window.localStorage.getItem(LANG_KEY); } catch (e) { return null; }
   }
+  // The address outranks the saved choice, so an address that names a
+  // language follows the buttons: a reload then shows what was picked.
+  function keepInAddress(lang) {
+    var query = new URLSearchParams(location.search);
+    if (!query.has("lang") && location.hash !== "#zh") return;
+    query.set("lang", lang);
+    try {
+      window.history.replaceState(null, "", location.pathname + "?" + query + (location.hash === "#zh" ? "" : location.hash));
+    } catch (e) { /* the page still shows the pick */ }
+  }
   function firstLang() {
-    var saved = savedLang();
-    if (STRINGS.hasOwnProperty(saved)) return saved;
     var asked = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
     if (STRINGS.hasOwnProperty(asked)) return asked;
+    var saved = savedLang();
+    if (STRINGS.hasOwnProperty(saved)) return saved;
     var language = (window.navigator && window.navigator.language) || "";
     return /^zh\b/i.test(language) ? "zh" : "en";
   }
@@ -174,6 +202,7 @@
       pick(lang);
       // Blocked storage (some private windows): the choice lasts for this page.
       try { window.localStorage.setItem(LANG_KEY, lang); } catch (e) { /* see above */ }
+      keepInAddress(lang);
     });
   });
 
@@ -207,8 +236,20 @@
 
   pick(firstLang());
 
+  // The key email puts the key in the fragment (#key=…), which a browser
+  // sends to no server. Emails sent before that carry ?key=: it is read
+  // too, and the address is rewritten to the fragment form so that nothing
+  // after this first request carries it (a reload still shows the key).
   var params = new URLSearchParams(location.search);
-  var raw = params.get("key");
+  var inHash = /^#key=/.test(location.hash) ? new URLSearchParams(location.hash.slice(1)).get("key") : null;
+  var raw = inHash !== null ? inHash : params.get("key");
+  if (inHash === null && raw) {
+    try {
+      params.delete("key");
+      var rest = params.toString();
+      window.history.replaceState(null, "", location.pathname + (rest ? "?" + rest : "") + "#key=" + encodeURIComponent(raw));
+    } catch (e) { /* history blocked: the address stays */ }
+  }
   if (raw === null || raw === "") {
     show("warn", function (t) { return t.noKey; });
     return;
@@ -228,7 +269,11 @@
   show("ok", function (t) { return t.ready; });
 
   copy.addEventListener("click", function () {
-    function done() { copy.textContent = t.copied; setTimeout(function () { copy.textContent = t.copy; }, 1600); }
+    function done() {
+      copy.textContent = t.copied;
+      copiedSay.textContent = t.copied;
+      setTimeout(function () { copy.textContent = t.copy; copiedSay.textContent = ""; }, 1600);
+    }
     function fallback() {
       var range = document.createRange(); range.selectNodeContents(keyOut);
       var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);

@@ -8,7 +8,7 @@
   --line: #2a2e3b;
   --paper: #ece7dc;
   --muted: #9a9789;
-  --dim: #5f6170;
+  --dim: #7f8191;
   --mint: #74d9bf;
   --mint-ink: #0c2a23;
   --red: #ef7b6e;
@@ -104,6 +104,9 @@ code, kbd { font: 500 0.88em var(--mono); color: var(--paper); background: var(-
 .steps ol { margin-top: 16px; padding-left: 1.3em; color: #cfcabe; }
 .steps li { margin-top: 10px; }
 .steps p { margin-top: 16px; color: var(--muted); font-size: 15px; }
+
+/* For a screen reader only. */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 footer { padding: 34px 0 50px; border-top: 1px solid var(--line); color: var(--dim); font-size: 14px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px 28px; }
 footer .links { display: flex; flex-wrap: wrap; gap: 8px 18px; }

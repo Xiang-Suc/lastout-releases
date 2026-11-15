@@ -2,15 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- This page shows a license key. It runs config.js and the one script below (the hash is that script's:
+     site/test/csp.test.mjs prints the new one when the script changes) and connects to the license server (the key lookup). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-MRt4wl87CHIdXCIGSMh97k9xf6wButCQiAlYEl6JLLc='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src https://license.lastout.dev; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Thank you — Lastout</title>
 <meta name="robots" content="noindex">
+<!-- The order number is in this page's address: no link or font request carries it on. -->
+<meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Loaded as print and switched on when it arrives: a stylesheet link would hold the whole page blank (up to 75 s) where Google is unreachable. -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" id="fonts">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
 <link rel="stylesheet" href="page.css">
 </head>
@@ -28,6 +34,7 @@
   </nav>
 
   <main class="narrow">
+    <noscript><p class="meta">This page needs JavaScript to fetch your key. Your key is also in the email from keys@lastout.dev. · 这个页面需要 JavaScript 才能取到授权码；授权码也在 keys@lastout.dev 发给你的邮件里。</p></noscript>
     <div data-doc="en">
       <div class="label">Thank you</div>
       <h1>Your Lastout <em>license key.</em></h1>
@@ -44,11 +51,15 @@
     <div class="status" id="status" aria-live="polite">
       <span class="spin" id="spin"></span>
       <span id="status-text">Looking up your order…</span>
+      <!-- The seconds tick every three; a screen reader reads the line once, not each tick. -->
+      <span id="status-secs" aria-hidden="true"></span>
     </div>
 
     <div class="keybox" id="keybox" hidden>
       <output id="key"></output>
       <button class="btn primary" id="copy" type="button">Copy</button>
+      <!-- "Copied", for a screen reader: a button's changed label is not read out. -->
+      <span class="sr" id="copied" role="status"></span>
     </div>
     <p class="meta" id="mailed" hidden></p>
 
@@ -86,6 +97,16 @@
 
 <script src="config.js"></script>
 <script>
+// The font stylesheet is loaded as print (see the head) and switched on
+// here once it has arrived: this page's content policy runs no inline
+// handler, so the link can't do it itself.
+(function () {
+  var fonts = document.getElementById("fonts");
+  if (!fonts) return;
+  if (fonts.sheet) fonts.media = "all";
+  else fonts.addEventListener("load", function () { fonts.media = "all"; });
+})();
+
 (function () {
   "use strict";
   var cfg = window.LASTOUT_STORE || {};
@@ -111,7 +132,8 @@
       gaveUp: function (txn) { return "Your key is taking longer than usual to show here. It is emailed to the address you entered at checkout once the payment goes through, usually within a few minutes. Nothing after that? Write to " + support + " with order " + txn + "."; },
       revoked: function () { return "This order was refunded, so its key is no longer active. Changed your mind? Write to " + support + "."; },
       expired: function (txn) { return "This page only shows a key for a day after the purchase. Your key is in the email from your purchase; otherwise write to " + support + " with order " + txn + "."; },
-      waiting: function (s) { return "Waiting for your key… (" + s + "s)"; },
+      waiting: "Waiting for your key…",
+      waited: function (s) { return " (" + s + "s)"; },
       copy: "Copy",
       copied: "Copied",
       selectAndCopy: "Select and copy"
@@ -129,7 +151,8 @@
       gaveUp: function (txn) { return "授权码比平时来得慢。付款完成后，它会发到你结账时填写的邮箱，通常几分钟内送达。之后还没收到？请写信到 " + support + "，并附上订单号 " + txn + "。"; },
       revoked: function () { return "这笔订单已退款，它的授权码已失效。改主意了？请写信到 " + support + "。"; },
       expired: function (txn) { return "这个页面只在购买后一天内显示授权码。授权码在购买后收到的邮件里；找不到的话，请写信到 " + support + "，并附上订单号 " + txn + "。"; },
-      waiting: function (s) { return "正在等待授权码…（" + s + " 秒）"; },
+      waiting: "正在等待授权码…",
+      waited: function (s) { return "（" + s + " 秒）"; },
       copy: "复制",
       copied: "已复制",
       selectAndCopy: "请手动选中并复制"
@@ -143,27 +166,40 @@
 
   var status = document.getElementById("status");
   var text = document.getElementById("status-text");
+  var secs = document.getElementById("status-secs");
   var spin = document.getElementById("spin");
   var keybox = document.getElementById("keybox");
   var keyOut = document.getElementById("key");
   var mailed = document.getElementById("mailed");
   var copy = document.getElementById("copy");
+  var copiedSay = document.getElementById("copied");
 
-  // Language: a choice saved on this site, then ?lang= (or #zh), then the
+  // Language: ?lang= (or #zh), then a choice saved on this site, then the
   // browser's, else English. The same rule as index.html.
   var LANG_KEY = "lastoutLang";
   var t = STRINGS.en;
   var said = null;        // what the status line says, as a function of t
+  var waited = null;      // the seconds after it while waiting, as a function of t
   var mailedData = null;  // the order the email line is about, once found
 
   function savedLang() {
     try { return window.localStorage.getItem(LANG_KEY); } catch (e) { return null; }
   }
+  // The address outranks the saved choice, so an address that names a
+  // language follows the buttons: a reload then shows what was picked.
+  function keepInAddress(lang) {
+    var query = new URLSearchParams(location.search);
+    if (!query.has("lang") && location.hash !== "#zh") return;
+    query.set("lang", lang);
+    try {
+      window.history.replaceState(null, "", location.pathname + "?" + query + (location.hash === "#zh" ? "" : location.hash));
+    } catch (e) { /* the page still shows the pick */ }
+  }
   function firstLang() {
-    var saved = savedLang();
-    if (STRINGS.hasOwnProperty(saved)) return saved;
     var asked = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
     if (STRINGS.hasOwnProperty(asked)) return asked;
+    var saved = savedLang();
+    if (STRINGS.hasOwnProperty(saved)) return saved;
     var language = (window.navigator && window.navigator.language) || "";
     return /^zh\b/i.test(language) ? "zh" : "en";
   }
@@ -180,6 +216,7 @@
     document.title = t.title;
     copy.textContent = t.copy;
     if (said) text.textContent = said(t);
+    secs.textContent = waited ? waited(t) : "";
     if (mailedData) mailedLine(mailedData);
   }
   document.querySelectorAll("[data-lang]").forEach(function (b) {
@@ -188,16 +225,23 @@
       pick(lang);
       // Blocked storage (some private windows): the choice lasts for this page.
       try { window.localStorage.setItem(LANG_KEY, lang); } catch (e) { /* see above */ }
+      keepInAddress(lang);
     });
   });
 
   // `say` is a string from t, or a function of t, so a language switch can
   // write the same message again.
-  function show(kind, say) {
+  // `ticking` is the seconds shown after the line, as a function of t. The
+  // line itself is written only when it changes: writing the same words
+  // again would have a screen reader read them again.
+  function show(kind, say, ticking) {
     said = typeof say === "function" ? say : function () { return say; };
+    waited = ticking || null;
     status.className = "status" + (kind ? " " + kind : "");
     spin.hidden = kind !== "";
-    text.textContent = said(t);
+    var line = said(t);
+    if (text.textContent !== line) text.textContent = line;
+    secs.textContent = waited ? waited(t) : "";
   }
 
   pick(firstLang());
@@ -215,13 +259,24 @@
   // declined card leaves one behind; without that mark a bare visit would
   // wait for a key that never comes. Two hours is longer than any bank page;
   // an older one is somebody's last visit, not this order.
-  function pendingTxn() {
+  //
+  // This page keeps a number too (lastoutShownTxn, below): the one it took
+  // out of its own address, so a reload finds the order again. That one
+  // was a real order when it was kept, and is good for as long as the
+  // server shows its key, a day. The newer of the two is the order.
+  function keptTxn(name, maxAge) {
     try {
-      var saved = JSON.parse(window.sessionStorage.getItem("lastoutPendingTxn") || "null");
+      var saved = JSON.parse(window.sessionStorage.getItem(name) || "null");
       if (saved && typeof saved.txn === "string" && TXN_SHAPE.test(saved.txn) &&
-          Date.now() - saved.at < 2 * 60 * 60 * 1000) return saved.txn;
-    } catch (e) { /* storage blocked, or not what index.html wrote */ }
-    return "";
+          typeof saved.at === "number" && Date.now() - saved.at < maxAge) return saved;
+    } catch (e) { /* storage blocked, or not what was written there */ }
+    return null;
+  }
+  function pendingTxn() {
+    var paid = keptTxn("lastoutPendingTxn", 2 * 60 * 60 * 1000);
+    var shown = keptTxn("lastoutShownTxn", 24 * 60 * 60 * 1000);
+    if (paid && shown) return paid.at >= shown.at ? paid.txn : shown.txn;
+    return paid ? paid.txn : shown ? shown.txn : "";
   }
 
   // _ptxn is Paddle's own name for it, on its default payment link.
@@ -235,6 +290,20 @@
   if (!TXN_SHAPE.test(txn)) {
     show("bad", function (t) { return t.badTxn(); });
     return;
+  }
+
+  // For a day the order number is all it takes to read the key, so it
+  // doesn't stay in the address (browser history, synced tabs, a copied
+  // link): it moves into this tab's storage (lastoutShownTxn, see
+  // pendingTxn), where a reload finds it again through ?returned=1. Where
+  // storage or history is blocked the address stays as it is, and a reload
+  // still works.
+  if (params.get("txn") || params.get("_ptxn")) {
+    try {
+      window.sessionStorage.setItem("lastoutShownTxn", JSON.stringify({ txn: txn, at: Date.now() }));
+      var keptLang = params.get("lang");
+      window.history.replaceState(null, "", location.pathname + "?returned=1" + (keptLang ? "&lang=" + encodeURIComponent(keptLang) : "") + location.hash);
+    } catch (e) { /* see above */ }
   }
 
   var started = Date.now();
@@ -313,13 +382,18 @@
     if (elapsed + RETRY_MS > GIVE_UP_MS) return gaveUp(reason);
     console.info("Lastout thanks: " + reason + ", retrying in " + (RETRY_MS / 1000) + "s (" + Math.round(elapsed / 1000) + "s elapsed)");
     var seconds = Math.round(elapsed / 1000);
-    show("", function (t) { return t.waiting(seconds); });
+    // The seconds move every three; read out, that is the same sentence over and over. Once is enough.
+    show("", function (t) { return t.waiting; }, function (t) { return t.waited(seconds); });
     setTimeout(poll, RETRY_MS);
   }
 
   copy.addEventListener("click", function () {
     var key = keyOut.textContent;
-    function done() { copy.textContent = t.copied; setTimeout(function () { copy.textContent = t.copy; }, 1600); }
+    function done() {
+      copy.textContent = t.copied;
+      copiedSay.textContent = t.copied;
+      setTimeout(function () { copy.textContent = t.copy; copiedSay.textContent = ""; }, 1600);
+    }
     function fallback() {
       var range = document.createRange(); range.selectNodeContents(keyOut);
       var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);

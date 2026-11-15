@@ -106,10 +106,27 @@ actual=$(sha256 "$archive")
 
 # Replaces $2 with $1 atomically: a running terminal may be executing the
 # old file. $1 is a file to move in or, with link, a path to point at.
+# A copy that stops short (a full disk) never goes over the working file:
+# the user keeps the lo they had, and hears why.
 replace() {
   tmp=$(dirname "$2")/.$(basename "$2").new
-  if [ "${3:-}" = link ]; then ln -sfn "$1" "$tmp"; else cp "$1" "$tmp" && chmod 755 "$tmp"; fi
-  mv -f "$tmp" "$2"
+  if [ "${3:-}" = link ]; then
+    ln -sfn "$1" "$tmp" || { rm -f "$tmp"; die "could not link $tmp; $2 was left as it was"; }
+  else
+    if ! cp "$1" "$tmp" || ! cmp -s "$1" "$tmp"; then
+      rm -f "$tmp"
+      die "could not write $tmp (is the disk full?); $2 was left as it was"
+    fi
+    chmod 755 "$tmp" || { rm -f "$tmp"; die "could not make $tmp executable; $2 was left as it was"; }
+  fi
+  mv -f "$tmp" "$2" || { rm -f "$tmp"; die "could not replace $2"; }
+}
+
+# The installed binaries run: what the user will type next works.
+check_installed() {
+  for bin in lo lastout-shell; do
+    "$BIN_DIR/$bin" --version >/dev/null 2>&1 || die "$BIN_DIR/$bin was installed but does not run; try again, or install from a fresh download"
+  done
 }
 
 mkdir -p "$BIN_DIR"
@@ -143,6 +160,7 @@ if [ -n "$app" ]; then
   for bin in lo lastout-shell; do
     replace "$dest/Contents/Helpers/$bin" "$BIN_DIR/$bin" link
   done
+  check_installed
   say "installed $dest ($("$BIN_DIR/lo" --version)); lo and lastout-shell in $BIN_DIR point into it"
 else
   tar -xzf "$archive" -C "$work"
@@ -151,6 +169,7 @@ else
   for bin in lo lastout-shell; do
     replace "$dir/$bin" "$BIN_DIR/$bin"
   done
+  check_installed
   say "installed $("$BIN_DIR/lo" --version) to $BIN_DIR"
 fi
 

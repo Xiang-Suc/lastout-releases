@@ -5,8 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EULA — Lastout</title>
 <meta name="description" content="What a Lastout license lets you do, and what it doesn't.">
+<link rel="canonical" href="https://lastout.dev/eula.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Lastout">
+<meta property="og:url" content="https://lastout.dev/eula.html">
+<meta property="og:title" content="EULA — Lastout">
+<meta property="og:description" content="What a Lastout license lets you do, and what it doesn't.">
+<meta property="og:image" content="https://lastout.dev/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Loaded as print and switched on when it arrives: a stylesheet link would hold the whole page blank (up to 75 s) where Google is unreachable. -->
@@ -19,19 +28,22 @@
   <nav>
     <a class="brand" href="index.html" data-lang-link><img src="icon.png" alt="">Lastout</a>
     <div class="links">
-      <a href="index.html#pricing" data-lang-link>Pricing</a>
-      <a href="terms.html" data-lang-link>Terms</a>
-      <a href="refund.html" data-lang-link>Refund Policy</a>
-      <a href="privacy.html" data-lang-link>Privacy</a>
-      <a href="eula.html" data-lang-link aria-current="page">EULA</a>
+      <a href="index.html#pricing" data-lang-link><span data-ui="en">Pricing</span><span lang="zh-CN" data-ui="zh" hidden>价格</span></a>
+      <a href="known-issues.html" data-lang-link><span data-ui="en">Known issues</span><span lang="zh-CN" data-ui="zh" hidden>已知问题</span></a>
+      <a href="terms.html" data-lang-link><span data-ui="en">Terms</span><span lang="zh-CN" data-ui="zh" hidden>条款</span></a>
+      <a href="refund.html" data-lang-link><span data-ui="en">Refund Policy</span><span lang="zh-CN" data-ui="zh" hidden>退款政策</span></a>
+      <a href="privacy.html" data-lang-link><span data-ui="en">Privacy</span><span lang="zh-CN" data-ui="zh" hidden>隐私</span></a>
+      <a href="eula.html" data-lang-link aria-current="page"><span data-ui="en">EULA</span><span lang="zh-CN" data-ui="zh" hidden>许可协议</span></a>
     </div>
   </nav>
 
   <main class="narrow">
-    <div class="label">Legal</div>
-    <h1>End User <em>License Agreement.</em></h1>
+    <div class="label"><span data-ui="en">Legal</span><span lang="zh-CN" data-ui="zh" hidden>法律文本</span></div>
+    <h1 data-ui="en">End User <em>License Agreement.</em></h1>
+    <h1 lang="zh-CN" data-ui="zh" hidden>最终用户 <em>许可协议。</em></h1>
     <!-- 由 scripts/legal_pages.py 从 docs/legal/eula.md 和 eula.zh-CN.md 生成；别手改，改原文后重新运行。 -->
-    <p class="meta">Last updated: 2026-11-08 · English is the binding version; 中文为译本，两者不一致时以英文版为准。</p>
+    <p class="meta" data-ui="en">Last updated: 2026-11-11 · English is the binding version.</p>
+    <p class="meta" lang="zh-CN" data-ui="zh" hidden>最后更新：2026-11-11 · 中文为译本，两者不一致时以英文版为准。</p>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-lang="en" aria-pressed="true">English</button>
       <button type="button" data-lang="zh" aria-pressed="false">中文</button>
@@ -58,7 +70,7 @@
 <li>Use the App to break the law, or to record terminals of other people without their permission.</li>
 </ul>
 <h2 id="5-license-checks-and-your-data">5. License checks and your data</h2>
-<p>The App checks the trial and the license with our license service: when it first launches, when you activate a key, and then about every 15 minutes while it runs. Each check sends a hash of this Mac's hardware identifier (so the trial and the key can count Macs; the identifier itself never leaves the Mac), the App's version number and, once you activated one, your license key. Deactivating on this Mac sends the key and the same hash to free the seat. If the App can't reach the service, it keeps working for a day after the last successful check, then copying pauses until a check succeeds. Once a license is refunded or charged back, it stops working on every Mac where it was activated, the command-line tools' paid commands included: within about 15 minutes on a Mac that is online with Lastout running, and at most a day later on any other Mac. The trial on those Macs ends too. Nothing about your terminals, commands or their output is sent. Lastout's recordings stay on your Mac. What it records, where it keeps it and what can leave your Mac is described in the privacy policy: <a href="https://lastout.dev/privacy.html">https://lastout.dev/privacy.html</a></p>
+<p>The App checks the trial and the license with our license service: when it first launches, when you activate a key, and then about every 15 minutes while it runs. Each check sends a hash of this Mac's hardware identifier (so the trial and the key can count Macs; the identifier itself never leaves the Mac), the App's version number and, once you activated one, your license key. Deactivating on this Mac sends the key and the same hash to free the seat. If the App can't reach the service, it keeps working for a day after the last successful check, then copying pauses until a check succeeds. Once a license is refunded or charged back, it stops working on every Mac where it was activated, the command-line tools' paid commands included: within about 15 minutes on a Mac that is online with Lastout running, and at most a day later on any other Mac. The trial on those Macs ends too. Nothing about your terminals, commands or their output is sent. Lastout doesn't upload its recordings. What it records, where it keeps it and what can leave your Mac is described in the privacy policy: <a href="https://lastout.dev/privacy.html">https://lastout.dev/privacy.html</a></p>
 <h2 id="6-open-source-components">6. Open-source components</h2>
 <p>The App includes open-source software under its own licenses. Their notices are in the App (Settings → About → Acknowledgements).</p>
 <h2 id="7-no-warranty">7. No warranty</h2>
@@ -102,7 +114,7 @@
 <li>用 App 违反法律，或未经他人同意记录他人的终端。</li>
 </ul>
 <h2 id="zh-5-授权校验和你的数据">5. 授权校验和你的数据</h2>
-<p>App 会向我们的授权服务校验试用和授权：首次启动时、你激活授权码时，以及之后运行期间大约每 15 分钟一次。每次校验发送这台 Mac 硬件标识的哈希（用来让试用和授权码统计 Mac 的数量；标识本身不会离开这台 Mac）、App 的版本号，以及激活之后的授权码。在这台 Mac 上停用时，会发送授权码和同一个哈希，以释放座位。如果 App 连不上授权服务，它在上次成功校验后照常工作一天，之后复制会暂停，直到校验成功。授权一旦退款或被拒付，它在所有激活过的 Mac 上停止工作，包括命令行工具的付费命令：联网且 Lastout 正在运行的 Mac 上约 15 分钟内，其他 Mac 最迟一天。这些 Mac 的试用也随之结束。不会发送任何终端、命令或其输出。Lastout 的记录只保存在你的 Mac 上。记录什么、存在哪里、什么会离开你的 Mac，见隐私政策：https://lastout.dev/privacy.html?lang=zh</p>
+<p>App 会向我们的授权服务校验试用和授权：首次启动时、你激活授权码时，以及之后运行期间大约每 15 分钟一次。每次校验发送这台 Mac 硬件标识的哈希（用来让试用和授权码统计 Mac 的数量；标识本身不会离开这台 Mac）、App 的版本号，以及激活之后的授权码。在这台 Mac 上停用时，会发送授权码和同一个哈希，以释放座位。如果 App 连不上授权服务，它在上次成功校验后照常工作一天，之后复制会暂停，直到校验成功。授权一旦退款或被拒付，它在所有激活过的 Mac 上停止工作，包括命令行工具的付费命令：联网且 Lastout 正在运行的 Mac 上约 15 分钟内，其他 Mac 最迟一天。这些 Mac 的试用也随之结束。不会发送任何终端、命令或其输出。Lastout 不上传它录下的内容。记录什么、存在哪里、什么会离开你的 Mac，见隐私政策：https://lastout.dev/privacy.html?lang=zh</p>
 <h2 id="zh-6-开源组件">6. 开源组件</h2>
 <p>App 包含开源软件，它们各自适用自己的许可证，声明见 App 内（设置 → 关于 → 致谢）。</p>
 <h2 id="zh-7-不提供担保">7. 不提供担保</h2>
@@ -130,38 +142,53 @@
   <footer>
     <span>Lastout · Rocha Tech LLC</span>
     <span class="links">
-      <a href="terms.html" data-lang-link>Terms of Sale</a>
-      <a href="refund.html" data-lang-link>Refund Policy</a>
-      <a href="privacy.html" data-lang-link>Privacy</a>
-      <a href="eula.html" data-lang-link>EULA</a>
+      <a href="terms.html" data-lang-link><span data-ui="en">Terms of Sale</span><span lang="zh-CN" data-ui="zh" hidden>销售条款</span></a>
+      <a href="refund.html" data-lang-link><span data-ui="en">Refund Policy</span><span lang="zh-CN" data-ui="zh" hidden>退款政策</span></a>
+      <a href="privacy.html" data-lang-link><span data-ui="en">Privacy</span><span lang="zh-CN" data-ui="zh" hidden>隐私</span></a>
+      <a href="eula.html" data-lang-link><span data-ui="en">EULA</span><span lang="zh-CN" data-ui="zh" hidden>许可协议</span></a>
+      <a href="known-issues.html" data-lang-link><span data-ui="en">Known issues</span><span lang="zh-CN" data-ui="zh" hidden>已知问题</span></a>
       <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>
     </span>
   </footer>
 </div>
 
 <script>
-// Language: a choice saved on this site, then ?lang= (or #zh), then the
+// Language: ?lang= (or #zh), then a choice saved on this site, then the
 // browser's, else English. The same rule as index.html and thanks.html.
 (function () {
   "use strict";
   var LANG_KEY = "lastoutLang";
   var LANGS = { en: true, zh: true };
+  var TITLES = { en: "EULA — Lastout", zh: "许可协议 — Lastout" };
   var buttons = document.querySelectorAll("[data-lang]");
   var docs = document.querySelectorAll("[data-doc]");
 
   function savedLang() {
     try { return window.localStorage.getItem(LANG_KEY); } catch (e) { return null; }
   }
+  // The address outranks the saved choice, so an address that names a
+  // language follows the buttons: a reload then shows what was picked.
+  function keepInAddress(lang) {
+    var query = new URLSearchParams(location.search);
+    if (!query.has("lang") && location.hash !== "#zh") return;
+    query.set("lang", lang);
+    try {
+      window.history.replaceState(null, "", location.pathname + "?" + query + (location.hash === "#zh" ? "" : location.hash));
+    } catch (e) { /* the page still shows the pick */ }
+  }
   function firstLang() {
-    var saved = savedLang();
-    if (LANGS.hasOwnProperty(saved)) return saved;
     var asked = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
     if (LANGS.hasOwnProperty(asked)) return asked;
+    var saved = savedLang();
+    if (LANGS.hasOwnProperty(saved)) return saved;
     var language = (window.navigator && window.navigator.language) || "";
     return /^zh\b/i.test(language) ? "zh" : "en";
   }
   function pick(lang) {
     docs.forEach(function (d) { d.hidden = d.getAttribute("data-doc") !== lang; });
+    // The nav, the heading and the footer come in both languages too.
+    document.querySelectorAll("[data-ui]").forEach(function (d) { d.hidden = d.getAttribute("data-ui") !== lang; });
+    document.title = TITLES[lang];
     buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang)); });
     // Links to the other pages open them in the same language.
     document.querySelectorAll("[data-lang-link]").forEach(function (a) {
@@ -176,10 +203,12 @@
       pick(lang);
       // Blocked storage (some private windows): the choice lasts for this page.
       try { window.localStorage.setItem(LANG_KEY, lang); } catch (e) { /* see above */ }
+      keepInAddress(lang);
     });
   });
   pick(firstLang());
 })();
 </script>
+<script defer src="analytics.js"></script>
 </body>
 </html>

@@ -5,8 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Known Issues — Lastout</title>
 <meta name="description" content="What doesn't work yet in Lastout, what you see, and what to do meanwhile.">
+<link rel="canonical" href="https://lastout.dev/known-issues.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Lastout">
+<meta property="og:url" content="https://lastout.dev/known-issues.html">
+<meta property="og:title" content="Known Issues — Lastout">
+<meta property="og:description" content="What doesn't work yet in Lastout, what you see, and what to do meanwhile.">
+<meta property="og:image" content="https://lastout.dev/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Loaded as print and switched on when it arrives: a stylesheet link would hold the whole page blank (up to 75 s) where Google is unreachable. -->
@@ -19,20 +28,22 @@
   <nav>
     <a class="brand" href="index.html" data-lang-link><img src="icon.png" alt="">Lastout</a>
     <div class="links">
-      <a href="index.html#pricing" data-lang-link>Pricing</a>
-      <a href="known-issues.html" data-lang-link aria-current="page">Known issues</a>
-      <a href="terms.html" data-lang-link>Terms</a>
-      <a href="refund.html" data-lang-link>Refund Policy</a>
-      <a href="privacy.html" data-lang-link>Privacy</a>
-      <a href="eula.html" data-lang-link>EULA</a>
+      <a href="index.html#pricing" data-lang-link><span data-ui="en">Pricing</span><span lang="zh-CN" data-ui="zh" hidden>价格</span></a>
+      <a href="known-issues.html" data-lang-link aria-current="page"><span data-ui="en">Known issues</span><span lang="zh-CN" data-ui="zh" hidden>已知问题</span></a>
+      <a href="terms.html" data-lang-link><span data-ui="en">Terms</span><span lang="zh-CN" data-ui="zh" hidden>条款</span></a>
+      <a href="refund.html" data-lang-link><span data-ui="en">Refund Policy</span><span lang="zh-CN" data-ui="zh" hidden>退款政策</span></a>
+      <a href="privacy.html" data-lang-link><span data-ui="en">Privacy</span><span lang="zh-CN" data-ui="zh" hidden>隐私</span></a>
+      <a href="eula.html" data-lang-link><span data-ui="en">EULA</span><span lang="zh-CN" data-ui="zh" hidden>许可协议</span></a>
     </div>
   </nav>
 
   <main class="narrow">
-    <div class="label">Support</div>
-    <h1>Known <em>issues.</em></h1>
+    <div class="label"><span data-ui="en">Support</span><span lang="zh-CN" data-ui="zh" hidden>支持</span></div>
+    <h1 data-ui="en">Known <em>issues.</em></h1>
+    <h1 lang="zh-CN" data-ui="zh" hidden>已知<em>问题。</em></h1>
     <!-- Hand-written. Remove an item when its fix ships; move the date. The facts come from our own tests, not from guesses: only add what was reproduced. -->
-    <p class="meta">Last updated: 2026-11-07 · Lastout 0.4.2</p>
+    <p class="meta" data-ui="en">Last updated: 2026-11-11 · Lastout 0.4.3</p>
+    <p class="meta" lang="zh-CN" data-ui="zh" hidden>最后更新：2026-11-11 · Lastout 0.4.3</p>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-lang="en" aria-pressed="true">English</button>
       <button type="button" data-lang="zh" aria-pressed="false">中文</button>
@@ -43,20 +54,20 @@
 
 <h2 id="terminals">Terminals and shells</h2>
 
-<h3>tmux and screen: the shortcut can copy the wrong command</h3>
-<p>With the terminal window itself in front, ⌃⌥⌘C can copy a command from <em>before</em> tmux or screen started, or report only that tmux is running, and the notice looks like a normal copy. <strong>Meanwhile:</strong> press ⌃⌥⌘L and pick the command, run <code>lo</code> in the pane, or press ⌃⌥⌘C from another app (a browser, a chat window): those get the pane's latest command.</p>
+<h3>tmux and screen: the shortcut can't tell which pane is in front</h3>
+<p>With the terminal window itself in front, ⌃⌥⌘C copies from the pane that most recently ran a command, whichever tmux window it is in (since 0.4.3; before that it could copy a command from <em>before</em> tmux or screen started, and the notice looked like a normal copy). <strong>With several tmux windows open:</strong> press ⌃⌥⌘L and pick the command, or run <code>lo</code> in the pane.</p>
 
 <h3>tmux sees Lastout's proxy as the pane's process</h3>
-<p><code>#{pane_current_command}</code> and the default window name show <code>lastout-shell</code>, <code>#{pane_current_path}</code> stays where the tab was opened (so a split made with <code>-c "#{pane_current_path}"</code> opens there, not in your current directory), and plugins that read <code>ps -t #{pane_tty}</code> (vim-tmux-navigator) can't see your programs. <strong>Meanwhile:</strong> name windows yourself (<code>tmux rename-window</code>). There is no workaround for the directory and the plugins yet.</p>
+<p><code>#{pane_current_command}</code> and the default window name show <code>lastout-shell</code>, and plugins that read <code>ps -t #{pane_tty}</code> (vim-tmux-navigator) can't see your programs. <strong>Meanwhile:</strong> name windows yourself (<code>tmux rename-window</code>). There is no workaround for the plugins yet. <code>#{pane_current_path}</code> follows your <code>cd</code> since 0.4.3.</p>
 
 <h3>Warp, JetBrains IDE terminals and Emacs terminals aren't recorded</h3>
 <p>Nothing in the app says so yet: it keeps waiting for a first command. <strong>Meanwhile:</strong> use one of the recorded terminals: Ghostty, iTerm2, Terminal, kitty, WezTerm, Alacritty, and the terminals of VS Code, Cursor and Zed.</p>
 
-<h3>A command started with <code>zsh -i -c</code>, <code>bash -i -c</code> or <code>fish -ic</code> stops at a prompt</h3>
-<p>In a recorded terminal such a command doesn't run: a prompt appears instead, and nothing says why. Zed runs its tasks this way, so a Zed task leaves a prompt and no output (Zed's terminal panel itself is recorded). A fix is planned for the next release. <strong>Meanwhile:</strong> run the command yourself in the terminal panel. If you need Zed's tasks now, keep Lastout out of Zed's shells, for example in <code>~/.zshenv</code>: <code>[[ $ZED_TERM == true ]] &amp;&amp; export LASTOUT_DISABLE=1</code> (Zed's terminals are then not recorded).</p>
+<h3>A command started with <code>fish -ic</code> stops at a prompt</h3>
+<p>In a recorded terminal a command run as <code>fish -ic '…'</code> doesn't run: a prompt appears instead, and nothing says why (fish gives its config no way to tell). <code>zsh -i -c</code> and <code>bash -i -c</code>, which is how Zed runs its tasks, run as usual since 0.4.3; if they still stop at a prompt after you update, <code>lo doctor</code> reports the older setup block and <code>lo setup</code> updates it. <strong>Meanwhile:</strong> type the command at a fish prompt instead of passing it with <code>-ic</code>.</p>
 
-<h3>Aliases, functions and <code>GPG_TTY</code> set in <code>~/.zprofile</code> don't reach the recorded shell</h3>
-<p>In a new tab, aliases and functions defined in <code>~/.zprofile</code> are missing, <code>logout</code> says this is not a login shell, and <code>~/.zlogout</code> doesn't run. If <code>GPG_TTY</code> is set there and your pinentry runs in the terminal (pinentry-tty, pinentry-curses), a signature fails and the passphrase you type can be echoed, run as a command and recorded, by Lastout and by the shell's history. A graphical pinentry doesn't go through the terminal. <strong>Meanwhile:</strong> move those lines to <code>~/.zshrc</code>, and set <code>export GPG_TTY=$TTY</code> there. If a passphrase was recorded: <code>lo forget</code>, check <code>~/.zsh_history</code>, and change it.</p>
+<h3><code>~/.zprofile</code> runs twice</h3>
+<p>Since 0.4.3 the recorded zsh runs <code>~/.zprofile</code> as well as the terminal's login zsh, so that its aliases, functions and <code>GPG_TTY</code> are there. Anything in it with a side effect happens twice: a greeting prints twice, an <code>ssh-agent</code> started there starts twice. <strong>Meanwhile:</strong> guard such lines with <code>[[ -n $LASTOUT_NONCE ]] || …</code>, or move them to <code>~/.zshrc</code>.</p>
 
 <h3>Terminal.app closes a tab with a running command without asking</h3>
 <p>Terminal sees Lastout's proxy as the tab's shell and can't see the programs inside it, so ⌘W on a tab that is running something closes it at once and the command is killed; it used to ask first. In iTerm2's "If there are jobs besides" mode, add your shell (<code>zsh</code>) to the list, or it asks every time. <strong>Meanwhile:</strong> look before ⌘W.</p>
@@ -67,21 +78,13 @@
 <h2 id="copies">Copies and redaction</h2>
 
 <h3>Some ways of writing a password aren't recognized</h3>
-<p>Redaction knows formats, not every secret. Not caught today, among others: <code>curl -u user:pass</code>, <code>mysql -p&lt;password&gt;</code>, <code>sshpass -p</code>, <code>docker login -p</code>, <code>Cookie</code> headers, <code>DB_PASS=</code>; the <a href="privacy.html#redaction" data-lang-link>privacy policy</a> has the whole list. <strong>Meanwhile:</strong> look before you paste. Start a command with a space to keep it out of the recording; <code>lo forget</code> removes one already recorded.</p>
+<p>Redaction knows formats, not every secret. Not caught today, among others: a secret given as a plain argument with no flag or label in front (<code>htpasswd -b file user PASSWORD</code>), a <code>.netrc</code> password, <code>client-key-data</code> in a kubeconfig, a password inside escaped JSON; the <a href="privacy.html#redaction" data-lang-link>privacy policy</a> has the whole list. <strong>Meanwhile:</strong> look before you paste. Start a command with a space to keep it out of the recording; <code>lo forget</code> removes one already recorded.</p>
 
 <h3>Folder and git branch names aren't redacted</h3>
 <p>A token in a directory or branch name shows as typed in <code>lo sessions</code> and in a coding agent's list of terminals. <strong>Meanwhile:</strong> rename the branch or folder.</p>
 
-<h3>A long log's error in the middle can be left out of the copy</h3>
-<p>The default copy keeps the start, the errors it has room for, and the end. With long lines (over about 100 characters, as in JSON or Spring Boot logs) and the error far from the end, the error can be dropped while the footnote still says "head, errors and tail". <strong>Meanwhile:</strong> <code>lo --mode errors</code> finds it; <code>lo --mode full</code> copies everything.</p>
-
 <h3>The Running list can keep a command that already ended</h3>
 <p>When the recording process was killed, or the data folder was moved, while a command ran, its entry stays under Running in the menu and the picker. <strong>Meanwhile:</strong> open a new terminal tab: it cleans the entry up.</p>
-
-<h2 id="agents">Coding agents (MCP)</h2>
-
-<h3><code>wait_for_command</code> times out while another terminal is busy</h3>
-<p>With something running in any other terminal, including the agent's own or a dev server, <code>wait_for_command</code> waits for its whole timeout and then says the command is still running, even when it finished seconds ago. <strong>Meanwhile:</strong> have the agent pass <code>session</code> to name the terminal you'll use; the finished output is readable with <code>get_command_output</code> right away.</p>
 
 <h2 id="display">Display</h2>
 
@@ -103,20 +106,20 @@
 
 <h2 id="zh-terminals">终端和 shell</h2>
 
-<h3>tmux 和 screen：快捷键可能复制到错的命令</h3>
-<p>终端窗口本身在最前时，⌃⌥⌘C 可能复制到进 tmux 或 screen <em>之前</em>的某条命令，或者只提示 tmux 正在运行，而提示看起来和正常复制一样。<strong>暂时：</strong>按 ⌃⌥⌘L 选命令、在窗格里运行 <code>lo</code>，或者从别的 App（浏览器、聊天窗口）按 ⌃⌥⌘C，这几种都拿得到窗格里最新的命令。</p>
+<h3>tmux 和 screen：快捷键分不出最前面的是哪个窗格</h3>
+<p>终端窗口本身在最前时，⌃⌥⌘C 复制最近跑过命令的那个窗格，不管它在哪个 tmux 窗口里（0.4.3 起；之前可能复制到进 tmux 或 screen <em>之前</em>的某条命令，而提示看起来和正常复制一样）。<strong>同时开着几个 tmux 窗口时：</strong>按 ⌃⌥⌘L 选命令，或者在窗格里运行 <code>lo</code>。</p>
 
 <h3>tmux 看到的窗格进程是 Lastout 的代理</h3>
-<p><code>#{pane_current_command}</code> 和默认窗口名显示 <code>lastout-shell</code>，<code>#{pane_current_path}</code> 停在开标签页时的目录（用 <code>-c "#{pane_current_path}"</code> 分屏会开到那里，而不是你当前的目录），靠 <code>ps -t #{pane_tty}</code> 判断程序的插件（vim-tmux-navigator）看不到你的程序。<strong>暂时：</strong>窗口名自己起（<code>tmux rename-window</code>）。目录和插件这两项还没有绕过办法。</p>
+<p><code>#{pane_current_command}</code> 和默认窗口名显示 <code>lastout-shell</code>，靠 <code>ps -t #{pane_tty}</code> 判断程序的插件（vim-tmux-navigator）看不到你的程序。<strong>暂时：</strong>窗口名自己起（<code>tmux rename-window</code>）。插件这一项还没有绕过办法。<code>#{pane_current_path}</code> 从 0.4.3 起会跟着你的 <code>cd</code> 走。</p>
 
 <h3>Warp、JetBrains IDE 和 Emacs 的内置终端不录制</h3>
 <p>App 里目前没有提示，只会一直等第一条命令。<strong>暂时：</strong>用会录制的终端：Ghostty、iTerm2、Terminal、kitty、WezTerm、Alacritty，以及 VS Code、Cursor、Zed 里的终端。</p>
 
-<h3>以 <code>zsh -i -c</code>、<code>bash -i -c</code> 或 <code>fish -ic</code> 启动的命令停在提示符</h3>
-<p>在录制中的终端里，这样启动的命令不执行，只出现一个提示符，也没有报错。Zed 的任务就是这样跑的，所以 Zed 任务只留下提示符、没有输出（Zed 的终端面板本身会录制）。下个版本修。<strong>暂时：</strong>在终端面板里自己敲这条命令。现在就要用 Zed 任务的话，让 Lastout 跳过 Zed 的 shell，比如在 <code>~/.zshenv</code> 里加 <code>[[ $ZED_TERM == true ]] &amp;&amp; export LASTOUT_DISABLE=1</code>（之后 Zed 里的终端不录制）。</p>
+<h3>以 <code>fish -ic</code> 启动的命令停在提示符</h3>
+<p>在录制中的终端里，用 <code>fish -ic '…'</code> 启动的命令不执行，只出现一个提示符，也没有报错（fish 没给配置文件区分这种情况的办法）。<code>zsh -i -c</code> 和 <code>bash -i -c</code>（Zed 的任务就是这样跑的）从 0.4.3 起照常执行；更新后还停在提示符的话，<code>lo doctor</code> 会报告旧的配置块，运行 <code>lo setup</code> 更新它。<strong>暂时：</strong>直接在 fish 的提示符下敲这条命令，不用 <code>-ic</code> 传。</p>
 
-<h3>写在 <code>~/.zprofile</code> 里的别名、函数和 <code>GPG_TTY</code> 进不了录制中的 shell</h3>
-<p>新开标签页里，<code>~/.zprofile</code> 定义的别名和函数没有，<code>logout</code> 说这不是登录 shell，<code>~/.zlogout</code> 也不运行。如果 <code>GPG_TTY</code> 也写在那里、而且你的 pinentry 在终端里跑（pinentry-tty、pinentry-curses），签名会失败，输入的口令可能回显在屏幕上、被当成命令执行，并被 Lastout 和 shell 历史记下。图形界面的 pinentry 不经过终端。<strong>暂时：</strong>把这些行挪到 <code>~/.zshrc</code>，并在那里写 <code>export GPG_TTY=$TTY</code>。口令已经被记下的话：<code>lo forget</code>，检查 <code>~/.zsh_history</code>，然后换口令。</p>
+<h3><code>~/.zprofile</code> 会跑两遍</h3>
+<p>0.4.3 起，除了终端的登录 zsh，录制中的 zsh 也会跑一遍 <code>~/.zprofile</code>，这样里面的别名、函数和 <code>GPG_TTY</code> 才都在。里面带副作用的行会执行两次：问候语打印两遍，在那里启动的 <code>ssh-agent</code> 启动两次。<strong>暂时：</strong>给这些行加上 <code>[[ -n $LASTOUT_NONCE ]] || …</code>，或者挪到 <code>~/.zshrc</code>。</p>
 
 <h3>Terminal.app 关掉正在跑命令的标签页时不再问</h3>
 <p>Terminal 把 Lastout 的代理当成标签页的 shell，看不到里面跑的程序，所以对一个正在跑东西的标签页按 ⌘W 会直接关掉、命令被杀，以前会先问。iTerm2 选了「有任务才问」的话，要把你的 shell（<code>zsh</code>）加进名单，否则每次都问。<strong>暂时：</strong>按 ⌘W 前看一眼。</p>
@@ -127,21 +130,13 @@
 <h2 id="zh-copies">复制和遮盖</h2>
 
 <h3>有些密码写法认不出</h3>
-<p>遮盖认的是格式，不是所有密钥。目前认不出的常见几种：<code>curl -u user:pass</code>、<code>mysql -p&lt;密码&gt;</code>、<code>sshpass -p</code>、<code>docker login -p</code>、<code>Cookie</code> 头、<code>DB_PASS=</code>；完整清单在<a href="privacy.html#zh-遮盖" data-lang-link>隐私政策</a>里。<strong>暂时：</strong>贴出去之前看一眼。命令以空格开头就不会被记录；已经记下的用 <code>lo forget</code> 删。</p>
+<p>遮盖认的是格式，不是所有密钥。目前认不出的常见几种：前面没有参数名或标签、直接当普通参数给出的密钥（<code>htpasswd -b file user 密码</code>）、<code>.netrc</code> 里的密码、kubeconfig 里的 <code>client-key-data</code>、转义过的 JSON 里的密码；完整清单在<a href="privacy.html#zh-遮盖" data-lang-link>隐私政策</a>里。<strong>暂时：</strong>贴出去之前看一眼。命令以空格开头就不会被记录；已经记下的用 <code>lo forget</code> 删。</p>
 
 <h3>目录名和 git 分支名不遮盖</h3>
 <p>目录或分支名里带着的 token，会按原样出现在 <code>lo sessions</code> 和编程 Agent 读到的终端列表里。<strong>暂时：</strong>把分支或目录改名。</p>
 
-<h3>长日志中段的错误可能没进复制</h3>
-<p>默认复制保留开头、预算之内放得下的错误、以及结尾。行很长（约 100 个字符以上，比如 JSON 或 Spring Boot 日志）而错误又离结尾很远时，错误可能被丢掉，脚注却仍写着「head, errors and tail」。<strong>暂时：</strong><code>lo --mode errors</code> 能找到它；<code>lo --mode full</code> 复制全部。</p>
-
 <h3>「Running」里可能挂着已经结束的命令</h3>
 <p>命令运行期间录制进程被强杀、或者数据目录被挪走，这条命令会一直留在菜单和选择面板的 Running 里。<strong>暂时：</strong>开一个新的终端标签页，它会把这条清掉。</p>
-
-<h2 id="zh-agents">编程 Agent（MCP）</h2>
-
-<h3>别的终端有东西在跑时，<code>wait_for_command</code> 会等到超时</h3>
-<p>只要任何别的终端有东西在跑，包括 Agent 自己所在的终端或一个 dev server，<code>wait_for_command</code> 就会等满超时时间，然后说命令还在运行，哪怕它几秒前就结束了。<strong>暂时：</strong>让 Agent 传 <code>session</code> 指定你要用的那个终端；结束的输出用 <code>get_command_output</code> 马上能读到。</p>
 
 <h2 id="zh-display">显示</h2>
 
@@ -163,38 +158,53 @@
   <footer>
     <span>Lastout · Rocha Tech LLC</span>
     <span class="links">
-      <a href="terms.html" data-lang-link>Terms of Sale</a>
-      <a href="refund.html" data-lang-link>Refund Policy</a>
-      <a href="privacy.html" data-lang-link>Privacy</a>
-      <a href="eula.html" data-lang-link>EULA</a>
+      <a href="terms.html" data-lang-link><span data-ui="en">Terms of Sale</span><span lang="zh-CN" data-ui="zh" hidden>销售条款</span></a>
+      <a href="refund.html" data-lang-link><span data-ui="en">Refund Policy</span><span lang="zh-CN" data-ui="zh" hidden>退款政策</span></a>
+      <a href="privacy.html" data-lang-link><span data-ui="en">Privacy</span><span lang="zh-CN" data-ui="zh" hidden>隐私</span></a>
+      <a href="eula.html" data-lang-link><span data-ui="en">EULA</span><span lang="zh-CN" data-ui="zh" hidden>许可协议</span></a>
+      <a href="known-issues.html" data-lang-link><span data-ui="en">Known issues</span><span lang="zh-CN" data-ui="zh" hidden>已知问题</span></a>
       <a data-support href="mailto:support@lastout.dev">support@lastout.dev</a>
     </span>
   </footer>
 </div>
 
 <script>
-// Language: a choice saved on this site, then ?lang= (or #zh), then the
+// Language: ?lang= (or #zh), then a choice saved on this site, then the
 // browser's, else English. The same rule as index.html and thanks.html.
 (function () {
   "use strict";
   var LANG_KEY = "lastoutLang";
   var LANGS = { en: true, zh: true };
+  var TITLES = { en: "Known Issues — Lastout", zh: "已知问题 — Lastout" };
   var buttons = document.querySelectorAll("[data-lang]");
   var docs = document.querySelectorAll("[data-doc]");
 
   function savedLang() {
     try { return window.localStorage.getItem(LANG_KEY); } catch (e) { return null; }
   }
+  // The address outranks the saved choice, so an address that names a
+  // language follows the buttons: a reload then shows what was picked.
+  function keepInAddress(lang) {
+    var query = new URLSearchParams(location.search);
+    if (!query.has("lang") && location.hash !== "#zh") return;
+    query.set("lang", lang);
+    try {
+      window.history.replaceState(null, "", location.pathname + "?" + query + (location.hash === "#zh" ? "" : location.hash));
+    } catch (e) { /* the page still shows the pick */ }
+  }
   function firstLang() {
-    var saved = savedLang();
-    if (LANGS.hasOwnProperty(saved)) return saved;
     var asked = new URLSearchParams(location.search).get("lang") || (location.hash === "#zh" ? "zh" : "");
     if (LANGS.hasOwnProperty(asked)) return asked;
+    var saved = savedLang();
+    if (LANGS.hasOwnProperty(saved)) return saved;
     var language = (window.navigator && window.navigator.language) || "";
     return /^zh\b/i.test(language) ? "zh" : "en";
   }
   function pick(lang) {
     docs.forEach(function (d) { d.hidden = d.getAttribute("data-doc") !== lang; });
+    // The nav, the heading and the footer come in both languages too.
+    document.querySelectorAll("[data-ui]").forEach(function (d) { d.hidden = d.getAttribute("data-ui") !== lang; });
+    document.title = TITLES[lang];
     buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang)); });
     // Links to the other pages open them in the same language.
     document.querySelectorAll("[data-lang-link]").forEach(function (a) {
@@ -209,10 +219,12 @@
       pick(lang);
       // Blocked storage (some private windows): the choice lasts for this page.
       try { window.localStorage.setItem(LANG_KEY, lang); } catch (e) { /* see above */ }
+      keepInAddress(lang);
     });
   });
   pick(firstLang());
 })();
 </script>
+<script defer src="analytics.js"></script>
 </body>
 </html>

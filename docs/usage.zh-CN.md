@@ -17,9 +17,10 @@ Lastout 记下终端打印过的内容，不用选中文字，就能把上一条
 
 会录制：Ghostty、iTerm2、Terminal、kitty、WezTerm、Alacritty，以及 VS Code、Cursor、Zed 里的终端，它们里面跑 tmux 也可以。不录制：Warp、JetBrains 系 IDE 和 Emacs 的内置终端。
 
-- **tmux 和 screen：** 请按 ⌃⌥⌘L、在窗格里运行 `lo`，或者从别的 App 按 ⌃⌥⌘C。终端本身在最前时，快捷键暂时拿不到窗格里的输出。
-- **tmux 看到的是 Lastout 的代理进程：** `#{pane_current_command}` 和默认窗口名显示 `lastout-shell`，`#{pane_current_path}` 停在开标签页时的目录，靠 `ps -t #{pane_tty}` 判断程序的插件（vim-tmux-navigator）看不到你的程序。
-- **Zed，以及任何用 `-ic` 启动 shell 的工具：** Zed 的终端面板会录制。以 `zsh -i -c '…'` 方式运行的命令（Zed 的任务就是这样跑的），在新开的终端里会停在提示符、不执行；`bash -i -c`、`fish -ic` 只要被工具带着终端启动，也一样。我们计划修复。
+- **tmux 和 screen：** 终端在最前时，⌃⌥⌘C 复制最近跑过命令的那个窗格（0.4.3 起；之前可能复制到进 tmux 之前的命令）。Lastout 分不出哪个窗格属于最前面的窗口，所以同时开着几个 tmux 窗口时，请按 ⌃⌥⌘L 挑选，或者在窗格里运行 `lo`。
+- **tmux 看到的是 Lastout 的代理进程：** `#{pane_current_command}` 和默认窗口名显示 `lastout-shell`，靠 `ps -t #{pane_tty}` 判断程序的插件（vim-tmux-navigator）看不到你的程序。`#{pane_current_path}` 会跟着你 `cd`（0.4.3 起），`split-window -c` 在当前目录打开。
+- **`~/.zprofile` 会跑两遍：** 终端的登录 zsh 跑一遍，Lastout 里被录制的 zsh 再跑一遍（0.4.3 起，为的是里面的别名、函数和 `GPG_TTY` 都在）。里面带副作用的内容会执行两次：问候语打两遍，在那里启动的 `ssh-agent` 起两个。这类行前面加 `[[ -n $LASTOUT_NONCE ]] ||`，或者挪到 `~/.zshrc`。
+- **用 `-ic` 启动的 fish：** 以 `fish -ic '…'` 方式带着终端运行的命令会停在提示符、不执行（fish 没给配置文件区分 `-c` 和交互 shell 的办法）。`zsh -i -c`（Zed 的任务就是这样跑的）和 `bash -i -c` 从 0.4.3 起照常执行。
 
 ## 快捷键
 
@@ -70,7 +71,7 @@ Lastout 记下终端打印过的内容，不用选中文字，就能把上一条
 | `lo --id 41 --id 42` | 指定的几条（编号见 `lo --list`） |
 | `lo --global` | 所有终端里最新的一条命令 |
 | `lo --running` | 另一个终端里仍在运行的命令到目前为止的输出，比如开发服务器或耗时很长的构建 |
-| `lo --mode full` / `errors` | 录下的每一行（每行最多 2000 字符），或只要错误附近的内容；默认是 `smart` |
+| `lo --mode full` / `errors` | 录下的每一行，整行不切（其他模式每行最多 2000 字符），或只要错误附近的内容；默认是 `smart` |
 | `lo --print` / `--plain` | 打印出来而不复制 / 只要纯文本，不带 Markdown |
 | `lo --no-redact` | 不遮盖识别到的密钥 |
 | `lo --list` | 列出最近的命令及其编号 |
@@ -80,6 +81,7 @@ Lastout 记下终端打印过的内容，不用选中文字，就能把上一条
 | `lo forget` | 删除上一条命令（比如不小心打印了密钥）；也可以 `--id 42` 或 `--all`；详见「录制与隐私」 |
 | `lo sessions` | 正在录制的终端 |
 | `lo doctor` | 检查安装情况，从 rc 文件一直到录制的输出 |
+| `lo uninstall` | 把 Lastout 从这台 Mac 上删干净：shell 配置、录制内容和已存命令、设置、钥匙串里的记录、`lo` 和 App（移到废纸篓）。先列出全部、问一次再删；`--dry-run` 只列不删 |
 
 `lo --help` 列出所有选项。复制通过 pbcopy、wl-copy 或 xclip/xsel 完成；在 ssh 会话或没有图形界面的机器上，通过终端本身（OSC 52）复制，在 tmux 和 GNU screen 里也可以。
 
@@ -103,11 +105,11 @@ $ lo save "staging api timeouts, last hour (VPN first)"
 ## 录制与隐私
 
 - 以空格开头的命令完全不保存，连命令本身也不存。
-- 命令以密钥类工具（`op`、`pass`、`aws configure`、`vault read`、`kubectl get secret` 等）开头时，只保留命令行和退出状态，不存输出。这只看命令的开头：写在 `cd x && op read …` 这种连写里的，输出会被录下。命令行本身也只遮盖识别得到的格式，所以当作普通参数打出来的密钥（`aws configure set aws_secret_access_key KEY`）仍然看得到，Agent 也读得到：这类命令请在开头加一个空格。
-- 遮盖认的是格式，不是所有密钥。目前认不出（只是常见的几类，不是全部）：`curl -u user:pass` 和 `curl --user`、`mysql -p<密码>`、`docker login -p`、`sshpass -p`、`redis-cli -a`、`Cookie` 和 `Set-Cookie` 头、`DB_PASS=`、`MYSQL_PWD=`、`SECRET_KEY_BASE=`、没有用户名的 Redis 地址（`redis://:密码@host`）、Azure 的 `AccountKey=`、Docker `config.json` 里的 `auth`、kubeconfig 里的 `client-key-data`、`.netrc` 里的密码、`aws secretsmanager` 输出里的 `SecretString`，以及转义过的 JSON 里的密码。紧贴在字母、数字或下划线后面的 token 也可能认不出。贴出去之前请看一眼。
+- 密钥类工具（`op`、`pass`、`aws configure`、`vault read`、`kubectl get secret` 等）是这一行里的某条命令时，包括写在连写、管道或替换里的（`cd x && op read …`、`… | pass show …`、`echo $(op read …)`），只保留命令行和退出状态，不存输出。引号里的文字不算命令（`git commit -m 'pass'` 会录）。命令行本身也只遮盖识别得到的格式，所以前面没有任何名字、当作普通参数打出来的密钥（`htpasswd -b file user 密码`）仍然看得到，Agent 也读得到：这类命令请在开头加一个空格。
+- 遮盖认的是格式，不是所有密钥。认得出的：已知的 token 格式、私钥、URL 里的密码和 token、`Authorization`、`Cookie` 和 `Set-Cookie` 头、`--password` 这类参数、`curl -u`、`mysql -p<密码>`、`sshpass -p`、`docker login -p`、`redis-cli -a`、`openssl … pass:`、`aws configure set`、`gh secret set --body` 里的密码参数，以及 `SECRET=value` 赋值（`DB_PASS=`、`MYSQL_PWD=`、`SECRET_KEY_BASE=`、`APP_KEY=`、`API Key:` 等）。目前认不出（只是常见的几类，不是全部）：前面没有参数名或标签的密钥、Azure 的 `sig=`、Docker `config.json` 里的 `auth`、kubeconfig 里的 `client-key-data`、`.netrc` 里的密码、`aws secretsmanager` 输出里的 `SecretString`、转义过的 JSON 里的密码，以及代码里小写的 `…_key`（`app_key = …`）。紧贴在字母、数字或下划线后面的 token 也可能认不出。贴出去之前请看一眼。
 - `lo pause`（或「设置 → 录制 → 暂停」）停止录制；暂停期间什么都不存。
 - 旧的录制会自动清理：每个终端 200 条、30 天、最多 500 MB。`lo forget --all`（或「设置 → 录制 → 抹掉…」）立即删除全部。
-- `lo forget` 会删掉行和输出文件，并把被删行在数据库里占的字节清零。命令行文字的旧副本可能还留在数据库文件的空闲部分，直到被覆盖；所以如果密码写在了命令行里，请把密码换掉。它不会动你的 shell 历史和备份。用 `lo --print` 或 `--json` 打印过的副本是另一条命令，普通 `lo forget` 会跳过，要用 `lo forget --id N` 删。
+- `lo forget` 会删掉行和输出文件，并把被删行在数据库里占的字节清零。命令行文字的旧副本可能还留在数据库文件的空闲部分，直到被覆盖；所以如果密码写在了命令行里，请把密码换掉。它不会动你的 shell 历史和备份。`lo` 自己打印的内容（`lo --print`、`--json`）不录制，所以被 forget 的命令不会留下输出副本。
 
 Lastout 记录什么、存在哪、什么会离开你的电脑：见[隐私](privacy.zh-CN.md)。
 
