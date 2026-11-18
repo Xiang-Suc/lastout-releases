@@ -3,6 +3,19 @@
 User-facing changes. Compatibility with other tools, and how each part
 of it is tested, is in [docs/compatibility.md](docs/compatibility.md).
 
+## Unreleased
+
+### On lastout.dev and in the license server
+
+- lastout.dev also counts visits itself, for the maker's own dashboard:
+  a page opened, Download or Buy pressed, the film played. The license
+  server keeps daily totals only; to count each visitor once a day it
+  uses a keyed digest of the IP address and browser that is deleted the
+  next day, and it doesn't store IP addresses. The same visitors as
+  before aren't counted (Global Privacy Control, Do Not Track, Paddle
+  payment links, the order and key pages). The privacy policy says what
+  is sent. The app itself still has no analytics.
+
 ## 0.4.3 - 2026-11-15
 
 ### On lastout.dev, in the usage guide and in the license server

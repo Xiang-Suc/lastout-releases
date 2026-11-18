@@ -12,7 +12,7 @@ only what buying a license and checking the trial and the license need,
 described under *License checks* and *Buying a license*; for that data
 we are responsible (the data controller). Questions and requests: support@lastout.dev.
 
-Last updated: 2026-11-15.
+Last updated: 2026-11-18.
 
 ## What is recorded
 
@@ -336,7 +336,20 @@ browsers), not individual visitors. The script isn't loaded, so the
 visit isn't counted, when your browser sends Global Privacy Control or
 Do Not Track, when you arrive through a payment link from Paddle, or on
 the pages that handle your order or key (`thanks.html`,
-`activate.html`). Its fonts load from Google Fonts. The film on the product page is a file
+`activate.html`). The same pages also count visits for us, on our
+license server (`license.lastout.dev`, at Cloudflare): when a page
+opens, when you press *Download* or *Buy*, and when you play the film,
+the page sends which of these it was, the page, the campaign tag in
+the link (or else the site you came from), the page's language and
+whether you're on a Mac. From the request the server takes your
+country and, to count each visitor once a day, an irreversible digest
+of your IP address, browser and the date, made with a secret key only our
+server holds; the digests are deleted the next day and your IP address
+isn't stored. What we keep are daily totals. This count isn't sent in
+the cases above where Cloudflare's script isn't loaded. To credit a
+download to the link you arrived by, the page keeps where the tab came
+from in your browser's session storage, which is cleared when you
+close the tab. Its fonts load from Google Fonts. The film on the product page is a file
 on lastout.dev itself, fetched only when you press play. The product page loads Paddle's
 checkout script (Paddle.js) when you point at *Buy*, focus it or press
 it (a touch on it counts), when you arrive through a payment link from
@@ -364,8 +377,9 @@ from its address.
   (see *The website*).
 - **Cloudflare** runs the license server, its database and the admin
   dashboard, serves the download mirror (`dl.lastout.dev`), forwards
-  the mail sent to support@lastout.dev, and provides the website's visit
-  counts (see *The website*).
+  the mail sent to support@lastout.dev, provides the website's visit
+  counts, and keeps our own visit totals in the license server's
+  database (see *The website*).
 - **Google** (Google Workspace) hosts the mailbox that mail lands in, so
   what you write to us and your address are kept there.
 - **Resend** delivers the email with your key.

@@ -6,7 +6,7 @@ Lastout 记录什么、存在哪、什么会离开你的电脑、怎么删除。
 
 Lastout 由 Rocha Tech LLC（在美国新泽西州注册的公司，下称「我们」）开发。你记录的内容不会到我们这里；到我们这里的，只有购买授权以及校验试用和授权需要的那些，见下面「授权校验」和「购买授权」两节，这部分数据由我们负责（即数据控制者）。问题和请求请写信到 support@lastout.dev。
 
-最后更新：2026-11-15。
+最后更新：2026-11-18。
 
 ## 记录什么
 
@@ -100,12 +100,12 @@ Lastout 的授权由 Paddle.com Market Ltd（下称「Paddle」）作为代收�
 
 ## 网站
 
-lastout.dev 是一组由 GitHub Pages 托管的静态页面。网站自己不设 cookie，也没有追踪像素或广告。网站用 Cloudflare Web Analytics 统计访问量：产品页、已知问题页和各法律页面（包括本页）会加载 Cloudflare 的一段脚本（`static.cloudflareinsights.com`），它上报打开的是哪个页面、你从哪个网站过来、页面加载有多快；Cloudflare 还会从请求里得出浏览器、操作系统、设备类型和国家或地区，和任何请求一样，它会看到你的 IP 地址。Cloudflare 说明这段脚本不使用 cookie 或浏览器里的其他存储，不对访客做指纹识别，也不记录网址里的查询参数。我们只看得到汇总数字（页面、来源网站、国家或地区、浏览器），看不到单个访客。以下情况不加载这段脚本，也就不统计：浏览器发出了 Global Privacy Control 或 Do Not Track 信号；你从 Paddle 的付款链接进来；处理订单或授权码的页面（`thanks.html`、`activate.html`）。字体从 Google Fonts 加载。产品页上的影片是 lastout.dev 自己的文件，按下播放才开始加载。产品页在你把鼠标移到「购买」上、聚焦或按下它时（手指碰到它也算），从 Paddle 发来的付款链接进来时，或在这个页面开始付款后两小时内又回到它时，才加载 Paddle 的结账脚本（Paddle.js），不是一打开就加载；有了它，「购买」才能在页面上打开 Paddle 的结账窗口。Paddle.js 加载之后，它还会加载 Paddle 自家的分析产品 ProfitWell，并可能设置 Paddle 的 cookie。Paddle.js、ProfitWell 和结账窗口都属于 Paddle，适用 Paddle 的隐私政策和 cookie 政策。产品页每次打开还会向 GitHub 的 API（`api.github.com`）询问最新版本，好让「下载」指向当前的文件；和任何请求一样，GitHub 会看到你的 IP 地址。文件本身从 GitHub 下载；你点了备用下载，或者 GitHub 的 API 没有应答、「下载」改指向备用地址时，文件从下载镜像（`dl.lastout.dev`，Cloudflare 上的一个存储桶）下载。谁提供文件，谁就看到你的 IP 地址。结账窗口给出订单号之后，页面每 5 秒用这个交易号问一次授权服务器，最长 30 分钟，付款一确认就带你去看授权码。付款后，感谢页用地址里的交易号向授权服务器取你的授权码。
+lastout.dev 是一组由 GitHub Pages 托管的静态页面。网站自己不设 cookie，也没有追踪像素或广告。网站用 Cloudflare Web Analytics 统计访问量：产品页、已知问题页和各法律页面（包括本页）会加载 Cloudflare 的一段脚本（`static.cloudflareinsights.com`），它上报打开的是哪个页面、你从哪个网站过来、页面加载有多快；Cloudflare 还会从请求里得出浏览器、操作系统、设备类型和国家或地区，和任何请求一样，它会看到你的 IP 地址。Cloudflare 说明这段脚本不使用 cookie 或浏览器里的其他存储，不对访客做指纹识别，也不记录网址里的查询参数。我们只看得到汇总数字（页面、来源网站、国家或地区、浏览器），看不到单个访客。以下情况不加载这段脚本，也就不统计：浏览器发出了 Global Privacy Control 或 Do Not Track 信号；你从 Paddle 的付款链接进来；处理订单或授权码的页面（`thanks.html`、`activate.html`）。这些页面也为我们自己统计访问，发到我们的授权服务器（`license.lastout.dev`，在 Cloudflare 上）：页面打开、按下「下载」或「购买」、播放影片时，页面发出是哪一种、哪个页面、链接里的活动标签（没有就是你从哪个网站过来）、页面语言，以及你用的是不是 Mac。服务器从请求里得出国家或地区；为了把同一位访客一天只算一次，它用你的 IP 地址、浏览器信息和当天日期，以只有服务器持有的密钥算出一个不可逆的摘要，摘要第二天删除，IP 地址本身不存。我们留下的只有每天的总数。上面不加载 Cloudflare 脚本的那些情况，这份统计也不发。为了把下载记到你进来时的链接上，页面把这个标签页从哪里来记在浏览器的会话存储里，关掉标签页就没了。字体从 Google Fonts 加载。产品页上的影片是 lastout.dev 自己的文件，按下播放才开始加载。产品页在你把鼠标移到「购买」上、聚焦或按下它时（手指碰到它也算），从 Paddle 发来的付款链接进来时，或在这个页面开始付款后两小时内又回到它时，才加载 Paddle 的结账脚本（Paddle.js），不是一打开就加载；有了它，「购买」才能在页面上打开 Paddle 的结账窗口。Paddle.js 加载之后，它还会加载 Paddle 自家的分析产品 ProfitWell，并可能设置 Paddle 的 cookie。Paddle.js、ProfitWell 和结账窗口都属于 Paddle，适用 Paddle 的隐私政策和 cookie 政策。产品页每次打开还会向 GitHub 的 API（`api.github.com`）询问最新版本，好让「下载」指向当前的文件；和任何请求一样，GitHub 会看到你的 IP 地址。文件本身从 GitHub 下载；你点了备用下载，或者 GitHub 的 API 没有应答、「下载」改指向备用地址时，文件从下载镜像（`dl.lastout.dev`，Cloudflare 上的一个存储桶）下载。谁提供文件，谁就看到你的 IP 地址。结账窗口给出订单号之后，页面每 5 秒用这个交易号问一次授权服务器，最长 30 分钟，付款一确认就带你去看授权码。付款后，感谢页用地址里的交易号向授权服务器取你的授权码。
 
 ## 第三方
 
 - **Paddle**：销售授权、处理付款（见上）。产品页加载的它的脚本还会加载它的分析产品 ProfitWell（见「网站」）。
-- **Cloudflare**：运行授权服务器、它的数据库和管理后台，提供下载镜像（`dl.lastout.dev`），转发发到 support@lastout.dev 的邮件，并提供网站的访问量统计（见「网站」）。
+- **Cloudflare**：运行授权服务器、它的数据库和管理后台，提供下载镜像（`dl.lastout.dev`），转发发到 support@lastout.dev 的邮件，提供网站的访问量统计，并在授权服务器的数据库里保存我们自己的每日访问总数（见「网站」）。
 - **Google**（Google Workspace）：托管收到这些邮件的邮箱，所以你的来信和邮箱地址会保存在那里。
 - **Resend**：发送带授权码的邮件。
 - **GitHub**：托管更新检查读取的发布，以及 lastout.dev 网站。
