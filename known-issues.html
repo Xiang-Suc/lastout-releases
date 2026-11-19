@@ -42,8 +42,8 @@
     <h1 data-ui="en">Known <em>issues.</em></h1>
     <h1 lang="zh-CN" data-ui="zh" hidden>已知<em>问题。</em></h1>
     <!-- Hand-written. Remove an item when its fix ships; move the date. The facts come from our own tests, not from guesses: only add what was reproduced. -->
-    <p class="meta" data-ui="en">Last updated: 2026-11-11 · Lastout 0.4.3</p>
-    <p class="meta" lang="zh-CN" data-ui="zh" hidden>最后更新：2026-11-11 · Lastout 0.4.3</p>
+    <p class="meta" data-ui="en">Last updated: 2026-11-18 · Lastout 0.4.3</p>
+    <p class="meta" lang="zh-CN" data-ui="zh" hidden>最后更新：2026-11-18 · Lastout 0.4.3</p>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-lang="en" aria-pressed="true">English</button>
       <button type="button" data-lang="zh" aria-pressed="false">中文</button>
@@ -68,6 +68,9 @@
 
 <h3><code>~/.zprofile</code> runs twice</h3>
 <p>Since 0.4.3 the recorded zsh runs <code>~/.zprofile</code> as well as the terminal's login zsh, so that its aliases, functions and <code>GPG_TTY</code> are there. Anything in it with a side effect happens twice: a greeting prints twice, an <code>ssh-agent</code> started there starts twice. <strong>Meanwhile:</strong> guard such lines with <code>[[ -n $LASTOUT_NONCE ]] || …</code>, or move them to <code>~/.zshrc</code>.</p>
+
+<h3>With Atuin's output capture on, Atuin's line has to come before Lastout's hooks</h3>
+<p>With Atuin's output capture turned on (<code>atuin config enable output-capture</code>), a new terminal isn't recorded when <code>eval "$(atuin init zsh)"</code> sits below the <code># &gt;&gt;&gt; lastout (hooks) &gt;&gt;&gt;</code> block in <code>~/.zshrc</code>, and the end of the file is where Atuin's guide puts it. The terminal itself works; <code>lo doctor</code> reports "wrapped, but the shell hooks are not loaded". <strong>Meanwhile:</strong> move Atuin's line above Lastout's hooks block and open a new tab. In that order we ran the two together (Atuin 18.24.8, zsh, macOS): each command is recorded once by each. A fix for either order is planned for 0.4.4.</p>
 
 <h3>Terminal.app closes a tab with a running command without asking</h3>
 <p>Terminal sees Lastout's proxy as the tab's shell and can't see the programs inside it, so ⌘W on a tab that is running something closes it at once and the command is killed; it used to ask first. In iTerm2's "If there are jobs besides" mode, add your shell (<code>zsh</code>) to the list, or it asks every time. <strong>Meanwhile:</strong> look before ⌘W.</p>
@@ -120,6 +123,9 @@
 
 <h3><code>~/.zprofile</code> 会跑两遍</h3>
 <p>0.4.3 起，除了终端的登录 zsh，录制中的 zsh 也会跑一遍 <code>~/.zprofile</code>，这样里面的别名、函数和 <code>GPG_TTY</code> 才都在。里面带副作用的行会执行两次：问候语打印两遍，在那里启动的 <code>ssh-agent</code> 启动两次。<strong>暂时：</strong>给这些行加上 <code>[[ -n $LASTOUT_NONCE ]] || …</code>，或者挪到 <code>~/.zshrc</code>。</p>
+
+<h3>开着 Atuin 的输出捕获时，Atuin 那行要放在 Lastout 的 hooks 段前面</h3>
+<p>打开 Atuin 的输出捕获（<code>atuin config enable output-capture</code>）之后，如果 <code>eval "$(atuin init zsh)"</code> 写在 <code>~/.zshrc</code> 里 <code># &gt;&gt;&gt; lastout (hooks) &gt;&gt;&gt;</code> 这一段的后面，新开的终端不会被录制；而 Atuin 的文档正是让你加在文件末尾。终端本身能正常用；<code>lo doctor</code> 会报「wrapped, but the shell hooks are not loaded」。<strong>暂时：</strong>把 Atuin 那行挪到 Lastout 的 hooks 段前面，再新开一个标签页。按这个顺序我们一起测过（Atuin 18.24.8、zsh、macOS）：每条命令两边各录一次。0.4.4 计划修成两种顺序都能录。</p>
 
 <h3>Terminal.app 关掉正在跑命令的标签页时不再问</h3>
 <p>Terminal 把 Lastout 的代理当成标签页的 shell，看不到里面跑的程序，所以对一个正在跑东西的标签页按 ⌘W 会直接关掉、命令被杀，以前会先问。iTerm2 选了「有任务才问」的话，要把你的 shell（<code>zsh</code>）加进名单，否则每次都问。<strong>暂时：</strong>按 ⌘W 前看一眼。</p>
